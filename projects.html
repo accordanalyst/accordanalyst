@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — Alexis Kelly | accordanalyst.com</title>
+<style>
+  /* ══════════════════════════════════════════
+     LIGHT MODE (fall palette)
+  ══════════════════════════════════════════ */
+  :root {
+    --bg:         #FDF3E7;
+    --surface:    #FAF0E0;
+    --nav-bg:     #3B2207;
+    --hero-bg:    #3B2207;
+    --hero-glow:  rgba(196,98,29,0.12);
+    --heading:    #3B2207;
+    --body:       #1C1008;
+    --muted:      #6B5240;
+    --rule:       #D4B896;
+    --accent:     #C4621D;
+    --accent-dim: rgba(196,98,29,0.15);
+    --accent-bdr: rgba(196,98,29,0.35);
+    --hero-text:  #FDF3E7;
+    --hero-muted: rgba(253,243,231,0.6);
+    --hero-dim:   rgba(253,243,231,0.45);
+    --skill-tag:  rgba(196,98,29,0.1);
+    --skill-text: #3B2207;
+    --toggle-bg:  rgba(255,255,255,0.12);
+    --shadow:     rgba(0,0,0,0.08);
+  }
+  /* ══════════════════════════════════════════
+     DARK MODE (blue palette)
+  ══════════════════════════════════════════ */
+  [data-theme="dark"] {
+    --bg:         #0D1B2E;
+    --surface:    #112240;
+    --nav-bg:     #091628;
+    --hero-bg:    #091628;
+    --hero-glow:  rgba(46,95,163,0.18);
+    --heading:    #B8D4F8;
+    --body:       #CDD9EC;
+    --muted:      #7B9BB8;
+    --rule:       #1F3864;
+    --accent:     #4A90D9;
+    --accent-dim: rgba(46,95,163,0.2);
+    --accent-bdr: rgba(74,144,217,0.4);
+    --hero-text:  #EBF2FA;
+    --hero-muted: rgba(235,242,250,0.6);
+    --hero-dim:   rgba(235,242,250,0.4);
+    --skill-tag:  rgba(46,95,163,0.2);
+    --skill-text: #B8D4F8;
+    --toggle-bg:  rgba(74,144,217,0.15);
+    --shadow:     rgba(0,0,0,0.35);
+  }
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--body);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.6;transition:background .35s,color .35s}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:52px;box-shadow:0 2px 16px var(--shadow);transition:background .35s}
+  .nav-back{font-size:13px;color:var(--hero-muted);text-decoration:none;letter-spacing:.05em;transition:color .2s;display:flex;align-items:center;gap:6px}
+  .nav-back:hover{color:var(--accent)}
+  .nav-right{display:flex;align-items:center;gap:1rem}
+  .theme-toggle{background:var(--toggle-bg);border:1px solid var(--accent-bdr);border-radius:20px;cursor:pointer;padding:4px 10px;font-size:14px;display:flex;align-items:center;gap:6px;color:var(--hero-muted);transition:background .2s,border-color .2s}
+  .toggle-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--hero-muted)}
+  .toggle-track{width:32px;height:18px;background:var(--accent-dim);border:1px solid var(--accent-bdr);border-radius:9px;position:relative;transition:background .25s;flex-shrink:0}
+  [data-theme="dark"] .toggle-track{background:var(--accent)}
+  .toggle-thumb{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--hero-text);transition:transform .25s}
+  [data-theme="dark"] .toggle-thumb{transform:translateX(14px)}
+
+  .page-hero{background:var(--hero-bg);padding:6rem 2rem 3rem;text-align:center;position:relative;overflow:hidden;transition:background .35s}
+  .page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,var(--hero-glow) 0%,transparent 65%);pointer-events:none}
+  .page-eyebrow{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;opacity:.85}
+  .page-title{font-size:clamp(2rem,5vw,3rem);font-weight:800;color:var(--hero-text);letter-spacing:-.02em;margin-bottom:.8rem;transition:color .35s}
+  .page-subtitle{font-size:15px;color:var(--hero-muted);max-width:600px;margin:0 auto}
+
+  main{max-width:980px;margin:0 auto;padding:3.5rem 2rem 4rem}
+
+  /* ── DETAILED PROJECT CARDS (original wide format) ── */
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    transition: background 0.35s, border-color 0.35s, transform 0.2s, box-shadow 0.2s;
+  }
+  .project-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px var(--shadow); }
+  .project-header { background: var(--heading); padding: 1.4rem 1.5rem 1rem; transition: background 0.35s; }
+  .project-mode-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .project-mode-pill { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; }
+  .pill-excel  { background: rgba(196,98,29,0.25); color: #FDF3E7; }
+  .pill-python { background: rgba(46,160,94,0.25);  color: #A8F0C6; }
+  .pill-sql    { background: rgba(74,144,217,0.25); color: #B8D4F8; }
+  .project-title { font-size: 1.15rem; font-weight: 800; color: #FDF3E7; line-height: 1.2; margin-bottom: 4px; transition: color 0.35s; }
+  [data-theme="dark"] .project-title { color: var(--hero-text); }
+  .project-subtitle { font-size: 12px; color: rgba(253,243,231,0.6); letter-spacing: 0.04em; }
+  [data-theme="dark"] .project-subtitle { color: var(--hero-muted); }
+  .project-body { padding: 1.25rem 1.5rem; }
+  .project-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 1rem; transition: color 0.35s; }
+  .project-metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-bottom: 1rem; }
+  .project-metric { background: var(--bg); border: 1px solid var(--rule); border-radius: 8px; padding: 8px 10px; text-align: center; transition: background 0.35s, border-color 0.35s; }
+  .project-metric-num { font-size: 1.2rem; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 2px; transition: color 0.35s; }
+  .project-metric-lbl { font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.3; transition: color 0.35s; }
+  .project-steps { margin-bottom: 1rem; }
+  .project-step { display: flex; gap: 10px; margin-bottom: 7px; align-items: flex-start; }
+  .step-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--accent-dim); border: 1.5px solid var(--accent-bdr); color: var(--accent); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; transition: background 0.35s; }
+  .step-text { font-size: 12.5px; color: var(--muted); line-height: 1.5; transition: color 0.35s; }
+  .step-text strong { color: var(--heading); }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 1.1rem; }
+  .project-tag { font-size: 11px; padding: 3px 9px; border-radius: 3px; background: var(--skill-tag); color: var(--skill-text); font-weight: 500; transition: background 0.35s, color 0.35s; }
+  .project-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; flex-wrap: wrap; transition: border-color 0.35s; }
+  .project-btn { padding: 9px 18px; border-radius: 5px; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none; transition: opacity 0.2s, transform 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+  .project-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .project-btn-primary { background: var(--accent); color: var(--hero-text); }
+  .project-btn-secondary { background: transparent; color: var(--accent); border: 1.5px solid var(--accent-bdr); }
+  .project-wip { font-size: 11px; color: var(--muted); font-style: italic; display: flex; align-items: center; gap: 5px; margin-top: 2px; transition: color 0.35s; }
+
+  footer{text-align:center;padding:2rem;font-size:11px;color:var(--muted);letter-spacing:.08em;transition:color .35s}
+  footer a{color:var(--accent);text-decoration:none}
+
+  .fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+  .fade-in.visible{opacity:1;transform:translateY(0)}
+
+  @media (max-width: 700px) {
+    .nav-right .toggle-label { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← Back to Portfolio</a>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <span id="toggleEmoji">☀️</span>
+      <span class="toggle-label" id="toggleLabel">Light</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    </button>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <p class="page-eyebrow">Portfolio</p>
+  <h1 class="page-title">Featured Projects</h1>
+  <p class="page-subtitle">Detailed case studies in Advanced Excel, SQL, and Python — built to demonstrate real audit, billing, and revenue operations methodology without exposing any client data.</p>
+</section>
+
+<main>
+
+  <!-- CARD 1 — Excel -->
+  <div class="project-card fade-in">
+    <div class="project-header">
+      <div class="project-mode-pills">
+        <span class="project-mode-pill pill-excel">Advanced Excel</span>
+        <span class="project-mode-pill pill-python">Case Study</span>
+      </div>
+      <div class="project-title">International Freight Invoice Audit Automation</div>
+      <div class="project-subtitle">Ocean (LCL · FCL 20' · FCL 40') &amp; Air · 7 Accounts · Per-Account Tolerance Rules · Demurrage · Spot Quotes</div>
+    </div>
+    <div class="project-body">
+      <p class="project-desc">A multi-sheet Excel automation tool that replicates the core logic of international freight bill auditing — without exposing any real client data. Built to demonstrate the exact workflow used in production: rate verification, demurrage calculation, per-account tolerance classification, short-pay detection, and management dashboard reporting across Ocean and Air freight modes.</p>
+      <div class="project-metrics">
+        <div class="project-metric"><div class="project-metric-num">60</div><div class="project-metric-lbl">Simulated Invoices</div></div>
+        <div class="project-metric"><div class="project-metric-num">7</div><div class="project-metric-lbl">Sheets Built</div></div>
+        <div class="project-metric"><div class="project-metric-num">7</div><div class="project-metric-lbl">Account Tolerance Rules</div></div>
+      </div>
+      <div class="project-steps">
+        <div class="project-step"><div class="step-dot">1</div><div class="step-text"><strong>The Problem</strong> — Manual rate verification across Ocean + Air lanes, no standardized demurrage tracking, no tolerance logic per account, inconsistent exception reporting across analysts</div></div>
+        <div class="project-step"><div class="step-dot">2</div><div class="step-text"><strong>Data Architecture</strong> — Invoice Log (60 invoices), Contracted Rate Table + Spot Quote Register (by carrier/lane/container type), Account Tolerance Rules table (flat dollar vs percentage-based)</div></div>
+        <div class="project-step"><div class="step-dot">3</div><div class="step-text"><strong>Automation Logic</strong> — XLOOKUP composite key rate matching, IFS-based per-account tolerance classification ($0.01 strict to $100 flexible), dynamic demurrage calculation against free-day allowances, short-pay and balance due detection with reason codes</div></div>
+        <div class="project-step"><div class="step-dot">4</div><div class="step-text"><strong>Outputs</strong> — Exception Report (filtered overcharges, underbills, rate-not-on-file, short pay), Executive Dashboard (KPI cards, carrier breakdown, mode/container type exception rates, per-account summary)</div></div>
+        <div class="project-step"><div class="step-dot">5</div><div class="step-text"><strong>Real-World Parallel</strong> — Mirrors the live audit workflow at Cass Information Systems across 20+ Fortune 500 international accounts, recovering $450K+ in carrier overcharges annually</div></div>
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">XLOOKUP</span>
+        <span class="project-tag">IFS / Nested IF</span>
+        <span class="project-tag">IFERROR</span>
+        <span class="project-tag">SUMIFS / COUNTIFS</span>
+        <span class="project-tag">Conditional Formatting</span>
+        <span class="project-tag">Composite Key Logic</span>
+        <span class="project-tag">Demurrage Calculation</span>
+        <span class="project-tag">Tolerance Classification</span>
+        <span class="project-tag">Ocean Freight</span>
+        <span class="project-tag">Air Freight</span>
+        <span class="project-tag">LCL / FCL 20' / FCL 40'</span>
+        <span class="project-tag">Spot Quotes</span>
+        <span class="project-tag">Short-Pay Detection</span>
+        <span class="project-tag">Balance Due Tracking</span>
+        <span class="project-tag">Executive Dashboard</span>
+      </div>
+    </div>
+    <div class="project-footer">
+      <a href="projects/intl-freight-audit.html" class="project-btn project-btn-primary">View Full Case Study →</a>
+    </div>
+  </div>
+
+  <!-- CARD 2 — SQL -->
+  <div class="project-card fade-in">
+    <div class="project-header" style="background: var(--heading);">
+      <div class="project-mode-pills">
+        <span class="project-mode-pill pill-sql">SQL</span>
+        <span class="project-mode-pill pill-python" style="background:rgba(74,144,217,.25);color:#B8D4F8;">Revenue Ops</span>
+      </div>
+      <div class="project-title">Revenue Reconciliation Query Set</div>
+      <div class="project-subtitle">Aging Receivables · Short-Pay Detection · Duplicate Charges · Contract vs Billed Variance · Executive Leakage Dashboard</div>
+    </div>
+    <div class="project-body">
+      <p class="project-desc">Five production-ready SQL queries that surface the financial pain points every company above Series B is actively trying to solve — revenue leakage, unpaid invoices, duplicate charges, short payments, and billing gaps against signed contracts. Industry-agnostic schema. Written clean, commented, and framed as business questions first.</p>
+      <div class="project-metrics">
+        <div class="project-metric"><div class="project-metric-num">5</div><div class="project-metric-lbl">Queries</div></div>
+        <div class="project-metric"><div class="project-metric-num">4</div><div class="project-metric-lbl">Leakage Vectors</div></div>
+        <div class="project-metric"><div class="project-metric-num">$100K+</div><div class="project-metric-lbl">Target Role Range</div></div>
+      </div>
+      <div class="project-steps">
+        <div class="project-step"><div class="step-dot">1</div><div class="step-text"><strong>Aging Receivables</strong> — Buckets all open invoices by days past due (1–30, 31–60, 61–90, 90+) and flags ESCALATE / PRIORITY / STANDARD per account</div></div>
+        <div class="project-step"><div class="step-dot">2</div><div class="step-text"><strong>Short-Pay Detection</strong> — Compares payments + credit memos to invoiced amounts, surfaces exact balance due and percentage paid per invoice</div></div>
+        <div class="project-step"><div class="step-dot">3</div><div class="step-text"><strong>Duplicate Charge Detection</strong> — Uses window functions to fingerprint invoices by account + product + billing period, flags any account billed twice</div></div>
+        <div class="project-step"><div class="step-dot">4</div><div class="step-text"><strong>Contract vs Billed Reconciliation</strong> — Compares actual YTD billing to contracted ARR, flags over-billing, under-billing, and renewal risk simultaneously</div></div>
+        <div class="project-step"><div class="step-dot">5</div><div class="step-text"><strong>Executive Leakage Dashboard</strong> — UNION ALL aggregates all four leakage vectors into one prioritised summary with % of total risk — the output you present to a VP</div></div>
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">CTEs</span><span class="project-tag">Window Functions</span>
+        <span class="project-tag">CASE WHEN</span><span class="project-tag">COALESCE / NULLIF</span>
+        <span class="project-tag">UNION ALL</span><span class="project-tag">DATE_TRUNC</span>
+        <span class="project-tag">STRING_AGG</span><span class="project-tag">Aging Receivables</span>
+        <span class="project-tag">Short-Pay Reconciliation</span><span class="project-tag">ARR Variance</span>
+        <span class="project-tag">Duplicate Detection</span><span class="project-tag">Revenue Leakage</span>
+      </div>
+    </div>
+    <div class="project-footer">
+      <a href="projects/revenue-reconciliation.html" class="project-btn project-btn-primary">View Full Case Study →</a>
+    </div>
+  </div>
+
+  <!-- CARD 3 — Python -->
+  <div class="project-card fade-in">
+    <div class="project-header" style="background: var(--heading);">
+      <div class="project-mode-pills">
+        <span class="project-mode-pill pill-python">Python</span>
+        <span class="project-mode-pill pill-sql" style="background:rgba(74,144,217,.25);color:#B8D4F8;">Analysis &amp; Forecasting</span>
+      </div>
+      <div class="project-title">Revenue Anomaly Detector</div>
+      <div class="project-subtitle">Rolling Z-Score Detection · Erosion Trend Analysis · Severity Scoring · Executive Triage</div>
+    </div>
+    <div class="project-body">
+      <p class="project-desc">A statistical anomaly detection script that flags accounts whose revenue deviates from their own historical pattern — catching sudden drops, billing-error spikes, and slow erosion before they show up in a quarterly report. Unlike the Excel and SQL projects, which audit revenue that's already been billed, this one looks forward: it's the signal that tells a Revenue Ops team which account needs a conversation this week.</p>
+      <div class="project-metrics">
+        <div class="project-metric"><div class="project-metric-num">720</div><div class="project-metric-lbl">Revenue Records</div></div>
+        <div class="project-metric"><div class="project-metric-num">48</div><div class="project-metric-lbl">Anomalies Flagged</div></div>
+        <div class="project-metric"><div class="project-metric-num">6.7%</div><div class="project-metric-lbl">Clean Exception Rate</div></div>
+      </div>
+      <div class="project-steps">
+        <div class="project-step"><div class="step-dot">1</div><div class="step-text"><strong>The Problem</strong> — Flat company-wide thresholds produce false positives on volatile accounts and miss slow decline on stable ones; manual review across 30+ accounts doesn't scale</div></div>
+        <div class="project-step"><div class="step-dot">2</div><div class="step-text"><strong>Simulated Dataset</strong> — 30 fictitious SaaS accounts × 24 months, with five seeded anomaly scenarios: churn-style drop, billing-error spike, slow erosion, sustained expansion, and drop-with-partial-recovery</div></div>
+        <div class="project-step"><div class="step-dot">3</div><div class="step-text"><strong>Detection Logic</strong> — Rolling 6-month baseline per account, z-score floored against std blowup, secondary erosion check for gradual decline, severity score unifying both onto one rankable scale</div></div>
+        <div class="project-step"><div class="step-dot">4</div><div class="step-text"><strong>Outputs</strong> — Ranked anomaly report (CSV) with SPIKE/DROP/EROSION classification, HIGH/MEDIUM/LOW priority tiers, and a four-panel gradient chart of the top flagged accounts</div></div>
+        <div class="project-step"><div class="step-dot">5</div><div class="step-text"><strong>Result</strong> — 4 of 5 seeded scenarios surfaced at the very top of the ranked report; Sterling Capital's new higher baseline self-corrected once the rolling window caught up, with no manual threshold reset needed</div></div>
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">Pandas</span>
+        <span class="project-tag">NumPy</span>
+        <span class="project-tag">Matplotlib</span>
+        <span class="project-tag">Rolling Window Statistics</span>
+        <span class="project-tag">Z-Score Anomaly Detection</span>
+        <span class="project-tag">groupby + apply</span>
+        <span class="project-tag">Vectorized Conditional Logic</span>
+        <span class="project-tag">Severity Scoring</span>
+        <span class="project-tag">Executive Triage</span>
+        <span class="project-tag">Churn Signal Detection</span>
+        <span class="project-tag">Billing Error Detection</span>
+        <span class="project-tag">Trend Erosion Analysis</span>
+      </div>
+    </div>
+    <div class="project-footer">
+      <a href="projects/revenue-anomaly-detector.html" class="project-btn project-btn-primary">View Full Case Study →</a>
+    </div>
+  </div>
+
+  <!-- CARD 4 — Excel + JS Dashboard -->
+  <div class="project-card fade-in">
+    <div class="project-header" style="background: var(--heading);">
+      <div class="project-mode-pills">
+        <span class="project-mode-pill pill-excel">Advanced Excel</span>
+        <span class="project-mode-pill pill-python" style="background:rgba(240,192,112,.2);border:1px solid rgba(240,192,112,.4);color:#F0C070;">Interactive Dashboard</span>
+      </div>
+      <div class="project-title">Pre-Audit vs Post-Audit Recovery Dashboard</div>
+      <div class="project-subtitle">222,900 Invoices · 6 Error Types · Live D3.js Visualization · Month-by-Month Drill-Down</div>
+    </div>
+    <div class="project-body">
+      <p class="project-desc">An interactive dashboard simulating 12 months of freight invoice audit activity — the "necessary evil" of post-audit recovery in freight billing, quantified. Modeled in Excel with 245 live cross-sheet formulas and visualized on the case study page using D3.js: clickable month buttons, animated stacked area charts, per-month error type breakdowns, and a live cost-efficiency comparison showing that Post-Audit recovery costs 6.5x more per dollar than Pre-Audit prevention.</p>
+      <div class="project-metrics">
+        <div class="project-metric"><div class="project-metric-num">222,900</div><div class="project-metric-lbl">Simulated Invoices</div></div>
+        <div class="project-metric"><div class="project-metric-num">$6.6M</div><div class="project-metric-lbl">Annual Error Pool</div></div>
+        <div class="project-metric"><div class="project-metric-num">6.5x</div><div class="project-metric-lbl">Post vs Pre Cost Multiple</div></div>
+      </div>
+      <div class="project-steps">
+        <div class="project-step"><div class="step-dot">1</div><div class="step-text"><strong>The Problem</strong> — Pre-Audit prevents errors before payment (cheap). Post-Audit recovers what was missed after payment (expensive). The dashboard quantifies exactly how much worse the "necessary evil" channel costs per dollar recovered.</div></div>
+        <div class="project-step"><div class="step-dot">2</div><div class="step-text"><strong>Data Model</strong> — 30 fictitious SaaS-style freight accounts, 10,800–28,100 invoices/month with a realistic seasonal curve, 6 distinct error types each with their own Pre-Audit catch rate and monthly mix.</div></div>
+        <div class="project-step"><div class="step-dot">3</div><div class="step-text"><strong>Excel Workbook</strong> — 245 live formulas across a hidden Data sheet, a hidden Calc sheet (every KPI as a formula), and a visual Dashboard sheet with a dropdown month selector driving all displayed values via INDEX/MATCH.</div></div>
+        <div class="project-step"><div class="step-dot">4</div><div class="step-text"><strong>Interactive Web Dashboard</strong> — The same data model rebuilt in JavaScript on the case study page: clickable month buttons, stacked area chart, catch rate trend line, error type breakdown, investigative flag for October, and full-year FY summary.</div></div>
+        <div class="project-step"><div class="step-dot">5</div><div class="step-text"><strong>The October Insight</strong> — Pre-Audit catch rate drops to 59% in October (vs. 69–71% the rest of the year) while the error pool spikes to $955K — a simulated carrier rate table update that the audit system hadn't synchronized, flooding the expensive 28% contingency recovery channel.</div></div>
+      </div>
+      <div class="project-tags">
+        <span class="project-tag">Advanced Excel</span>
+        <span class="project-tag">INDEX / MATCH</span>
+        <span class="project-tag">Data Validation Dropdowns</span>
+        <span class="project-tag">D3.js</span>
+        <span class="project-tag">SVG Charts</span>
+        <span class="project-tag">Animated Transitions</span>
+        <span class="project-tag">Pre-Audit Avoided Cost</span>
+        <span class="project-tag">Post-Audit Contingency Recovery</span>
+        <span class="project-tag">Catch Rate Analysis</span>
+        <span class="project-tag">True Leakage Quantification</span>
+        <span class="project-tag">Cost Multiple</span>
+        <span class="project-tag">Seasonal Volume Modeling</span>
+      </div>
+    </div>
+    <div class="project-footer">
+      <a href="projects/freight-audit-dashboard.html" class="project-btn project-btn-primary">View Interactive Dashboard →</a>
+    </div>
+  </div>
+
+
+</main>
+
+<footer>
+  <p>© 2026 Alexis "Zaira" Kelly · <a href="index.html">accordanalyst.com</a> · Portfolio</p>
+</footer>
+
+<script>
+  const html = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const emoji = document.getElementById('toggleEmoji');
+  const label = document.getElementById('toggleLabel');
+  const saved = localStorage.getItem('theme');
+  if (saved) { html.setAttribute('data-theme', saved); updateUI(saved); }
+  btn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateUI(next);
+  });
+  function updateUI(t) {
+    emoji.textContent = t === 'dark' ? '🌙' : '☀️';
+    label.textContent = t === 'dark' ? 'Dark' : 'Light';
+  }
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revenue Anomaly Detector — Case Study | accordanalyst.com</title>
+<style>
+  :root {
+    --bg:#FDF3E7;--surface:#FAF0E0;--nav-bg:#3B2207;--hero-bg:#3B2207;
+    --hero-glow:rgba(196,98,29,0.12);--heading:#3B2207;--body:#1C1008;
+    --muted:#6B5240;--rule:#D4B896;--accent:#C4621D;
+    --accent-dim:rgba(196,98,29,0.15);--accent-bdr:rgba(196,98,29,0.35);
+    --hero-text:#FDF3E7;--hero-muted:rgba(253,243,231,0.6);
+    --surface2:#F5E8D0;--toggle-bg:rgba(255,255,255,0.12);
+    --shadow:rgba(0,0,0,0.08);--skill-tag:rgba(196,98,29,0.1);
+    --skill-text:#3B2207;--code-bg:#1C1008;--code-text:#F8F0E3;
+    --code-comment:#7A6A5A;--code-keyword:#E8956D;
+    --code-fn:#F0C070;--code-string:#98C98A;--code-num:#80C8F0;
+  }
+  [data-theme="dark"] {
+    --bg:#0D1B2E;--surface:#112240;--nav-bg:#091628;--hero-bg:#091628;
+    --hero-glow:rgba(46,95,163,0.18);--heading:#B8D4F8;--body:#CDD9EC;
+    --muted:#7B9BB8;--rule:#1F3864;--accent:#4A90D9;
+    --accent-dim:rgba(46,95,163,0.2);--accent-bdr:rgba(74,144,217,0.4);
+    --hero-text:#EBF2FA;--hero-muted:rgba(235,242,250,0.6);
+    --surface2:#0A1628;--toggle-bg:rgba(74,144,217,0.15);
+    --shadow:rgba(0,0,0,0.35);--skill-tag:rgba(46,95,163,0.2);
+    --skill-text:#B8D4F8;--code-bg:#070F1A;--code-text:#CDD9EC;
+    --code-comment:#4A6A8A;--code-keyword:#6EB0F5;
+    --code-fn:#F0C070;--code-string:#98C98A;--code-num:#80C8F0;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--body);font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6;transition:background .35s,color .35s}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:52px;box-shadow:0 2px 16px var(--shadow);transition:background .35s}
+  .nav-back{font-size:13px;color:rgba(253,243,231,0.7);text-decoration:none;letter-spacing:.05em;transition:color .2s;display:flex;align-items:center;gap:6px}
+  .nav-back:hover{color:var(--accent)}
+  .nav-right{display:flex;align-items:center;gap:1rem}
+  .nav-brand{font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+  .theme-toggle{background:var(--toggle-bg);border:1px solid var(--accent-bdr);border-radius:20px;cursor:pointer;padding:4px 10px;font-size:14px;display:flex;align-items:center;gap:6px;color:var(--hero-muted);transition:background .2s}
+  .toggle-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--hero-muted)}
+  .toggle-track{width:32px;height:18px;background:var(--accent-dim);border:1px solid var(--accent-bdr);border-radius:9px;position:relative;transition:background .25s;flex-shrink:0}
+  [data-theme="dark"] .toggle-track{background:var(--accent)}
+  .toggle-thumb{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--hero-text);transition:transform .25s}
+  [data-theme="dark"] .toggle-thumb{transform:translateX(14px)}
+  .dl-btn{background:var(--accent);color:var(--hero-text);padding:7px 16px;border-radius:4px;font-size:12px;font-weight:700;letter-spacing:.05em;text-decoration:none;transition:opacity .2s}
+  .dl-btn:hover{opacity:.85}
+
+  .proj-hero{background:var(--hero-bg);padding:6rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden;transition:background .35s}
+  .proj-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,var(--hero-glow) 0%,transparent 65%);pointer-events:none}
+  .proj-eyebrow{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;opacity:.85}
+  .proj-title{font-size:clamp(1.8rem,4.5vw,3rem);font-weight:800;color:var(--hero-text);letter-spacing:-.02em;line-height:1.1;margin-bottom:.8rem;transition:color .35s}
+  .proj-subtitle{font-size:15px;color:var(--hero-muted);margin-bottom:2rem;max-width:640px;margin-left:auto;margin-right:auto}
+  .proj-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:2.5rem}
+  .proj-pill{padding:5px 14px;border-radius:20px;font-size:12px;letter-spacing:.06em;font-weight:600}
+  .pill-py{background:rgba(46,160,94,.2);border:1px solid rgba(46,160,94,.4);color:#A8F0C6}
+  .pill-cs{background:rgba(74,144,217,.2);border:1px solid rgba(74,144,217,.4);color:#B8D4F8}
+  .proj-kpis{display:flex;flex-wrap:wrap;gap:0;background:rgba(253,243,231,.05);border:1px solid rgba(196,98,29,.2);border-radius:10px;overflow:hidden;max-width:700px;margin:0 auto}
+  [data-theme="dark"] .proj-kpis{background:rgba(235,242,250,.04);border-color:rgba(74,144,217,.2)}
+  .kpi-item{flex:1 1 100px;padding:1.2rem .8rem;text-align:center;border-right:1px solid rgba(196,98,29,.15);transition:background .2s}
+  [data-theme="dark"] .kpi-item{border-right-color:rgba(74,144,217,.15)}
+  .kpi-item:last-child{border-right:none}
+  .kpi-item:hover{background:rgba(196,98,29,.08)}
+  [data-theme="dark"] .kpi-item:hover{background:rgba(46,95,163,.12)}
+  .kpi-num{font-size:1.8rem;font-weight:800;color:var(--accent);line-height:1;margin-bottom:3px;transition:color .35s}
+  .kpi-lbl{font-size:10px;color:var(--hero-muted);letter-spacing:.07em;text-transform:uppercase}
+
+  main{max-width:900px;margin:0 auto;padding:4rem 2rem 3rem}
+  section{margin-bottom:4rem}
+  .sect-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;font-weight:600;transition:color .35s}
+  .sect-title{font-size:1.5rem;font-weight:800;color:var(--heading);margin-bottom:.3rem;letter-spacing:-.01em;transition:color .35s}
+  .sect-rule{height:3px;background:linear-gradient(to right,var(--accent),transparent);margin-bottom:1.8rem;border-radius:2px;transition:background .35s}
+
+  .disclaimer{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:2.5rem;transition:background .35s,border-color .35s,color .35s}
+  .disclaimer strong{color:var(--heading)}
+
+  /* CHART */
+  .chart-frame{border-radius:10px;overflow:hidden;border:1px solid var(--rule);transition:border-color .35s}
+  .chart-frame img{display:block;width:100%;height:auto}
+  .chart-caption{font-size:12px;color:var(--muted);margin-top:.7rem;line-height:1.6;transition:color .35s}
+
+  /* STEP CARDS */
+  .step-grid{display:flex;flex-direction:column;gap:1rem}
+  .step-card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden;transition:background .35s,border-color .35s}
+  .step-card-header{display:flex;align-items:center;gap:14px;padding:1rem 1.25rem;cursor:pointer;user-select:none}
+  .step-card-header:hover .step-num{background:var(--accent);color:var(--hero-text)}
+  .step-num{width:32px;height:32px;border-radius:50%;background:var(--accent-dim);border:2px solid var(--accent-bdr);color:var(--accent);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,color .2s}
+  .step-label{font-size:14px;font-weight:700;color:var(--heading);transition:color .35s}
+  .step-sublabel{font-size:12px;color:var(--muted);margin-top:1px;transition:color .35s}
+  .step-chevron{margin-left:auto;font-size:16px;color:var(--accent);transition:transform .25s}
+  .step-card.open .step-chevron{transform:rotate(180deg)}
+  .step-body{display:none;padding:0 1.25rem 1.25rem 4rem}
+  .step-card.open .step-body{display:block}
+  .step-body p{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:.9rem;transition:color .35s}
+  .step-body p:last-child{margin-bottom:0}
+  .step-body strong{color:var(--heading)}
+  .step-body ul{margin:.5rem 0 .9rem 0;padding:0;list-style:none}
+  .step-body ul li{font-size:13px;color:var(--muted);padding:.3rem 0 .3rem 18px;position:relative;border-bottom:.5px solid var(--rule);transition:color .35s,border-color .35s}
+  .step-body ul li:last-child{border-bottom:none}
+  .step-body ul li::before{content:'▸';color:var(--accent);position:absolute;left:0;font-size:10px;top:6px}
+
+  /* FORMULA / LOGIC CARDS */
+  .formula-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+  .formula-card{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:1rem;transition:background .35s,border-color .35s}
+  .formula-name{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;transition:color .35s}
+  .formula-sig{font-family:'Courier New',monospace;font-size:11px;color:var(--heading);background:var(--bg);border:1px solid var(--rule);border-radius:4px;padding:5px 8px;margin-bottom:8px;line-height:1.4;transition:background .35s,color .35s,border-color .35s}
+  .formula-desc{font-size:12px;color:var(--muted);line-height:1.55;transition:color .35s}
+
+  /* CODE BLOCK */
+  .code-wrap{background:var(--code-bg);border-radius:8px;overflow:hidden;margin:.8rem 0}
+  .code-toolbar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.06)}
+  .code-lang{font-size:11px;font-weight:600;color:var(--code-fn);letter-spacing:.08em;text-transform:uppercase}
+  .copy-btn{font-size:11px;color:var(--code-comment);cursor:pointer;background:none;border:1px solid rgba(255,255,255,0.12);padding:3px 10px;border-radius:4px;transition:color .2s,border-color .2s}
+  .copy-btn:hover{color:var(--code-text);border-color:rgba(255,255,255,0.3)}
+  .code-scroll{overflow-x:auto;padding:1rem 1.25rem}
+  pre{margin:0;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.65;color:var(--code-text)}
+  .c{color:var(--code-comment)}
+  .k{color:var(--code-keyword);font-weight:600}
+  .f{color:var(--code-fn)}
+  .s{color:var(--code-string)}
+  .n{color:var(--code-num)}
+
+  /* DATA TABLE */
+  .output-preview{background:var(--bg);border:1px solid var(--rule);border-radius:6px;overflow-x:auto;margin-top:.8rem;transition:background .35s,border-color .35s}
+  .output-preview table{width:100%;border-collapse:collapse;font-size:11.5px}
+  .output-preview th{background:var(--accent);color:var(--hero-text);padding:6px 10px;text-align:left;font-weight:700;white-space:nowrap}
+  .output-preview td{padding:5px 10px;border-bottom:.5px solid var(--rule);color:var(--muted);white-space:nowrap;transition:color .35s,border-color .35s}
+  .output-preview tr:nth-child(even) td{background:var(--surface);transition:background .35s}
+  .output-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:1rem;margin-bottom:5px;transition:color .35s}
+  .status-spike{color:#C4621D;font-weight:700}
+  .status-drop{color:#922B21;font-weight:700}
+  .status-erosion{color:#7D3C00;font-weight:700}
+  [data-theme="dark"] .status-spike{color:#6EB0F5}
+  [data-theme="dark"] .status-drop{color:#FF8A7A}
+  [data-theme="dark"] .status-erosion{color:#F5C56E}
+
+  /* RESULTS */
+  .results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+  .result-card{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:1rem;text-align:center;transition:background .35s,border-color .35s}
+  .result-num{font-size:1.6rem;font-weight:800;color:var(--accent);margin-bottom:3px;transition:color .35s}
+  .result-lbl{font-size:11px;color:var(--muted);line-height:1.4;transition:color .35s}
+
+  /* TAGS */
+  .tag-section{margin-bottom:1.2rem}
+  .tag-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:7px;transition:color .35s}
+  .tag-cloud{display:flex;flex-wrap:wrap;gap:5px}
+  .tag{font-size:11px;padding:3px 9px;border-radius:3px;background:var(--skill-tag);color:var(--skill-text);font-weight:500;transition:background .35s,color .35s}
+
+  /* CTA */
+  .cta-strip{background:var(--hero-bg);border-radius:10px;padding:2.5rem;text-align:center;transition:background .35s}
+  .cta-strip h2{color:var(--hero-text);font-size:1.3rem;margin-bottom:.5rem;font-weight:800}
+  .cta-strip p{color:var(--hero-muted);font-size:13px;margin-bottom:1.5rem}
+  .cta-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .cta-btn{padding:11px 24px;border-radius:5px;font-size:13px;font-weight:700;letter-spacing:.05em;text-decoration:none;transition:opacity .2s}
+  .cta-primary{background:var(--accent);color:var(--hero-text)}
+  .cta-secondary{border:1.5px solid rgba(253,243,231,.3);color:rgba(253,243,231,.75)}
+  .cta-btn:hover{opacity:.82}
+
+  footer{text-align:center;padding:2rem;font-size:11px;color:var(--muted);letter-spacing:.08em;transition:color .35s}
+  footer a{color:var(--accent);text-decoration:none}
+
+  .fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+  .fade-in.visible{opacity:1;transform:translateY(0)}
+
+
+  /* ── Embedded Interactive Chart ── */
+  /* Step card overflow must not clip SVGs */
+  .step-card{overflow:visible !important}
+  .step-body{overflow:visible !important}
+  .chart-wrap-embed{
+    background:var(--surface);border:1px solid var(--rule);border-radius:10px;
+    padding:18px 16px;margin:1rem 0;
+    transition:background .35s,border-color .35s;
+    /* Ensure it stretches to full available width */
+    width:100%;box-sizing:border-box;
+  }
+  /* Account tabs */
+  .acct-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .acct-tab{
+    padding:8px 18px;border-radius:6px;border:1px solid var(--rule);
+    background:var(--surface);color:var(--muted);
+    font-size:13px;font-weight:600;cursor:pointer;
+    transition:all .2s;font-family:inherit;
+  }
+  .acct-tab:hover{border-color:var(--accent);color:var(--heading)}
+  .acct-tab.active{background:var(--accent);border-color:var(--accent);color:var(--hero-text)}
+  /* Charts: STACKED, full width — no side-by-side cramping */
+  .dash-charts-grid{display:flex;flex-direction:column;gap:16px;margin-top:14px}
+  .dash-chart-panel{
+    background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+    padding:16px;transition:background .35s,border-color .35s;
+    width:100%;box-sizing:border-box;
+  }
+  .dash-chart-label{
+    font-size:11px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+  }
+  .dash-chart-label span{
+    color:var(--heading);text-transform:none;letter-spacing:0;
+    font-weight:800;font-size:12px;
+  }
+  /* Anomaly pills */
+  .anom-pills{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .anom-pill{font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px;cursor:default}
+  .pill-SPIKE{background:rgba(232,149,109,.15);color:#E8956D}
+  .pill-DROP{background:rgba(192,57,43,.15);color:#C0392B}
+  .pill-EROSION{background:rgba(196,168,42,.15);color:#C4A82A}
+  [data-theme="dark"] .pill-SPIKE{background:rgba(110,176,245,.15);color:#6EB0F5}
+  [data-theme="dark"] .pill-DROP{background:rgba(255,138,122,.15);color:#FF8A7A}
+  [data-theme="dark"] .pill-EROSION{background:rgba(245,197,110,.15);color:#F5C56E}
+  /* Legend */
+  .dash-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+  .dash-leg-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
+  .dash-leg-swatch{width:22px;height:2.5px;border-radius:1px}
+  /* Tooltip */
+  .dash-embed-tooltip{
+    position:fixed;background:var(--surface);border:1px solid var(--rule);
+    border-radius:8px;padding:10px 14px;font-size:12px;color:var(--heading);
+    pointer-events:none;opacity:0;transition:opacity .15s;
+    z-index:9999;max-width:210px;line-height:1.6;
+    box-shadow:0 4px 20px rgba(0,0,0,.4);
+  }
+  .dash-embed-tooltip b{color:var(--accent)}
+
+  @media(max-width:650px){.kpi-item{flex:1 1 90px}.proj-title{font-size:1.6rem}.formula-grid{grid-template-columns:1fr}.step-body{padding-left:1.25rem}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-back">← Back to Portfolio</a>
+  <div class="nav-right">
+    <span class="nav-brand">accordanalyst.com</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <span id="toggleEmoji">☀️</span>
+      <span class="toggle-label" id="toggleLabel">Light</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    </button>
+    <a href="#" class="dl-btn" id="dlBtn">↓ Download .py</a>
+  </div>
+</nav>
+
+<section class="proj-hero">
+  <p class="proj-eyebrow">Portfolio Project · Python · Analysis &amp; Forecasting</p>
+  <h1 class="proj-title">Revenue Anomaly Detector</h1>
+  <p class="proj-subtitle">A statistical anomaly detection script that flags accounts whose revenue deviates from their own historical pattern — catching sudden drops, billing-error spikes, and slow erosion before they show up in a quarterly report.</p>
+  <div class="proj-pills">
+    <span class="proj-pill pill-py">Python</span>
+    <span class="proj-pill pill-cs">Pandas</span>
+    <span class="proj-pill pill-cs">NumPy</span>
+    <span class="proj-pill pill-cs">Matplotlib</span>
+    <span class="proj-pill pill-py">Simulated Data · No real client info</span>
+  </div>
+  <div class="proj-kpis">
+    <div class="kpi-item"><div class="kpi-num">30</div><div class="kpi-lbl">Accounts Analyzed</div></div>
+    <div class="kpi-item"><div class="kpi-num">720</div><div class="kpi-lbl">Revenue Records</div></div>
+    <div class="kpi-item"><div class="kpi-num">48</div><div class="kpi-lbl">Anomalies Flagged</div></div>
+    <div class="kpi-item"><div class="kpi-num">6.7%</div><div class="kpi-lbl">Exception Rate</div></div>
+    <div class="kpi-item"><div class="kpi-num">4</div><div class="kpi-lbl">High-Priority Accounts</div></div>
+  </div>
+</section>
+
+<main>
+
+  <div class="disclaimer fade-in">
+    <strong>Portfolio simulation notice:</strong> All account names and revenue figures in this case study are entirely fictitious, generated programmatically for portfolio demonstration purposes. No real client, billing, or proprietary revenue data has been used or referenced.
+  </div>
+
+  <!-- STEP WALKTHROUGH -->
+  <section>
+    <p class="sect-eyebrow fade-in">The Case Study</p>
+    <h2 class="sect-title fade-in">Five-Step Walkthrough</h2>
+    <div class="sect-rule fade-in"></div>
+
+    <div class="step-grid fade-in">
+
+      <div class="step-card open">
+        <div class="step-card-header" onclick="toggleStep(this)">
+          <div class="step-num">1</div>
+          <div><div class="step-label">The Problem</div><div class="step-sublabel">Why a backward-looking audit isn't enough</div></div>
+          <span class="step-chevron">▾</span>
+        </div>
+        <div class="step-body">
+          <p>The Excel and SQL projects in this portfolio both look backward — they verify invoices that have already been billed and reconcile payments that have already been collected. But by the time an exception report flags a problem, the revenue impact has often compounded for several billing cycles.</p>
+          <p>Revenue Operations teams need a forward-looking signal: which accounts are behaving differently from their own normal pattern <em>right now</em>, before the deviation becomes a quarter-end surprise. A single month-over-month comparison isn't enough — a 15% dip might be totally normal for a seasonal account and alarming for a steady one. The detection logic needs to be relative to each account's own history, not a flat company-wide threshold.</p>
+          <ul>
+            <li>Flat thresholds ("alert if revenue drops &gt;10%") produce false positives on naturally volatile accounts and miss real problems on stable ones</li>
+            <li>Manual review of 30+ accounts across 24 months of history doesn't scale</li>
+            <li>Slow erosion — a few percent decline every month — rarely trips a single-month alert but compounds into serious revenue loss</li>
+            <li>No way to rank which anomalies deserve attention first when several flag in the same week</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card-header" onclick="toggleStep(this)">
+          <div class="step-num">2</div>
+          <div><div class="step-label">The Simulated Dataset</div><div class="step-sublabel">30 accounts, 24 months, 5 seeded scenarios</div></div>
+          <span class="step-chevron">▾</span>
+        </div>
+        <div class="step-body">
+          <p><strong>generate_data.py</strong> builds 720 rows of monthly revenue across 30 fictitious SaaS accounts spanning July 2024 through June 2026. Each account starts with its own baseline MRR, its own gentle growth or decline trend, and its own natural month-to-month noise — so the simulated data doesn't look artificially uniform.</p>
+          <p>Five deliberate anomalies are seeded on top of that baseline, each shaped differently so the detection logic has to handle more than one pattern type:</p>
+          <ul>
+            <li><strong>Apex Holdings</strong> — sudden churn-style drop to ~30% of prior revenue, staying low (a customer that's leaving)</li>
+            <li><strong>Lighthouse Media</strong> — one-month spike to nearly 3x normal revenue, then reverting (a billing error, not real growth)</li>
+            <li><strong>Northgate Partners</strong> — slow erosion across 12 consecutive months, a few percent at a time (easy to miss month-to-month)</li>
+            <li><strong>Sterling Capital</strong> — sharp one-month spike followed by a gradual climb to a genuinely higher baseline (a real expansion, not an error)</li>
+            <li><strong>Crestline Industries</strong> — sudden drop followed by partial recovery the next month (a service disruption that got partially resolved)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card-header" onclick="toggleStep(this)">
+          <div class="step-num">3</div>
+          <div><div class="step-label">Detection Logic</div><div class="step-sublabel">Rolling baseline, z-score, and erosion check</div></div>
+          <span class="step-chevron">▾</span>
+        </div>
+        <div class="step-body">
+          <p>The core method: for every account, compute a trailing 6-month rolling mean and rolling standard deviation, <em>shifted forward one month</em> so the current month is being compared against its own prior baseline — not a baseline that includes itself.</p>
+          <div class="formula-grid">
+            <div class="formula-card">
+              <div class="formula-name">Rolling Baseline</div>
+              <div class="formula-sig">rolling_mean = revenue.rolling(6, min_periods=5).mean().shift(1)</div>
+              <div class="formula-desc">Each account's own trailing 6 months become its personal baseline — a volatile account and a stable account each get judged against their own history, not a single company-wide rule.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Std Floor (stability fix)</div>
+              <div class="formula-sig">rolling_std = rolling_std.clip(lower = rolling_mean * 0.03)</div>
+              <div class="formula-desc">Without this floor, a few unusually flat trailing months produce a near-zero standard deviation, which sends the z-score to extreme and meaningless values. Flooring it at 3% of the rolling mean keeps the score stable.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Z-Score Classification</div>
+              <div class="formula-sig">z = (revenue - rolling_mean) / rolling_std<br>flag if |z| ≥ 2.5</div>
+              <div class="formula-desc">Months that land more than 2.5 standard deviations from the account's own baseline are flagged as a point anomaly — classified as SPIKE if above baseline, DROP if below.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Erosion Check</div>
+              <div class="formula-sig">erosion = revenue.pct_change(periods=6) ≤ -30%</div>
+              <div class="formula-desc">A secondary check that catches slow decline a single-month z-score would miss — if revenue has fallen 30%+ over the trailing 6 months even without one dramatic month, it's flagged as EROSION.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Severity Score</div>
+              <div class="formula-sig">severity = |z-score| or |erosion %| × 100</div>
+              <div class="formula-desc">Point anomalies and erosion are measured on different scales (standard deviations vs. percentage decline). The severity score normalizes both onto one comparable number so every anomaly type can be ranked together.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Priority Tiering</div>
+              <div class="formula-sig">HIGH / MEDIUM / LOW based on severity thresholds per type</div>
+              <div class="formula-desc">Converts the raw severity score into an executive-friendly triage label, so a RevOps manager can scan the report and know immediately which accounts need a conversation this week.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card-header" onclick="toggleStep(this)">
+          <div class="step-num">4</div>
+          <div><div class="step-label">Code &amp; Output Preview</div><div class="step-sublabel">The classification function and ranked report</div></div>
+          <span class="step-chevron">▾</span>
+        </div>
+        <div class="step-body">
+          <p>The classification logic that turns raw z-scores and erosion flags into a labeled anomaly type:</p>
+          <div class="code-wrap">
+            <div class="code-toolbar">
+              <span class="code-lang">Python — pandas</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <div class="code-scroll"><pre><span class="k">def</span> <span class="f">classify</span>(row):
+    <span class="c"># Point anomalies (single dramatic month) take priority over erosion</span>
+    <span class="c"># since a sudden drop or spike is more urgent than a gradual trend</span>
+    <span class="k">if</span> row[<span class="s">"point_anomaly"</span>] <span class="k">and</span> row[<span class="s">"z_score"</span>] <span class="k">></span> <span class="n">0</span>:
+        <span class="k">return</span> <span class="s">"SPIKE"</span>
+    <span class="k">elif</span> row[<span class="s">"point_anomaly"</span>] <span class="k">and</span> row[<span class="s">"z_score"</span>] <span class="k"><</span> <span class="n">0</span>:
+        <span class="k">return</span> <span class="s">"DROP"</span>
+    <span class="k">elif</span> row[<span class="s">"erosion_flag"</span>]:
+        <span class="k">return</span> <span class="s">"EROSION"</span>
+    <span class="k">else</span>:
+        <span class="k">return</span> <span class="s">"NORMAL"</span>
+
+g[<span class="s">"anomaly_type"</span>] = g.<span class="f">apply</span>(classify, axis=<span class="n">1</span>)
+
+<span class="c"># Severity score unifies point anomalies and erosion onto one scale</span>
+g[<span class="s">"severity_score"</span>] = np.<span class="f">where</span>(
+    g[<span class="s">"anomaly_type"</span>] == <span class="s">"EROSION"</span>,
+    g[<span class="s">"erosion_pct"</span>].<span class="f">abs</span>() * <span class="n">100</span>,
+    g[<span class="s">"z_score"</span>].<span class="f">abs</span>().<span class="f">fillna</span>(<span class="n">0</span>)
+)</pre></div>
+          </div>
+          <p class="output-label">Top of the ranked anomaly report</p>
+          <div class="output-preview">
+            <table>
+              <tr><th>account</th><th>month</th><th>revenue</th><th>rolling_mean</th><th>pct_vs_baseline</th><th>type</th><th>severity</th></tr>
+              <tr><td>Apex Holdings</td><td>2026-04</td><td>$8,954.90</td><td>$24,896.35</td><td>-64.0%</td><td><span class="status-erosion">EROSION</span></td><td>73.09</td></tr>
+              <tr><td>Apex Holdings</td><td>2026-03</td><td>$9,594.54</td><td>$28,832.55</td><td>-66.7%</td><td><span class="status-erosion">EROSION</span></td><td>71.11</td></tr>
+              <tr><td>Lighthouse Media</td><td>2025-10</td><td>$115,321.82</td><td>$45,438.23</td><td>+153.8%</td><td><span class="status-spike">SPIKE</span></td><td>31.21</td></tr>
+              <tr><td>Sterling Capital</td><td>2025-04</td><td>$50,884.28</td><td>$29,359.53</td><td>+73.3%</td><td><span class="status-spike">SPIKE</span></td><td>21.32</td></tr>
+              <tr><td>Apex Holdings</td><td>2026-02</td><td>$11,193.63</td><td>$32,642.42</td><td>-65.7%</td><td><span class="status-drop">DROP</span></td><td>20.77</td></tr>
+              <tr><td>Crestline Industries</td><td>2026-01</td><td>$6,543.81</td><td>$14,552.17</td><td>-55.0%</td><td><span class="status-drop">DROP</span></td><td>18.34</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card-header" onclick="toggleStep(this)">
+          <div class="step-num">5</div>
+          <div><div class="step-label">Results &amp; Visualization</div><div class="step-sublabel">Chart of the top flagged accounts</div></div>
+          <span class="step-chevron">▾</span>
+        </div>
+        <div class="step-body">
+          <p>The script outputs a four-panel chart of the top flagged accounts, showing each account's revenue line against its own rolling baseline with anomalies marked at the point of deviation. Gradient fills and glowing markers make the deviation points immediately visible without needing to read the underlying numbers.</p>
+          <!-- EMBEDDED INTERACTIVE CHART — replaces static PNG -->
+          <div class="chart-wrap-embed">
+
+            <!-- Legend -->
+            <div class="dash-legend">
+              <div class="dash-leg-item"><div class="dash-leg-swatch" style="background:var(--hero-text)"></div>Revenue</div>
+              <div class="dash-leg-item"><div class="dash-leg-swatch" style="background:var(--muted);border-top:1.5px dashed var(--muted);height:0;width:20px"></div>Rolling Baseline</div>
+              <div class="dash-leg-item"><span style="width:9px;height:9px;border-radius:50%;background:#E8956D;display:inline-block"></span>SPIKE</div>
+              <div class="dash-leg-item"><span style="width:9px;height:9px;border-radius:50%;background:#C0392B;display:inline-block"></span>DROP</div>
+              <div class="dash-leg-item"><span style="width:9px;height:9px;border-radius:50%;background:#C4A82A;display:inline-block"></span>EROSION</div>
+            </div>
+
+            <!-- Account selector tabs -->
+            <div class="acct-tabs" id="anomAcctTabs"></div>
+
+            <!-- Anomaly pills for selected account -->
+            <div class="anom-pills" id="anomPills"></div>
+
+            <!-- Chart grid: revenue trend + MoM bars -->
+            <div class="dash-charts-grid">
+              <div class="dash-chart-panel">
+                <div class="dash-chart-label">Revenue vs Rolling Baseline — <span id="anomAcctLabel" style="color:var(--heading);text-transform:none;letter-spacing:0;font-weight:700;font-size:11px">Apex Holdings</span></div>
+                <div id="anomRevChart"></div>
+              </div>
+              <div class="dash-chart-panel">
+                <div class="dash-chart-label">Month-over-Month % Change</div>
+                <div id="anomMoMChart"></div>
+              </div>
+            </div>
+
+          </div><!-- end chart-wrap-embed -->
+
+          <p class="chart-caption">Apex Holdings shows the churn-style drop staying low across three months. Lighthouse Media shows the single-month billing-error spike reverting immediately after. Crestline Industries shows a sharp drop with partial recovery. Sterling Capital shows a spike followed by a genuinely higher sustained baseline — the model correctly stops flagging it as anomalous once the new baseline catches up.</p>
+
+          <div class="dash-embed-tooltip" id="anomTooltip"></div>
+
+          <script>
+          // Embedded Revenue Anomaly Chart v2 — fixed width, stacked layout, MutationObserver init
+          (function() {
+            const ADATA = {"Apex Holdings":[{"month":"2024-07","revenue":31890.16,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-08","revenue":32549.92,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-09","revenue":32643.96,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-10","revenue":31535.96,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-11","revenue":32356.94,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-12","revenue":33435.44,"rolling_mean":32195.39,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-01","revenue":34027.27,"rolling_mean":32402.06,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-02","revenue":33108.57,"rolling_mean":32758.25,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-03","revenue":32392.83,"rolling_mean":32851.36,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-04","revenue":31367.44,"rolling_mean":32809.5,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-05","revenue":31952.12,"rolling_mean":32781.42,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-06","revenue":32969.16,"rolling_mean":32713.94,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-07","revenue":33282.25,"rolling_mean":32636.23,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-08","revenue":34052.85,"rolling_mean":32512.06,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-09","revenue":33211.74,"rolling_mean":32669.44,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-10","revenue":33282.22,"rolling_mean":32805.93,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-11","revenue":32017.77,"rolling_mean":33125.06,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-12","revenue":31308.16,"rolling_mean":33136.0,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-01","revenue":31981.79,"rolling_mean":32859.16,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-02","revenue":11193.63,"rolling_mean":32642.42,"anomaly_type":"DROP","severity":20.77,"pct_vs_baseline":-65.7,"priority":"HIGH"},{"month":"2026-03","revenue":9594.54,"rolling_mean":28832.55,"anomaly_type":"EROSION","severity":71.11,"pct_vs_baseline":-66.7,"priority":"HIGH"},{"month":"2026-04","revenue":8954.9,"rolling_mean":24896.35,"anomaly_type":"EROSION","severity":73.09,"pct_vs_baseline":-64.0,"priority":"HIGH"},{"month":"2026-05","revenue":35429.43,"rolling_mean":20841.8,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-06","revenue":35455.78,"rolling_mean":21410.41,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"}],"Lighthouse Media":[{"month":"2024-07","revenue":38343.3,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-08","revenue":40522.36,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-09","revenue":44078.22,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-10","revenue":44499.22,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-11","revenue":48144.96,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-12","revenue":51187.22,"rolling_mean":43117.61,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-01","revenue":52305.88,"rolling_mean":44462.55,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-02","revenue":53288.49,"rolling_mean":46789.64,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-03","revenue":50417.63,"rolling_mean":48917.33,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-04","revenue":46741.44,"rolling_mean":49973.9,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-05","revenue":47591.0,"rolling_mean":50347.6,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-06","revenue":45799.05,"rolling_mean":50255.28,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-07","revenue":46118.93,"rolling_mean":49357.25,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-08","revenue":45192.62,"rolling_mean":48326.09,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-09","revenue":41186.36,"rolling_mean":46976.78,"anomaly_type":"DROP","severity":3.09,"pct_vs_baseline":-12.3,"priority":"LOW"},{"month":"2025-10","revenue":115321.82,"rolling_mean":45438.23,"anomaly_type":"SPIKE","severity":31.21,"pct_vs_baseline":153.8,"priority":"HIGH"},{"month":"2025-11","revenue":41795.36,"rolling_mean":56868.3,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-12","revenue":42361.15,"rolling_mean":55902.36,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-01","revenue":40679.97,"rolling_mean":55329.37,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-02","revenue":40307.47,"rolling_mean":54422.88,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-03","revenue":44115.63,"rolling_mean":53608.69,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-04","revenue":44829.47,"rolling_mean":54096.9,"anomaly_type":"EROSION","severity":61.13,"pct_vs_baseline":-17.1,"priority":"HIGH"},{"month":"2026-05","revenue":46586.97,"rolling_mean":42348.18,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-06","revenue":43775.76,"rolling_mean":43146.78,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"}],"Crestline Industries":[{"month":"2024-07","revenue":17009.66,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-08","revenue":16575.83,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-09","revenue":16330.7,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-10","revenue":15865.16,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-11","revenue":15810.61,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-12","revenue":16161.05,"rolling_mean":16318.39,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-01","revenue":15730.22,"rolling_mean":16292.17,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-02","revenue":15900.38,"rolling_mean":16078.93,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-03","revenue":15658.68,"rolling_mean":15966.35,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-04","revenue":15317.22,"rolling_mean":15854.35,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-05","revenue":15247.45,"rolling_mean":15763.03,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-06","revenue":14821.99,"rolling_mean":15669.17,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-07","revenue":14587.97,"rolling_mean":15445.99,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-08","revenue":14121.23,"rolling_mean":15255.62,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-09","revenue":14792.84,"rolling_mean":14959.09,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-10","revenue":14778.42,"rolling_mean":14814.78,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-11","revenue":14490.78,"rolling_mean":14724.98,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-12","revenue":14541.79,"rolling_mean":14598.87,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-01","revenue":6543.81,"rolling_mean":14552.17,"anomaly_type":"DROP","severity":18.34,"pct_vs_baseline":-55.0,"priority":"HIGH"},{"month":"2026-02","revenue":7997.99,"rolling_mean":13211.48,"anomaly_type":"EROSION","severity":43.36,"pct_vs_baseline":-39.5,"priority":"HIGH"},{"month":"2026-03","revenue":14561.42,"rolling_mean":12190.94,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-04","revenue":14811.78,"rolling_mean":12152.37,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-05","revenue":14586.54,"rolling_mean":12157.93,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-06","revenue":14348.1,"rolling_mean":12173.89,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"}],"Sterling Capital":[{"month":"2024-07","revenue":28782.06,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-08","revenue":28466.93,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-09","revenue":28573.54,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-10","revenue":28392.04,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-11","revenue":28114.72,"rolling_mean":null,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2024-12","revenue":29274.04,"rolling_mean":28465.86,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-01","revenue":29970.06,"rolling_mean":28600.56,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-02","revenue":29567.34,"rolling_mean":28798.56,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-03","revenue":30838.96,"rolling_mean":28981.96,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-04","revenue":50884.28,"rolling_mean":29359.53,"anomaly_type":"SPIKE","severity":21.32,"pct_vs_baseline":73.3,"priority":"HIGH"},{"month":"2025-05","revenue":32776.45,"rolling_mean":33108.23,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-06","revenue":33872.45,"rolling_mean":33885.19,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-07","revenue":33253.9,"rolling_mean":34651.59,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-08","revenue":32963.49,"rolling_mean":35198.9,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-09","revenue":34203.22,"rolling_mean":35764.92,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-10","revenue":35323.58,"rolling_mean":36325.63,"anomaly_type":"EROSION","severity":30.58,"pct_vs_baseline":-2.8,"priority":"MEDIUM"},{"month":"2025-11","revenue":35690.28,"rolling_mean":33732.18,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2025-12","revenue":36235.65,"rolling_mean":34217.82,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-01","revenue":38279.61,"rolling_mean":34611.69,"anomaly_type":"SPIKE","severity":2.73,"pct_vs_baseline":10.6,"priority":"LOW"},{"month":"2026-02","revenue":37902.72,"rolling_mean":35449.3,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-03","revenue":39059.26,"rolling_mean":36272.51,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-04","revenue":39213.76,"rolling_mean":37081.85,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-05","revenue":39347.34,"rolling_mean":37730.21,"anomaly_type":"NORMAL","severity":0,"pct_vs_baseline":null,"priority":"NORMAL"},{"month":"2026-06","revenue":41317.35,"rolling_mean":38339.72,"anomaly_type":"SPIKE","severity":2.53,"pct_vs_baseline":7.8,"priority":"LOW"}]};
+            const ACCOUNTS = ["Apex Holdings","Lighthouse Media","Crestline Industries","Sterling Capital"];
+            let selAcct = "Apex Holdings";
+            let initialized = false;
+            const tooltip = document.getElementById("anomTooltip");
+
+            function isDark(){ return document.documentElement.getAttribute("data-theme")==="dark"; }
+            function getC(){
+              return isDark()
+                ? {rev:"#EBF2FA",base:"#4A6070",spike:"#6EB0F5",drop:"#FF8A7A",
+                   erosion:"#F5C56E",grid:"#1F3864",text:"#7B9BB8",bg:"#112240",fill:"#4A90D9"}
+                : {rev:"#2A1A0E",base:"#8B6B45",spike:"#E8956D",drop:"#C0392B",
+                   erosion:"#C4A82A",grid:"#D4B896",text:"#A8927A",bg:"#FAF0E0",fill:"#C4621D"};
+            }
+            function anomCol(type){
+              const c=getC();
+              return {SPIKE:c.spike,DROP:c.drop,EROSION:c.erosion,NORMAL:c.text}[type]||c.text;
+            }
+
+            // Measure real rendered width — walks up DOM if container is hidden
+            function getW(el){
+              const panels = document.querySelectorAll(".dash-chart-panel");
+              for(let p of panels){
+                const w = p.getBoundingClientRect().width;
+                if(w > 100) return Math.floor(w) - 34;
+              }
+              const wrap = document.querySelector(".chart-wrap-embed");
+              if(wrap){ const w = wrap.getBoundingClientRect().width; if(w>100) return Math.floor(w)-36; }
+              const main = document.querySelector("main");
+              if(main){ const w = main.getBoundingClientRect().width; if(w>100) return Math.floor(w)-80; }
+              return 680;
+            }
+
+            function buildTabs(){
+              const bar = document.getElementById("anomAcctTabs");
+              bar.innerHTML = "";
+              ACCOUNTS.forEach(a => {
+                const btn = document.createElement("button");
+                btn.className = "acct-tab" + (a===selAcct?" active":"");
+                btn.textContent = a;
+                btn.onclick = () => { selAcct=a; buildAll(); };
+                bar.appendChild(btn);
+              });
+            }
+
+            function buildPills(){
+              const anoms = ADATA[selAcct]
+                .filter(r => r.anomaly_type!=="NORMAL")
+                .sort((a,b) => b.severity-a.severity);
+              document.getElementById("anomPills").innerHTML = anoms.length
+                ? anoms.map(a => `<span class="anom-pill pill-${a.anomaly_type}">${a.anomaly_type} &middot; ${a.month} &middot; sev ${a.severity}</span>`).join("")
+                : "<span style=\"font-size:12px;color:var(--muted)\">No anomalies detected</span>";
+              document.getElementById("anomAcctLabel").textContent = selAcct;
+            }
+
+            function buildRevChart(){
+              const el = document.getElementById("anomRevChart");
+              const W = getW(el); const H = 280;
+              const mg = {top:14,right:22,bottom:42,left:74};
+              const iW = W-mg.left-mg.right, iH = H-mg.top-mg.bottom;
+              const rows = ADATA[selAcct]; const c = getC();
+              el.innerHTML = "";
+              const svg = d3.select(el).append("svg").attr("width",W).attr("height",H).style("display","block");
+              const g = svg.append("g").attr("transform","translate("+mg.left+","+mg.top+")");
+              const x = d3.scalePoint().domain(rows.map(r=>r.month)).range([0,iW]).padding(0.1);
+              const revs=rows.map(r=>r.revenue), means=rows.filter(r=>r.rolling_mean!=null).map(r=>r.rolling_mean);
+              const yMin=Math.min(...revs,...means)*0.88, yMax=Math.max(...revs,...means)*1.08;
+              const y = d3.scaleLinear().domain([yMin,yMax]).range([iH,0]);
+              // Grid
+              g.append("g").selectAll("line").data(y.ticks(5)).enter().append("line")
+                .attr("x1",0).attr("x2",iW).attr("y1",d=>y(d)).attr("y2",d=>y(d))
+                .attr("stroke",c.grid).attr("stroke-width",0.7);
+              // X axis — every 3rd label
+              const xTicks = rows.filter((_,i)=>i%3===0).map(r=>r.month);
+              g.append("g").attr("transform","translate(0,"+iH+")")
+                .call(d3.axisBottom(x).tickValues(xTicks).tickSize(4))
+                .call(ax=>{ ax.select(".domain").attr("stroke",c.grid); ax.selectAll("line").attr("stroke",c.grid);
+                  ax.selectAll("text").style("fill",c.text).style("font-size","11px").attr("dy","1.2em"); });
+              // Y axis
+              g.append("g")
+                .call(d3.axisLeft(y).ticks(5).tickFormat(d=>"$"+(d/1000).toFixed(0)+"K"))
+                .call(ax=>{ ax.select(".domain").remove(); ax.selectAll(".tick line").remove();
+                  ax.selectAll("text").style("fill",c.text).style("font-size","11px"); });
+              // Gradient fill
+              const gid="rg-"+selAcct.replace(/\s/g,"-");
+              const defs=svg.append("defs");
+              const grad=defs.append("linearGradient").attr("id",gid).attr("x1","0").attr("x2","0").attr("y1","0").attr("y2","1");
+              grad.append("stop").attr("offset","0%").attr("stop-color",c.fill).attr("stop-opacity",0.28);
+              grad.append("stop").attr("offset","100%").attr("stop-color",c.fill).attr("stop-opacity",0.02);
+              g.append("path").datum(rows)
+                .attr("d",d3.area().x(r=>x(r.month)).y0(iH).y1(r=>y(r.revenue)).curve(d3.curveMonotoneX))
+                .attr("fill","url(#"+gid+")");
+              // Baseline dashed
+              const baseRows=rows.filter(r=>r.rolling_mean!=null);
+              if(baseRows.length>1){
+                g.append("path").datum(baseRows)
+                  .attr("d",d3.line().x(r=>x(r.month)).y(r=>y(r.rolling_mean)).curve(d3.curveMonotoneX))
+                  .attr("fill","none").attr("stroke",c.base).attr("stroke-width",2).attr("stroke-dasharray","6,4").attr("opacity",0.8);
+              }
+              // Revenue line
+              g.append("path").datum(rows)
+                .attr("d",d3.line().x(r=>x(r.month)).y(r=>y(r.revenue)).curve(d3.curveMonotoneX))
+                .attr("fill","none").attr("stroke",c.rev).attr("stroke-width",2.5);
+              // Anomaly dots with glow, large hit area
+              rows.forEach(r=>{
+                const cx=x(r.month), cy=y(r.revenue);
+                const isA=r.anomaly_type!=="NORMAL"; const col=anomCol(r.anomaly_type);
+                if(isA){ [[22,0.06],[14,0.11],[8,0.2]].forEach(([sz,op])=>{
+                  g.append("circle").attr("cx",cx).attr("cy",cy).attr("r",sz).attr("fill",col).attr("opacity",op);
+                }); }
+                // Invisible large hit circle for easier clicking/hovering
+                g.append("circle").attr("cx",cx).attr("cy",cy).attr("r",isA?16:10)
+                  .attr("fill","transparent").style("cursor","pointer")
+                  .on("mousemove",evt=>{
+                    const sign=r.pct_vs_baseline>0?"+":"";
+                    tooltip.style.opacity="1";
+                    tooltip.style.left=(evt.clientX+16)+"px";
+                    tooltip.style.top=(evt.clientY-12)+"px";
+                    tooltip.innerHTML=(isA?`<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(74,144,217,.15);color:var(--accent);display:inline-block;margin-bottom:5px">${r.anomaly_type} &middot; ${r.priority}</span><br>`:"")+"<b>"+r.month+"</b><br>Revenue: <b>$"+r.revenue.toLocaleString()+"</b><br>"+(r.rolling_mean?"Baseline: $"+r.rolling_mean.toLocaleString()+"<br>":"")+(r.pct_vs_baseline!=null?"vs Baseline: <b>"+sign+r.pct_vs_baseline+"%</b><br>":"")+(isA?"Severity: "+r.severity:"");
+                  }).on("mouseleave",()=>tooltip.style.opacity="0");
+                // Visible dot on top
+                g.append("circle").attr("cx",cx).attr("cy",cy)
+                  .attr("r",isA?8:4)
+                  .attr("fill",isA?col:c.bg)
+                  .attr("stroke",isA?col:c.grid)
+                  .attr("stroke-width",isA?2:1)
+                  .style("pointer-events","none"); // hit area handled by transparent circle above
+              });
+            }
+
+            function buildMoMChart(){
+              const el=document.getElementById("anomMoMChart");
+              const W=getW(el); const H=220;
+              const mg={top:12,right:22,bottom:42,left:60};
+              const iW=W-mg.left-mg.right, iH=H-mg.top-mg.bottom;
+              const rows=ADATA[selAcct]; const c=getC();
+              const mom=rows.map((r,i)=>({month:r.month,pct:i===0?0:((r.revenue-rows[i-1].revenue)/rows[i-1].revenue*100),atype:r.anomaly_type})).slice(1);
+              el.innerHTML="";
+              const svg=d3.select(el).append("svg").attr("width",W).attr("height",H).style("display","block");
+              const g=svg.append("g").attr("transform","translate("+mg.left+","+mg.top+")");
+              const x=d3.scaleBand().domain(mom.map(r=>r.month)).range([0,iW]).padding(0.2);
+              const ext=d3.extent(mom,d=>d.pct); const yM=Math.max(Math.abs(ext[0]),Math.abs(ext[1]))*1.2||20;
+              const y=d3.scaleLinear().domain([-yM,yM]).range([iH,0]);
+              g.append("g").selectAll("line").data([-yM/2,0,yM/2]).enter().append("line")
+                .attr("x1",0).attr("x2",iW).attr("y1",d=>y(d)).attr("y2",d=>y(d))
+                .attr("stroke",c.grid).attr("stroke-width",d=>d===0?1.2:0.5).attr("stroke-dasharray",d=>d===0?"none":"3,3");
+              const xTicks=mom.filter((_,i)=>i%3===0).map(r=>r.month);
+              g.append("g").attr("transform","translate(0,"+iH+")")
+                .call(d3.axisBottom(x).tickValues(xTicks).tickSize(4))
+                .call(ax=>{ ax.select(".domain").attr("stroke",c.grid); ax.selectAll("line").attr("stroke",c.grid);
+                  ax.selectAll("text").style("fill",c.text).style("font-size","11px").attr("dy","1.2em"); });
+              g.append("g").call(d3.axisLeft(y).ticks(5).tickFormat(d=>d.toFixed(0)+"%"))
+                .call(ax=>{ ax.select(".domain").remove(); ax.selectAll(".tick line").remove();
+                  ax.selectAll("text").style("fill",c.text).style("font-size","11px"); });
+              mom.forEach(r=>{
+                const bH=Math.abs(y(0)-y(r.pct)); const by=r.pct>=0?y(r.pct):y(0);
+                const col=r.atype!=="NORMAL"?anomCol(r.atype):(r.pct>=0?c.fill:c.drop);
+                const grp = g.append("g").style("cursor","pointer")
+                  .on("mousemove",evt=>{
+                    const sign=r.pct>=0?"+":"";
+                    tooltip.style.opacity="1"; tooltip.style.left=(evt.clientX+16)+"px"; tooltip.style.top=(evt.clientY-12)+"px";
+                    tooltip.innerHTML="<b>"+r.month+"</b><br>MoM: <b>"+sign+r.pct.toFixed(1)+"%</b>"+(r.atype!=="NORMAL"?'<br><span style="font-weight:700;color:'+anomCol(r.atype)+'">'+ r.atype+" anomaly</span>":"");
+                  }).on("mouseleave",()=>tooltip.style.opacity="0");
+                grp.append("rect").attr("x",x(r.month)).attr("y",by).attr("width",x.bandwidth()).attr("height",Math.max(2,bH))
+                  .attr("fill",col).attr("rx",2).attr("opacity",r.atype!=="NORMAL"?1:0.55);
+                // Invisible taller hit area for easy hover
+                grp.append("rect").attr("x",x(r.month)).attr("y",0).attr("width",x.bandwidth()).attr("height",iH)
+                  .attr("fill","transparent");
+              });
+            }
+
+            function buildAll(){
+              buildTabs(); buildPills();
+              requestAnimationFrame(()=>{ buildRevChart(); buildMoMChart(); });
+            }
+
+            window.anomalyChartRedraw = buildAll;
+
+            // Init when Step 5 accordion opens
+            const stepCard = document.getElementById("anomRevChart").closest(".step-card");
+            if(stepCard){
+              const mo = new MutationObserver(()=>{
+                if(stepCard.classList.contains("open") && !initialized){
+                  initialized=true; buildAll();
+                }
+              });
+              mo.observe(stepCard, {attributes:true, attributeFilter:["class"]});
+            }
+            // Also try immediately (in case already open)
+            if(stepCard && stepCard.classList.contains("open")){ initialized=true; buildAll(); }
+
+            let rto;
+            window.addEventListener("resize",()=>{ clearTimeout(rto); rto=setTimeout(()=>{ if(initialized) buildAll(); },180); });
+          })();
+          </script>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section>
+    <p class="sect-eyebrow fade-in">Outcomes</p>
+    <h2 class="sect-title fade-in">What the Detection Run Produced</h2>
+    <div class="sect-rule fade-in"></div>
+    <div class="results-grid fade-in">
+      <div class="result-card"><div class="result-num">6.7%</div><div class="result-lbl">Of all 720 account-months flagged — a clean signal, not noise</div></div>
+      <div class="result-card"><div class="result-num">4 of 5</div><div class="result-lbl">Seeded anomaly scenarios surfaced at the very top of the ranked report</div></div>
+      <div class="result-card"><div class="result-num">3 types</div><div class="result-lbl">SPIKE, DROP, and EROSION all detected by one unified scoring method</div></div>
+      <div class="result-card"><div class="result-num">Self-correcting</div><div class="result-lbl">Sterling Capital's new higher baseline stopped triggering once the rolling window caught up — no manual threshold reset needed</div></div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section>
+    <p class="sect-eyebrow fade-in">Technical Skills</p>
+    <h2 class="sect-title fade-in">Tools &amp; Techniques Used</h2>
+    <div class="sect-rule fade-in"></div>
+
+    <div class="tag-section fade-in">
+      <p class="tag-label">Python &amp; Data Logic</p>
+      <div class="tag-cloud">
+        <span class="tag">Pandas</span>
+        <span class="tag">NumPy</span>
+        <span class="tag">Matplotlib</span>
+        <span class="tag">Rolling Window Statistics</span>
+        <span class="tag">Z-Score Anomaly Detection</span>
+        <span class="tag">groupby + apply</span>
+        <span class="tag">Custom Classification Functions</span>
+        <span class="tag">Vectorized Conditional Logic (np.where)</span>
+        <span class="tag">Gradient Fill Visualization</span>
+        <span class="tag">Theme-Aware Chart Rendering</span>
+      </div>
+    </div>
+
+    <div class="tag-section fade-in">
+      <p class="tag-label">Business &amp; Revenue Ops Domains</p>
+      <div class="tag-cloud">
+        <span class="tag">Revenue Anomaly Detection</span>
+        <span class="tag">Churn Signal Identification</span>
+        <span class="tag">Billing Error Detection</span>
+        <span class="tag">Trend Erosion Analysis</span>
+        <span class="tag">Severity Scoring</span>
+        <span class="tag">Executive Triage / Priority Tiers</span>
+        <span class="tag">Forward-Looking Forecasting Signal</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section>
+    <div class="cta-strip fade-in">
+      <h2>Download the script</h2>
+      <p>Run it against your own monthly revenue export — swap the CSV, the detection logic doesn't change.</p>
+      <div class="cta-links">
+        <a href="#" class="cta-btn cta-primary" id="dlBtn2">↓ Download anomaly_detector.py</a>
+        <a href="../index.html" class="cta-btn cta-secondary">← Back to Portfolio</a>
+        <a href="mailto:alexis@accordanalyst.com" class="cta-btn cta-secondary">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 Alexis "Zaira" Kelly · <a href="../index.html">accordanalyst.com</a> · Portfolio Project</p>
+</footer>
+
+<script>
+  const html = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const emoji = document.getElementById('toggleEmoji');
+  const label = document.getElementById('toggleLabel');
+  const saved = localStorage.getItem('theme');
+  if (saved) { html.setAttribute('data-theme', saved); updateUI(saved); }
+
+  btn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateUI(next);
+    // Redraw the embedded D3 chart in new palette
+    if (typeof window.anomalyChartRedraw === 'function') window.anomalyChartRedraw();
+  });
+
+  function updateUI(t) {
+    emoji.textContent = t === 'dark' ? '🌙' : '☀️';
+    label.textContent = t === 'dark' ? 'Dark' : 'Light';
+  }
+
+  function toggleStep(hdr) {
+    const card = hdr.closest('.step-card');
+    card.classList.toggle('open');
+  }
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+
+  document.querySelectorAll('#dlBtn,#dlBtn2').forEach(b => {
+    b.addEventListener('click', e => {
+      e.preventDefault();
+      alert('Replace this link with your hosted .py file URL once uploaded.');
+    });
+  });
+</script>
+</body>
+</html>

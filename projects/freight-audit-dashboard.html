@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Audit vs Post-Audit Recovery Dashboard — Case Study | accordanalyst.com</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+  :root {
+    --bg:#FDF3E7;--surface:#FAF0E0;--nav-bg:#3B2207;--hero-bg:#3B2207;
+    --hero-glow:rgba(196,98,29,0.12);--heading:#3B2207;--body:#1C1008;
+    --muted:#6B5240;--rule:#D4B896;--accent:#C4621D;
+    --accent-dim:rgba(196,98,29,0.15);--accent-bdr:rgba(196,98,29,0.35);
+    --hero-text:#FDF3E7;--hero-muted:rgba(253,243,231,0.6);
+    --skill-tag:rgba(196,98,29,0.1);--skill-text:#3B2207;
+    --toggle-bg:rgba(255,255,255,0.12);--shadow:rgba(0,0,0,0.08);
+  }
+  [data-theme="dark"] {
+    --bg:#0D1B2E;--surface:#112240;--nav-bg:#091628;--hero-bg:#091628;
+    --hero-glow:rgba(46,95,163,0.18);--heading:#B8D4F8;--body:#CDD9EC;
+    --muted:#7B9BB8;--rule:#1F3864;--accent:#4A90D9;
+    --accent-dim:rgba(46,95,163,0.2);--accent-bdr:rgba(74,144,217,0.4);
+    --hero-text:#EBF2FA;--hero-muted:rgba(235,242,250,0.6);
+    --skill-tag:rgba(46,95,163,0.2);--skill-text:#B8D4F8;
+    --toggle-bg:rgba(74,144,217,0.15);--shadow:rgba(0,0,0,0.35);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--body);font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6;transition:background .35s,color .35s}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:52px;box-shadow:0 2px 16px var(--shadow);transition:background .35s}
+  .nav-back{font-size:13px;color:rgba(253,243,231,0.7);text-decoration:none;letter-spacing:.05em;transition:color .2s;display:flex;align-items:center;gap:6px}
+  .nav-back:hover{color:var(--accent)}
+  .nav-right{display:flex;align-items:center;gap:1rem}
+  .nav-brand{font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+  .theme-toggle{background:var(--toggle-bg);border:1px solid var(--accent-bdr);border-radius:20px;cursor:pointer;padding:4px 10px;font-size:14px;display:flex;align-items:center;gap:6px;transition:background .2s}
+  .toggle-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--hero-muted)}
+  .toggle-track{width:32px;height:18px;background:var(--accent-dim);border:1px solid var(--accent-bdr);border-radius:9px;position:relative;transition:background .25s;flex-shrink:0}
+  [data-theme="dark"] .toggle-track{background:var(--accent)}
+  .toggle-thumb{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--hero-text);transition:transform .25s}
+  [data-theme="dark"] .toggle-thumb{transform:translateX(14px)}
+  .dl-btn{background:var(--accent);color:var(--hero-text);padding:7px 16px;border-radius:4px;font-size:12px;font-weight:700;letter-spacing:.05em;text-decoration:none;transition:opacity .2s}
+  .dl-btn:hover{opacity:.85}
+  .proj-hero{background:var(--hero-bg);padding:6rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden;transition:background .35s}
+  .proj-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,var(--hero-glow) 0%,transparent 65%);pointer-events:none}
+  .proj-eyebrow{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;opacity:.85}
+  .proj-title{font-size:clamp(1.8rem,4.5vw,3rem);font-weight:800;color:var(--hero-text);letter-spacing:-.02em;line-height:1.1;margin-bottom:.8rem}
+  .proj-subtitle{font-size:15px;color:var(--hero-muted);max-width:640px;margin:0 auto 2rem}
+  .proj-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:2.5rem}
+  .proj-pill{padding:5px 14px;border-radius:20px;font-size:12px;letter-spacing:.06em;font-weight:600}
+  .pill-xl{background:rgba(196,98,29,.2);border:1px solid rgba(196,98,29,.4);color:#FDF3E7}
+  .pill-py{background:rgba(46,160,94,.2);border:1px solid rgba(46,160,94,.4);color:#A8F0C6}
+  .pill-js{background:rgba(240,192,112,.2);border:1px solid rgba(240,192,112,.4);color:#F0C070}
+  .proj-kpis{display:flex;flex-wrap:wrap;gap:0;background:rgba(253,243,231,.05);border:1px solid rgba(196,98,29,.2);border-radius:10px;overflow:hidden;max-width:780px;margin:0 auto}
+  [data-theme="dark"] .proj-kpis{background:rgba(235,242,250,.04);border-color:rgba(74,144,217,.2)}
+  .kpi-item{flex:1 1 100px;padding:1.2rem .8rem;text-align:center;border-right:1px solid rgba(196,98,29,.15)}
+  [data-theme="dark"] .kpi-item{border-right-color:rgba(74,144,217,.15)}
+  .kpi-item:last-child{border-right:none}
+  .kpi-num{font-size:1.8rem;font-weight:800;color:var(--accent);line-height:1;margin-bottom:3px}
+  .kpi-lbl{font-size:10px;color:var(--hero-muted);letter-spacing:.07em;text-transform:uppercase}
+  main{max-width:1100px;margin:0 auto;padding:4rem 2rem 3rem}
+  section{margin-bottom:4rem}
+  .sect-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;font-weight:600}
+  .sect-title{font-size:1.5rem;font-weight:800;color:var(--heading);margin-bottom:.3rem;letter-spacing:-.01em}
+  .sect-rule{height:3px;background:linear-gradient(to right,var(--accent),transparent);margin-bottom:1.8rem;border-radius:2px}
+
+  /* ── DASHBOARD ── */
+  .dash-wrap{background:#0D1117;border-radius:16px;padding:24px;border:1px solid #2D333B}
+  .month-bar{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap}
+  .month-btn{padding:6px 14px;border-radius:6px;border:1px solid #2D333B;background:#161B22;color:#8B949E;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.04em;font-family:inherit}
+  .month-btn:hover{border-color:#4A90D9;color:#E6EDF3}
+  .month-btn.active{background:#4A90D9;border-color:#4A90D9;color:#fff}
+  .month-btn.cny{border-color:rgba(240,192,112,.4);color:#D29922}
+  .month-btn.cny.active{background:#D29922;border-color:#D29922;color:#0D1117}
+  .month-btn.euro-slow{border-color:rgba(163,113,247,.4);color:#A371F7}
+  .month-btn.euro-slow.active{background:#A371F7;border-color:#A371F7;color:#fff}
+  .month-btn.oct{border-color:rgba(248,81,73,.5);color:#F85149}
+  .month-btn.oct.active{background:#F85149;border-color:#F85149;color:#fff}
+  .season-legend{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+  .season-dot{display:flex;align-items:center;gap:5px;font-size:10px;color:#8B949E}
+  .sdot{width:8px;height:8px;border-radius:50%}
+  .dash-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+  .dash-card{background:#161B22;border:1px solid #2D333B;border-radius:10px;padding:14px 16px;border-left:3px solid transparent;transition:all .25s}
+  .dash-card.c-green{border-left-color:#3FB950}
+  .dash-card.c-red{border-left-color:#F85149}
+  .dash-card.c-amber{border-left-color:#D29922}
+  .dash-card.c-blue{border-left-color:#4A90D9}
+  .dash-card.c-purple{border-left-color:#A371F7}
+  .dash-card-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8B949E;margin-bottom:5px}
+  .dash-card-value{font-size:1.3rem;font-weight:800;color:#E6EDF3;line-height:1.1;margin-bottom:4px;font-variant-numeric:tabular-nums;transition:color .3s}
+  .dash-card-sub{font-size:10px;color:#8B949E;margin-top:2px}
+  .dash-badge{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-block}
+  .db-green{background:rgba(63,185,80,.15);color:#3FB950}
+  .db-red{background:rgba(248,81,73,.15);color:#F85149}
+  .db-amber{background:rgba(210,153,34,.15);color:#D29922}
+  .db-neutral{background:rgba(139,148,158,.12);color:#8B949E}
+  .dash-charts{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;margin-bottom:14px}
+  .chart-panel{background:#161B22;border:1px solid #2D333B;border-radius:10px;padding:16px}
+  .chart-panel-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8B949E;margin-bottom:10px}
+  .dash-bottom{display:grid;grid-template-columns:1.1fr 1fr;gap:14px}
+  .detail-panel,.errtypes-panel{background:#161B22;border:1px solid #2D333B;border-radius:10px;padding:16px}
+  .panel-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8B949E;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+  .panel-month{color:#4A90D9;font-size:10px}
+  .detail-rows{}
+  .drow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #21262D}
+  .drow:last-child{border-bottom:none}
+  .drow-label{font-size:11.5px;color:#8B949E}
+  .drow-value{font-size:11.5px;font-weight:700;color:#E6EDF3;font-variant-numeric:tabular-nums}
+  .drow-value.good{color:#3FB950}
+  .drow-value.bad{color:#F85149}
+  .drow-value.amber{color:#D29922}
+
+  /* Error type bars */
+  .et-item{margin-bottom:10px}
+  .et-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+  .et-name{font-size:10px;font-weight:600;color:#E6EDF3}
+  .et-pcts{font-size:9px;color:#8B949E;display:flex;gap:8px}
+  .et-pct-pre{color:#3FB950}
+  .et-pct-post{color:#D29922}
+  .et-bar-track{background:#21262D;border-radius:3px;height:5px;position:relative}
+  .et-bar-fill{height:5px;border-radius:3px;transition:width .5s ease}
+  /* Demurrage sub-status */
+  .dem-sub{background:#1C2333;border-radius:6px;padding:8px 10px;margin-top:4px;font-size:9.5px}
+  .dem-sub-row{display:flex;justify-content:space-between;margin-bottom:2px}
+  .dem-sub-row:last-child{margin-bottom:0}
+  .dem-confirmed{color:#3FB950}
+  .dem-pending{color:#D29922}
+  /* Context bar */
+  .context-bar{background:#161B22;border:1px solid #2D333B;border-radius:10px;padding:14px 16px;margin-top:14px}
+  .context-title{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8B949E;margin-bottom:10px}
+  .context-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .ctx-item{text-align:center}
+  .ctx-val{font-size:1rem;font-weight:800;color:#4A90D9;line-height:1;margin-bottom:2px;font-variant-numeric:tabular-nums}
+  .ctx-lbl{font-size:8.5px;color:#8B949E;text-transform:uppercase;letter-spacing:.06em}
+  /* Flags */
+  .flag{border-radius:8px;padding:12px 14px;margin-top:12px;display:none}
+  .flag.show{display:block}
+  .flag-cny{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.3)}
+  .flag-oct{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3)}
+  .flag-euro{background:rgba(163,113,247,.08);border:1px solid rgba(163,113,247,.3)}
+  .flag-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+  .flag-body{font-size:11.5px;color:#8B949E;line-height:1.6}
+  .flag-cny .flag-title{color:#D29922}
+  .flag-oct .flag-title{color:#F85149}
+  .flag-euro .flag-title{color:#A371F7}
+
+  /* Tooltip */
+  .tooltip{position:fixed;background:#21262D;border:1px solid #2D333B;border-radius:6px;padding:8px 12px;font-size:11px;color:#E6EDF3;pointer-events:none;opacity:0;transition:opacity .15s;z-index:200;max-width:220px;line-height:1.5}
+  .tooltip b{color:#4A90D9}
+
+  /* Rest of page */
+  .disclaimer{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:2.5rem}
+  .disclaimer strong{color:var(--heading)}
+  .tag-section{margin-bottom:1.2rem}
+  .tag-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
+  .tag-cloud{display:flex;flex-wrap:wrap;gap:5px}
+  .tag{font-size:11px;padding:3px 9px;border-radius:3px;background:var(--skill-tag);color:var(--skill-text);font-weight:500}
+  .cta-strip{background:var(--hero-bg);border-radius:10px;padding:2.5rem;text-align:center}
+  .cta-strip h2{color:var(--hero-text);font-size:1.3rem;margin-bottom:.5rem;font-weight:800}
+  .cta-strip p{color:var(--hero-muted);font-size:13px;margin-bottom:1.5rem}
+  .cta-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .cta-btn{padding:11px 24px;border-radius:5px;font-size:13px;font-weight:700;letter-spacing:.05em;text-decoration:none;transition:opacity .2s}
+  .cta-primary{background:var(--accent);color:var(--hero-text)}
+  .cta-secondary{border:1.5px solid rgba(253,243,231,.3);color:rgba(253,243,231,.75)}
+  .cta-btn:hover{opacity:.82}
+  footer{text-align:center;padding:2rem;font-size:11px;color:var(--muted)}
+  footer a{color:var(--accent);text-decoration:none}
+  .fade-in{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+  .fade-in.visible{opacity:1;transform:translateY(0)}
+
+  @media(max-width:900px){
+    .dash-kpis{grid-template-columns:repeat(3,1fr)}
+    .dash-charts{grid-template-columns:1fr}
+    .dash-bottom{grid-template-columns:1fr}
+    .context-grid{grid-template-columns:repeat(3,1fr)}
+  }
+  @media(max-width:600px){
+    .dash-kpis{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-back">← Back to Portfolio</a>
+  <div class="nav-right">
+    <span class="nav-brand">accordanalyst.com</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span id="toggleEmoji">🌙</span>
+      <span class="toggle-label" id="toggleLabel">Dark</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    </button>
+    <a href="#" class="dl-btn" id="dlBtn">↓ Download Excel</a>
+  </div>
+</nav>
+
+<div class="tooltip" id="tooltip"></div>
+
+<section class="proj-hero">
+  <p class="proj-eyebrow">Portfolio Project · Excel · JavaScript · Freight Audit</p>
+  <h1 class="proj-title">Pre-Audit vs Post-Audit<br>Recovery Dashboard</h1>
+  <p class="proj-subtitle">200,416 simulated invoices across a real-world international-heavy freight audit portfolio. Prevention vs recovery cost efficiency — quantified with domain-accurate error logic and seasonal client behavior.</p>
+  <div class="proj-pills">
+    <span class="proj-pill pill-xl">Advanced Excel</span>
+    <span class="proj-pill pill-py">Python Data Model</span>
+    <span class="proj-pill pill-js">D3.js Interactive</span>
+    <span class="proj-pill pill-py">No Real Client Data</span>
+  </div>
+  <div class="proj-kpis">
+    <div class="kpi-item"><div class="kpi-num">200K+</div><div class="kpi-lbl">Annual Invoices</div></div>
+    <div class="kpi-item"><div class="kpi-num">$9.86M</div><div class="kpi-lbl">Total Error Pool</div></div>
+    <div class="kpi-item"><div class="kpi-num">62.3%</div><div class="kpi-lbl">Pre-Audit Catch Rate</div></div>
+    <div class="kpi-item"><div class="kpi-num">12.3%</div><div class="kpi-lbl">True Leakage Rate</div></div>
+    <div class="kpi-item"><div class="kpi-num">10.1x</div><div class="kpi-lbl">Post vs Pre Cost</div></div>
+    <div class="kpi-item"><div class="kpi-num">3 Regions</div><div class="kpi-lbl">Domestic / Asian / EU</div></div>
+  </div>
+</section>
+
+<main>
+  <div class="disclaimer fade-in">
+    <strong>Portfolio simulation notice:</strong> All figures are entirely simulated. Client mix (30% domestic / 40% Asian / 30% European), seasonal volume curves, error type distributions, and catch rates reflect domain-accurate freight audit logic — not real client, carrier, or proprietary data.
+  </div>
+
+  <section>
+    <p class="sect-eyebrow fade-in">Live Interactive Dashboard</p>
+    <h2 class="sect-title fade-in">Click any month — everything updates</h2>
+    <div class="sect-rule fade-in"></div>
+
+    <div class="dash-wrap fade-in">
+
+      <!-- Season legend -->
+      <div class="season-legend">
+        <span class="season-dot"><span class="sdot" style="background:#D29922"></span>Chinese New Year slowdown (Jan–Mar)</span>
+        <span class="season-dot"><span class="sdot" style="background:#A371F7"></span>European slowdown (Oct–Jan)</span>
+        <span class="season-dot"><span class="sdot" style="background:#F85149"></span>October rate table anomaly</span>
+        <span class="season-dot"><span class="sdot" style="background:#4A90D9"></span>Normal</span>
+      </div>
+
+      <!-- Month buttons -->
+      <div class="month-bar" id="monthBar"></div>
+
+      <!-- KPI cards -->
+      <div class="dash-kpis" id="kpiCards"></div>
+
+      <!-- Charts -->
+      <div class="dash-charts">
+        <div class="chart-panel">
+          <div class="chart-panel-title">Monthly Error Split — Pre-Caught · Post-Caught · Leakage</div>
+          <div id="areaChart"></div>
+        </div>
+        <div class="chart-panel">
+          <div class="chart-panel-title">Pre-Audit Catch Rate Trend</div>
+          <div id="lineChart"></div>
+        </div>
+      </div>
+
+      <!-- Bottom row: detail + error types -->
+      <div class="dash-bottom">
+        <div class="detail-panel">
+          <div class="panel-title">
+            Selected Month Detail
+            <span class="panel-month" id="detailLabel">January</span>
+          </div>
+          <div class="detail-rows" id="detailRows"></div>
+        </div>
+        <div class="errtypes-panel">
+          <div class="panel-title">
+            Error Type Breakdown
+            <span class="panel-month" id="etLabel">January</span>
+          </div>
+          <div id="errorTypes"></div>
+        </div>
+      </div>
+
+      <!-- Seasonal / anomaly flags -->
+      <div class="flag flag-cny" id="flagCNY">
+        <div class="flag-title">🟡 Chinese New Year Slowdown</div>
+        <div class="flag-body">Asian clients (40% of this portfolio) reduce freight activity significantly from January through mid-March due to Chinese New Year factory shutdowns. Invoice volumes drop 55–62% on the Asian segment. Error rates on remaining invoices tick slightly higher as billing systems process a backlog of pre-holiday shipments during this period. Volume ramps back mid-March through April.</div>
+      </div>
+      <div class="flag flag-oct" id="flagOCT">
+        <div class="flag-title">⚠ October — Carrier Rate Table Update</div>
+        <div class="flag-body">October's error pool spikes to $1.2M — 35% above the surrounding monthly average — while Pre-Audit catch rate drops to 56.3%, the lowest of the year. A simulated carrier rate table update that the pre-audit system hadn't yet synchronized caused Rate Mismatch errors to spike. More errors flowed to the expensive 28% contingency Post-Audit channel. This is the exact pattern a Pre-Audit team lead would investigate: a sudden catch rate drop almost always traces to a rate table, staffing gap, or system sync failure.</div>
+      </div>
+      <div class="flag flag-euro" id="flagEURO">
+        <div class="flag-title">🟣 European Client Slowdown</div>
+        <div class="flag-body">European clients (30% of this portfolio) naturally slow down October through January, then pick back up in February. Combined with October's rate table anomaly, the Q4 shift in carrier mix toward domestic (which has lower average invoice values) explains the lower error pool dollar figures despite relatively steady total invoice counts in November and December.</div>
+      </div>
+
+      <!-- FY context -->
+      <div class="context-bar">
+        <div class="context-title">Full Year Summary — All 12 Months</div>
+        <div class="context-grid" id="contextGrid"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <p class="sect-eyebrow fade-in">Technical Skills</p>
+    <h2 class="sect-title fade-in">Tools &amp; Techniques</h2>
+    <div class="sect-rule fade-in"></div>
+    <div class="tag-section fade-in">
+      <p class="tag-label">Excel &amp; Data Modeling</p>
+      <div class="tag-cloud">
+        <span class="tag">Advanced Excel</span><span class="tag">INDEX / MATCH</span>
+        <span class="tag">SUMIFS / IFERROR</span><span class="tag">Data Validation Dropdowns</span>
+        <span class="tag">Seasonal Volume Modeling</span><span class="tag">Cost-per-Dollar Analysis</span>
+        <span class="tag">Live Cross-Sheet Formulas</span>
+      </div>
+    </div>
+    <div class="tag-section fade-in">
+      <p class="tag-label">Visualization &amp; Web</p>
+      <div class="tag-cloud">
+        <span class="tag">D3.js</span><span class="tag">SVG Area &amp; Line Charts</span>
+        <span class="tag">Animated Transitions</span><span class="tag">Gradient Fills</span>
+        <span class="tag">Tooltip Interactions</span><span class="tag">Responsive Layout</span>
+      </div>
+    </div>
+    <div class="tag-section fade-in">
+      <p class="tag-label">Freight Audit Domain</p>
+      <div class="tag-cloud">
+        <span class="tag">Pre-Audit Avoided Cost</span>
+        <span class="tag">Post-Audit Contingency Recovery</span>
+        <span class="tag">Duplicate Invoice Batch Logic</span>
+        <span class="tag">Demurrage: Confirmed vs Pending</span>
+        <span class="tag">Fuel Surcharge Domestic vs Intl</span>
+        <span class="tag">Accessorial Summer Spike</span>
+        <span class="tag">Chinese New Year Seasonality</span>
+        <span class="tag">European Client Slowdown</span>
+        <span class="tag">Catch Rate Analysis by Error Type</span>
+        <span class="tag">True Leakage Quantification</span>
+        <span class="tag">10x Cost Multiple</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="cta-strip fade-in">
+      <h2>Download the Excel workbook</h2>
+      <p>245 live cross-sheet formulas — change any input on the Raw Data sheet and the entire model recalculates.</p>
+      <div class="cta-links">
+        <a href="#" class="cta-btn cta-primary" id="dlBtn2">↓ Download Freight_Audit_Dashboard.xlsx</a>
+        <a href="../index.html" class="cta-btn cta-secondary">← Back to Portfolio</a>
+        <a href="mailto:alexis@accordanalyst.com" class="cta-btn cta-secondary">Get in touch</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 Alexis "Zaira" Kelly · <a href="../index.html">accordanalyst.com</a> · Portfolio Project</p>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// DATA MODEL — domain-corrected v4
+// ══════════════════════════════════════════════════════════════════
+const MONTHS     = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTHS_LNG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+// Client segment volumes
+const INV_ASIAN = [3276,2964,4290,6396,7800,7800,7800,7800,7800,7176,6630,6084];
+const INV_EURO  = [3808,4480,5600,5600,5600,5600,5488,5320,5600,4200,3920,3640];
+const INV_DOM   = [4592,4480,4928,5152,5320,5600,5600,5600,5432,5880,6440,6720];
+const INV_VOL   = MONTHS.map((_,i)=>INV_ASIAN[i]+INV_EURO[i]+INV_DOM[i]);
+
+const AVG_BILLED_A=1850, AVG_BILLED_E=1620, AVG_BILLED_D=520;
+const AVG_BILLED = INV_VOL.map((_,i)=>
+  (INV_ASIAN[i]*AVG_BILLED_A+INV_EURO[i]*AVG_BILLED_E+INV_DOM[i]*AVG_BILLED_D)/INV_VOL[i]);
+
+const ERR_RATES = [0.040,0.041,0.037,0.034,0.034,0.034,0.034,0.034,0.034,0.052,0.034,0.034];
+
+const ERR_TYPE_NAMES = [
+  "Accessorial Overcharge",
+  "Fuel Surcharge Error",
+  "Rate Mismatch",
+  "Duplicate Invoice",
+  "Detention / Demurrage",
+  "Dimensional Weight Error"
+];
+const ERR_TYPE_NOTES = [
+  "Summer spike Jun–Aug (random rate adjustments). Domestic geography billing issues year-round.",
+  "Domestic pre-catch ~54% (geography issues). International ~72% (advance FSC change notice).",
+  "Strong pre-catch. October spike from carrier rate table update not yet synced.",
+  "Lowest pre-catch — 1–2 real duplicates hidden in batches of 4–25 similar invoices. Post-auditor has cross-reference advantage.",
+  "Split: ~60% Confirmed (resolvable), ~40% Pending Client Review (SOP routes back to client when auditor has no rates on file).",
+  "Domestic/LTL/parcel weighted. Elevated Q4 from holiday volume and DIM weight miscalculations."
+];
+
+// Error mix per month (normalized)
+const ERR_MIX_RAW = [
+  [0.28,0.20,0.19,0.13,0.13,0.07],[0.28,0.19,0.19,0.12,0.14,0.08],
+  [0.27,0.20,0.19,0.13,0.14,0.07],[0.27,0.20,0.19,0.13,0.14,0.07],
+  [0.26,0.21,0.19,0.14,0.13,0.07],[0.32,0.22,0.18,0.12,0.10,0.06],
+  [0.34,0.21,0.17,0.12,0.10,0.06],[0.33,0.21,0.17,0.13,0.10,0.06],
+  [0.28,0.21,0.18,0.14,0.12,0.07],[0.26,0.20,0.32,0.11,0.08,0.03],
+  [0.29,0.20,0.19,0.13,0.11,0.08],[0.30,0.19,0.18,0.13,0.11,0.09],
+];
+const ERR_MIX = ERR_MIX_RAW.map(r=>{const s=r.reduce((a,b)=>a+b,0);return r.map(v=>v/s)});
+
+// Pre-audit catch rates per type per month (domain-corrected)
+const PRE_CATCH = [
+  [0.72,0.61,0.78,0.44,0.38,0.68],[0.72,0.61,0.78,0.44,0.38,0.68],
+  [0.72,0.62,0.78,0.44,0.39,0.68],[0.72,0.63,0.78,0.43,0.39,0.68],
+  [0.72,0.63,0.78,0.42,0.39,0.68],[0.66,0.63,0.78,0.41,0.38,0.67],
+  [0.64,0.63,0.78,0.40,0.38,0.67],[0.65,0.63,0.78,0.39,0.38,0.67],
+  [0.70,0.63,0.78,0.40,0.39,0.67],[0.68,0.58,0.48,0.38,0.36,0.64],
+  [0.72,0.62,0.78,0.41,0.38,0.66],[0.72,0.62,0.78,0.42,0.38,0.66],
+];
+
+// Post-audit recovery rates by type (asymmetric — Duplicates higher, Demurrage lower)
+const POST_RECOVERY = [0.67, 0.65, 0.68, 0.80, 0.55, 0.66];
+
+// Demurrage sub-status
+const DEM_CONFIRMED = 0.60, DEM_PENDING = 0.40;
+
+const PRE_FEE = 0.85, POST_CONT = 0.28;
+
+// ── Compute monthly data ──────────────────────────────────────────
+const DATA = MONTHS.map((m,i)=>{
+  const pool  = INV_VOL[i] * AVG_BILLED[i] * ERR_RATES[i];
+  const pre   = ERR_MIX[i].reduce((s,mx,j)=>s+pool*mx*PRE_CATCH[i][j],0);
+  const rem   = pool - pre;
+  const post  = ERR_MIX[i].reduce((s,mx,j)=>s+rem*mx*POST_RECOVERY[j],0);
+  const leak  = rem - post;
+  const preFee= INV_VOL[i]*PRE_FEE;
+  const postFee=post*POST_CONT;
+  const demPool = pool * ERR_MIX[i][4];
+  return {
+    m, ml:MONTHS_LNG[i], i,
+    invVol:INV_VOL[i], invAsian:INV_ASIAN[i], invEuro:INV_EURO[i], invDom:INV_DOM[i],
+    avgBilled:AVG_BILLED[i], pool, pre, rem, post, leak,
+    preFee, postFee,
+    preRate: pre/pool,
+    preCostPer: preFee/pre,
+    postCostPer: postFee/post,
+    totalProtected: pre+post,
+    demConfirmed: demPool*DEM_CONFIRMED,
+    demPending:   demPool*DEM_PENDING,
+    errMix: ERR_MIX[i],
+    preCatch: PRE_CATCH[i],
+    isCNY:    i<=2,
+    isOct:    i===9,
+    isEuroSlow: i===9||i===10||i===11||i===0,
+  };
+});
+
+const FY = {
+  pool:  DATA.reduce((s,d)=>s+d.pool,0),
+  pre:   DATA.reduce((s,d)=>s+d.pre,0),
+  post:  DATA.reduce((s,d)=>s+d.post,0),
+  leak:  DATA.reduce((s,d)=>s+d.leak,0),
+  inv:   DATA.reduce((s,d)=>s+d.invVol,0),
+  preFee:DATA.reduce((s,d)=>s+d.preFee,0),
+  postFee:DATA.reduce((s,d)=>s+d.postFee,0),
+};
+FY.catchRate    = FY.pre/FY.pool;
+FY.leakRate     = FY.leak/FY.pool;
+FY.preCostPer   = FY.preFee/FY.pre;
+FY.postCostPer  = FY.postFee/FY.post;
+FY.costMultiple = FY.postCostPer/FY.preCostPer;
+
+// ── Formatters ───────────────────────────────────────────────────
+const $k = v=>v>=1e6?`$${(v/1e6).toFixed(2)}M`:v>=1e3?`$${(v/1e3).toFixed(0)}K`:`$${Math.round(v).toLocaleString()}`;
+const $$ = v=>`$${Math.round(v).toLocaleString()}`;
+const pct= v=>`${(v*100).toFixed(1)}%`;
+const n  = v=>Math.round(v).toLocaleString();
+const $s = v=>`$${v.toFixed(3)}`;
+
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+let sel = 0;
+
+// ══════════════════════════════════════════════════════════════════
+// MONTH BAR
+// ══════════════════════════════════════════════════════════════════
+function buildMonthBar(){
+  const bar=document.getElementById('monthBar');
+  bar.innerHTML='';
+  DATA.forEach((d,i)=>{
+    const btn=document.createElement('button');
+    btn.className='month-btn'
+      +(d.isCNY?' cny':'')
+      +(d.isOct?' oct':'')
+      +(d.isEuroSlow&&!d.isOct?' euro-slow':'')
+      +(i===sel?' active':'');
+    btn.textContent=d.m;
+    btn.title=d.ml+(d.isCNY?' · Chinese New Year period':'')
+              +(d.isOct?' · Rate table anomaly':'')
+              +(d.isEuroSlow&&!d.isOct?' · European slowdown':'');
+    btn.onclick=()=>{ sel=i; updateAll(); };
+    bar.appendChild(btn);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// KPI CARDS
+// ══════════════════════════════════════════════════════════════════
+function buildKPIs(){
+  const d=DATA[sel], p=sel>0?DATA[sel-1]:null;
+  const mom=(curr,prev)=>prev?((curr-prev)/prev*100).toFixed(1)+'%':null;
+  const cards=[
+    {lbl:'Invoice Volume', val:n(d.invVol), sub:`${n(d.invAsian)} Asian · ${n(d.invEuro)} Euro · ${n(d.invDom)} Dom`, badge:p?{v:mom(d.invVol,p.invVol),pos:true}:null, cls:'c-blue'},
+    {lbl:'Error Pool ($)',  val:$$(d.pool),  badge:p?{v:mom(d.pool,p.pool),pos:false}:null, cls:'c-red'},
+    {lbl:'Pre-Audit Caught',val:$$(d.pre),   badge:{v:pct(d.preRate)+' catch',pos:true}, cls:'c-green'},
+    {lbl:'Post-Audit Caught',val:$$(d.post), badge:p?{v:mom(d.post,p.post),pos:false}:null, cls:'c-amber'},
+    {lbl:'True Leakage',    val:$$(d.leak),  badge:{v:pct(d.leak/d.pool)+' of pool',pos:false}, cls:'c-red'},
+  ];
+  document.getElementById('kpiCards').innerHTML=cards.map(c=>{
+    let badgeHtml='';
+    if(c.badge){
+      const pos=c.badge.pos;
+      const v=c.badge.v;
+      const isUp=typeof v==='string'&&(v.startsWith('▲')||parseFloat(v)>0);
+      const cls=pos?(isUp?'db-green':'db-red'):(isUp?'db-red':'db-green');
+      badgeHtml=`<span class="dash-badge ${cls}">${v}</span>`;
+    }
+    return `<div class="dash-card ${c.cls}">
+      <div class="dash-card-label">${c.lbl}</div>
+      <div class="dash-card-value">${c.val}</div>
+      ${c.sub?`<div class="dash-card-sub">${c.sub}</div>`:''}
+      ${badgeHtml}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// DETAIL PANEL
+// ══════════════════════════════════════════════════════════════════
+function buildDetail(){
+  const d=DATA[sel];
+  document.getElementById('detailLabel').textContent=d.ml;
+  document.getElementById('etLabel').textContent=d.ml;
+  const rows=[
+    ['Error Pool',         $$(d.pool),          ''],
+    ['Pre-Audit Caught',   $$(d.pre),            'good'],
+    ['Post-Audit Caught',  $$(d.post),           'amber'],
+    ['True Leakage',       $$(d.leak),           'bad'],
+    ['Pre-Audit Fee',      $$(d.preFee),         ''],
+    ['Post-Audit Fee',     $$(d.postFee),        ''],
+    ['Pre Cost / $ Avoided',   $s(d.preCostPer), 'good'],
+    ['Post Cost / $ Recovered',$s(d.postCostPer),'bad'],
+    ['Cost Multiple',      (d.postCostPer/d.preCostPer).toFixed(1)+'x', 'bad'],
+    ['Dem. Confirmed',     $$(d.demConfirmed),   'good'],
+    ['Dem. Pending Review',$$( d.demPending),    'amber'],
+  ];
+  document.getElementById('detailRows').innerHTML=rows.map(([l,v,c])=>
+    `<div class="drow"><span class="drow-label">${l}</span><span class="drow-value ${c}">${v}</span></div>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// ERROR TYPE BREAKDOWN
+// ══════════════════════════════════════════════════════════════════
+function buildErrorTypes(){
+  const d=DATA[sel];
+  const TYPE_COLORS=['#4A90D9','#D29922','#F85149','#3FB950','#A371F7','#5C9E6A'];
+  // Fixed scale: bars represent actual % of error pool (35% cap = full bar)
+  // so a 28% share looks meaningfully different from an 8% share
+  const BAR_SCALE = 35;
+  let html=ERR_TYPE_NAMES.map((name,j)=>{
+    const mix=d.errMix[j]*100;
+    const preCatch=d.preCatch[j]*100;
+    const postRec=POST_RECOVERY[j]*100;
+    const barW=Math.min(100,(mix/BAR_SCALE)*100);
+    let demHtml='';
+    if(j===4){
+      const demPool=d.pool*d.errMix[j];
+      const conf=demPool*DEM_CONFIRMED, pend=demPool*DEM_PENDING;
+      demHtml=`<div class="dem-sub">
+        <div class="dem-sub-row"><span>Confirmed (resolvable)</span><span class="dem-confirmed">${$$(conf)} · ${(DEM_CONFIRMED*100).toFixed(0)}%</span></div>
+        <div class="dem-sub-row"><span>Pending Client Review</span><span class="dem-pending">${$$(pend)} · ${(DEM_PENDING*100).toFixed(0)}% — routed per SOP</span></div>
+      </div>`;
+    }
+    return `<div class="et-item" title="${ERR_TYPE_NOTES[j]}">
+      <div class="et-header">
+        <span class="et-name">${name}</span>
+        <span class="et-pcts">
+          <span class="et-pct-pre">${preCatch.toFixed(0)}% pre</span>
+          <span class="et-pct-post">${postRec.toFixed(0)}% post</span>
+        </span>
+      </div>
+      <div class="et-bar-track">
+        <div class="et-bar-fill" style="width:${barW}%;background:${TYPE_COLORS[j]}"></div>
+      </div>
+      <div style="font-size:9px;color:#8B949E;margin-top:2px">${mix.toFixed(1)}% of error pool</div>
+      ${demHtml}
+    </div>`;
+  }).join('');
+  document.getElementById('errorTypes').innerHTML=html;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FLAGS
+// ══════════════════════════════════════════════════════════════════
+function buildFlags(){
+  const d=DATA[sel];
+  document.getElementById('flagCNY').classList.toggle('show', d.isCNY);
+  document.getElementById('flagOCT').classList.toggle('show', d.isOct);
+  document.getElementById('flagEURO').classList.toggle('show', d.isEuroSlow&&!d.isOct&&!d.isCNY);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// CONTEXT BAR
+// ══════════════════════════════════════════════════════════════════
+function buildContext(){
+  document.getElementById('contextGrid').innerHTML=`
+    <div class="ctx-item"><div class="ctx-val">${n(FY.inv)}</div><div class="ctx-lbl">Total Invoices</div></div>
+    <div class="ctx-item"><div class="ctx-val">${$k(FY.pool)}</div><div class="ctx-lbl">FY Error Pool</div></div>
+    <div class="ctx-item"><div class="ctx-val" style="color:#3FB950">${pct(FY.catchRate)}</div><div class="ctx-lbl">FY Pre Catch Rate</div></div>
+    <div class="ctx-item"><div class="ctx-val" style="color:#F85149">${pct(FY.leakRate)}</div><div class="ctx-lbl">FY Leakage Rate</div></div>
+    <div class="ctx-item"><div class="ctx-val" style="color:#D29922">${FY.costMultiple.toFixed(1)}x</div><div class="ctx-lbl">Post vs Pre Cost</div></div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// D3 CHARTS
+// ══════════════════════════════════════════════════════════════════
+function buildAreaChart(){
+  const el=document.getElementById('areaChart');
+  el.innerHTML='';
+  const W=el.clientWidth||460, H=190;
+  const mg={top:8,right:12,bottom:26,left:60};
+  const iW=W-mg.left-mg.right, iH=H-mg.top-mg.bottom;
+
+  const svg=d3.select(el).append('svg').attr('width',W).attr('height',H);
+  const g=svg.append('g').attr('transform',`translate(${mg.left},${mg.top})`);
+
+  const x=d3.scaleBand().domain(MONTHS).range([0,iW]).padding(0.18);
+  const maxY=d3.max(DATA,d=>d.pool)*1.06;
+  const y=d3.scaleLinear().domain([0,maxY]).range([iH,0]);
+
+  // Grid
+  g.append('g').selectAll('line').data(y.ticks(4)).enter().append('line')
+    .attr('x1',0).attr('x2',iW).attr('y1',d=>y(d)).attr('y2',d=>y(d))
+    .attr('stroke','#21262D').attr('stroke-width',0.6);
+
+  // Axes
+  g.append('g').attr('transform',`translate(0,${iH})`).call(
+    d3.axisBottom(x).tickSize(0)).call(ax=>{ax.select('.domain').remove();
+    ax.selectAll('text').style('fill','#8B949E').style('font-size','9.5px');});
+  g.append('g').call(
+    d3.axisLeft(y).ticks(4).tickFormat(v=>v>=1e6?`$${(v/1e6).toFixed(1)}M`:`$${(v/1e3).toFixed(0)}K`))
+    .call(ax=>{ax.select('.domain').remove();ax.selectAll('.tick line').remove();
+    ax.selectAll('text').style('fill','#8B949E').style('font-size','9px');});
+
+  // Stacked bars
+  const tooltip=document.getElementById('tooltip');
+  DATA.forEach((d,i)=>{
+    let base=0;
+    [{v:d.pre,c:'#3FB950',lbl:'Pre-Caught'},{v:d.post,c:'#D29922',lbl:'Post-Caught'},{v:d.leak,c:'#F85149',lbl:'Leakage'}].forEach(layer=>{
+      const rect=g.append('rect')
+        .attr('x',x(d.m)).attr('y',y(base+layer.v))
+        .attr('width',x.bandwidth()).attr('height',Math.max(0,iH-y(layer.v)))
+        .attr('fill',layer.c).attr('rx',2)
+        .attr('opacity',i===sel?1:0.45);
+      rect.on('mousemove',evt=>{
+        tooltip.style.opacity='1';
+        tooltip.style.left=(evt.clientX+12)+'px';
+        tooltip.style.top=(evt.clientY-8)+'px';
+        tooltip.innerHTML=`<b>${d.ml}</b><br>${layer.lbl}: ${$$(layer.v)}<br>Pool: ${$$(d.pool)}<br>Pre Catch: ${pct(d.preRate)}`;
+      }).on('mouseleave',()=>tooltip.style.opacity='0');
+      base+=layer.v;
+    });
+    if(i===sel){
+      g.append('rect').attr('x',x(d.m)-1).attr('y',0)
+        .attr('width',x.bandwidth()+2).attr('height',iH)
+        .attr('fill','none').attr('stroke','#4A90D9').attr('stroke-width',1.5).attr('rx',2).attr('opacity',0.8);
+    }
+  });
+}
+
+function buildLineChart(){
+  const el=document.getElementById('lineChart');
+  el.innerHTML='';
+  const W=el.clientWidth||340, H=190;
+  const mg={top:8,right:14,bottom:26,left:42};
+  const iW=W-mg.left-mg.right, iH=H-mg.top-mg.bottom;
+
+  const svg=d3.select(el).append('svg').attr('width',W).attr('height',H);
+  const g=svg.append('g').attr('transform',`translate(${mg.left},${mg.top})`);
+
+  const x=d3.scalePoint().domain(MONTHS).range([0,iW]).padding(0.25);
+  const y=d3.scaleLinear().domain([0.45,0.85]).range([iH,0]);
+
+  g.append('g').selectAll('line').data(y.ticks(4)).enter().append('line')
+    .attr('x1',0).attr('x2',iW).attr('y1',d=>y(d)).attr('y2',d=>y(d))
+    .attr('stroke','#21262D').attr('stroke-width',0.6);
+
+  g.append('g').attr('transform',`translate(0,${iH})`).call(
+    d3.axisBottom(x).tickSize(0)).call(ax=>{ax.select('.domain').remove();
+    ax.selectAll('text').style('fill','#8B949E').style('font-size','9.5px');});
+  g.append('g').call(d3.axisLeft(y).ticks(4).tickFormat(d3.format('.0%')))
+    .call(ax=>{ax.select('.domain').remove();ax.selectAll('.tick line').remove();
+    ax.selectAll('text').style('fill','#8B949E').style('font-size','9px');});
+
+  // Gradient area
+  const grad=svg.append('defs').append('linearGradient')
+    .attr('id','lineGrad').attr('x1','0').attr('x2','0').attr('y1','0').attr('y2','1');
+  grad.append('stop').attr('offset','0%').attr('stop-color','#4A90D9').attr('stop-opacity',0.28);
+  grad.append('stop').attr('offset','100%').attr('stop-color','#4A90D9').attr('stop-opacity',0.03);
+
+  g.append('path').datum(DATA)
+    .attr('d',d3.area().x((_,i)=>x(MONTHS[i])).y0(iH).y1(d=>y(d.preRate)).curve(d3.curveCatmullRom))
+    .attr('fill','url(#lineGrad)');
+
+  g.append('path').datum(DATA)
+    .attr('d',d3.line().x((_,i)=>x(MONTHS[i])).y(d=>y(d.preRate)).curve(d3.curveCatmullRom))
+    .attr('fill','none').attr('stroke','#4A90D9').attr('stroke-width',2.2);
+
+  const tooltip=document.getElementById('tooltip');
+  DATA.forEach((d,i)=>{
+    const cx=x(d.m), cy=y(d.preRate);
+    const isSel=i===sel, isOct=d.isOct, isCNY=d.isCNY;
+    const dotColor=isOct?'#F85149':isCNY?'#D29922':'#4A90D9';
+    if(isSel||isOct||isCNY){
+      // Glow ring
+      g.append('circle').attr('cx',cx).attr('cy',cy).attr('r',9)
+        .attr('fill',dotColor).attr('opacity',0.15);
+    }
+    g.append('circle').attr('cx',cx).attr('cy',cy)
+      .attr('r',isSel?6:isOct?5:isCNY?4.5:3.5)
+      .attr('fill',isSel?dotColor:'#0D1117')
+      .attr('stroke',dotColor).attr('stroke-width',isSel?2.5:1.8)
+      .style('cursor','pointer')
+      .on('mousemove',evt=>{
+        tooltip.style.opacity='1';
+        tooltip.style.left=(evt.clientX+12)+'px';
+        tooltip.style.top=(evt.clientY-8)+'px';
+        tooltip.innerHTML=`<b>${d.ml}</b><br>Pre Catch Rate: <b>${pct(d.preRate)}</b><br>${$$(d.invVol)} invoices<br>Pool: ${$$(d.pool)}`;
+      }).on('mouseleave',()=>tooltip.style.opacity='0')
+      .on('click',()=>{sel=i;updateAll();});
+
+    if(isSel||isOct){
+      g.append('text').attr('x',cx).attr('y',cy-10)
+        .attr('text-anchor','middle').style('font-size','9px')
+        .style('fill',dotColor).style('font-weight','700')
+        .text(pct(d.preRate));
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MASTER UPDATE
+// ══════════════════════════════════════════════════════════════════
+function updateAll(){
+  buildMonthBar();
+  buildKPIs();
+  buildDetail();
+  buildErrorTypes();
+  buildFlags();
+  buildAreaChart();
+  buildLineChart();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// THEME TOGGLE
+// ══════════════════════════════════════════════════════════════════
+const html=document.documentElement;
+const saved=localStorage.getItem('theme')||'dark';
+html.setAttribute('data-theme',saved);
+updateThemeUI(saved);
+
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const next=html.getAttribute('data-theme')==='light'?'dark':'light';
+  html.setAttribute('data-theme',next);
+  localStorage.setItem('theme',next);
+  updateThemeUI(next);
+});
+function updateThemeUI(t){
+  document.getElementById('toggleEmoji').textContent=t==='dark'?'🌙':'☀️';
+  document.getElementById('toggleLabel').textContent=t==='dark'?'Dark':'Light';
+}
+
+// Download placeholder
+['dlBtn','dlBtn2'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('click',e=>{e.preventDefault();alert('Replace with your hosted Excel file URL once uploaded.');});
+});
+
+// Fade-in
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.08});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+// Resize
+let rto;
+window.addEventListener('resize',()=>{clearTimeout(rto);rto=setTimeout(()=>updateAll(),150);});
+
+// Init
+buildContext();
+updateAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revenue Reconciliation Query Set — Case Study | accordanalyst.com</title>
+<style>
+  :root {
+    --bg:#FDF3E7;--surface:#FAF0E0;--nav-bg:#3B2207;--hero-bg:#3B2207;
+    --hero-glow:rgba(196,98,29,0.12);--heading:#3B2207;--body:#1C1008;
+    --muted:#6B5240;--rule:#D4B896;--accent:#C4621D;
+    --accent-dim:rgba(196,98,29,0.15);--accent-bdr:rgba(196,98,29,0.35);
+    --hero-text:#FDF3E7;--hero-muted:rgba(253,243,231,0.6);
+    --surface2:#F5E8D0;--toggle-bg:rgba(255,255,255,0.12);
+    --shadow:rgba(0,0,0,0.08);--skill-tag:rgba(196,98,29,0.1);
+    --skill-text:#3B2207;--code-bg:#1C1008;--code-text:#F8F0E3;
+    --code-comment:#7A6A5A;--code-keyword:#E8956D;
+    --code-fn:#F0C070;--code-string:#98C98A;--code-num:#80C8F0;
+  }
+  [data-theme="dark"] {
+    --bg:#0D1B2E;--surface:#112240;--nav-bg:#091628;--hero-bg:#091628;
+    --hero-glow:rgba(46,95,163,0.18);--heading:#B8D4F8;--body:#CDD9EC;
+    --muted:#7B9BB8;--rule:#1F3864;--accent:#4A90D9;
+    --accent-dim:rgba(46,95,163,0.2);--accent-bdr:rgba(74,144,217,0.4);
+    --hero-text:#EBF2FA;--hero-muted:rgba(235,242,250,0.6);
+    --surface2:#0A1628;--toggle-bg:rgba(74,144,217,0.15);
+    --shadow:rgba(0,0,0,0.35);--skill-tag:rgba(46,95,163,0.2);
+    --skill-text:#B8D4F8;--code-bg:#070F1A;--code-text:#CDD9EC;
+    --code-comment:#4A6A8A;--code-keyword:#6EB0F5;
+    --code-fn:#F0C070;--code-string:#98C98A;--code-num:#80C8F0;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--body);font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6;transition:background .35s,color .35s}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:52px;box-shadow:0 2px 16px var(--shadow);transition:background .35s}
+  .nav-back{font-size:13px;color:rgba(253,243,231,0.7);text-decoration:none;letter-spacing:.05em;transition:color .2s;display:flex;align-items:center;gap:6px}
+  .nav-back:hover{color:var(--accent)}
+  .nav-right{display:flex;align-items:center;gap:1rem}
+  .nav-brand{font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+  .theme-toggle{background:var(--toggle-bg);border:1px solid var(--accent-bdr);border-radius:20px;cursor:pointer;padding:4px 10px;font-size:14px;display:flex;align-items:center;gap:6px;color:var(--hero-muted);transition:background .2s}
+  .toggle-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--hero-muted)}
+  .toggle-track{width:32px;height:18px;background:var(--accent-dim);border:1px solid var(--accent-bdr);border-radius:9px;position:relative;transition:background .25s;flex-shrink:0}
+  [data-theme="dark"] .toggle-track{background:var(--accent)}
+  .toggle-thumb{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--hero-text);transition:transform .25s}
+  [data-theme="dark"] .toggle-thumb{transform:translateX(14px)}
+  .dl-btn{background:var(--accent);color:var(--hero-text);padding:7px 16px;border-radius:4px;font-size:12px;font-weight:700;letter-spacing:.05em;text-decoration:none;transition:opacity .2s}
+  .dl-btn:hover{opacity:.85}
+
+  .proj-hero{background:var(--hero-bg);padding:6rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden;transition:background .35s}
+  .proj-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 40% 50%,var(--hero-glow) 0%,transparent 65%);pointer-events:none}
+  .proj-eyebrow{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;opacity:.85}
+  .proj-title{font-size:clamp(1.8rem,4.5vw,3rem);font-weight:800;color:var(--hero-text);letter-spacing:-.02em;line-height:1.1;margin-bottom:.8rem;transition:color .35s}
+  .proj-subtitle{font-size:15px;color:var(--hero-muted);margin-bottom:2rem;max-width:620px;margin-left:auto;margin-right:auto}
+  .proj-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:2.5rem}
+  .proj-pill{padding:5px 14px;border-radius:20px;font-size:12px;letter-spacing:.06em;font-weight:600}
+  .pill-sql{background:rgba(74,144,217,.2);border:1px solid rgba(74,144,217,.4);color:#B8D4F8}
+  .pill-biz{background:rgba(196,98,29,.2);border:1px solid rgba(196,98,29,.4);color:#FDF3E7}
+  .proj-kpis{display:flex;flex-wrap:wrap;gap:0;background:rgba(253,243,231,.05);border:1px solid rgba(196,98,29,.2);border-radius:10px;overflow:hidden;max-width:650px;margin:0 auto}
+  [data-theme="dark"] .proj-kpis{background:rgba(235,242,250,.04);border-color:rgba(74,144,217,.2)}
+  .kpi-item{flex:1 1 90px;padding:1.2rem .8rem;text-align:center;border-right:1px solid rgba(196,98,29,.15)}
+  [data-theme="dark"] .kpi-item{border-right-color:rgba(74,144,217,.15)}
+  .kpi-item:last-child{border-right:none}
+  .kpi-item:hover{background:rgba(196,98,29,.08)}
+  .kpi-num{font-size:1.8rem;font-weight:800;color:var(--accent);line-height:1;margin-bottom:3px;transition:color .35s}
+  .kpi-lbl{font-size:10px;color:var(--hero-muted);letter-spacing:.07em;text-transform:uppercase}
+
+  main{max-width:900px;margin:0 auto;padding:4rem 2rem 3rem}
+  section{margin-bottom:4rem}
+  .sect-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;font-weight:600;transition:color .35s}
+  .sect-title{font-size:1.5rem;font-weight:800;color:var(--heading);margin-bottom:.3rem;letter-spacing:-.01em;transition:color .35s}
+  .sect-rule{height:3px;background:linear-gradient(to right,var(--accent),transparent);margin-bottom:1.8rem;border-radius:2px;transition:background .35s}
+
+  .disclaimer{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:2rem;transition:background .35s,color .35s}
+  .disclaimer strong{color:var(--heading)}
+
+  /* QUERY CARDS */
+  .query-card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-bottom:1.5rem;transition:background .35s,border-color .35s}
+  .query-header{display:flex;align-items:flex-start;gap:14px;padding:1.1rem 1.25rem;cursor:pointer;user-select:none}
+  .query-header:hover .query-num{background:var(--accent);color:var(--hero-text)}
+  .query-num{width:36px;height:36px;border-radius:50%;background:var(--accent-dim);border:2px solid var(--accent-bdr);color:var(--accent);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,color .2s}
+  .query-meta{flex:1}
+  .query-title{font-size:14px;font-weight:700;color:var(--heading);transition:color .35s}
+  .query-biz{font-size:12px;color:var(--accent);font-style:italic;margin-top:2px;transition:color .35s}
+  .query-impact{font-size:12px;color:var(--muted);margin-top:3px;transition:color .35s}
+  .query-chevron{font-size:16px;color:var(--accent);transition:transform .25s;flex-shrink:0;padding-top:2px}
+  .query-card.open .query-chevron{transform:rotate(180deg)}
+  .query-body{display:none;padding:0 1.25rem 1.25rem}
+  .query-card.open .query-body{display:block}
+
+  /* CODE BLOCK */
+  .code-wrap{background:var(--code-bg);border-radius:8px;overflow:hidden;margin:.8rem 0}
+  .code-toolbar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.06)}
+  .code-lang{font-size:11px;font-weight:600;color:var(--code-fn);letter-spacing:.08em;text-transform:uppercase}
+  .copy-btn{font-size:11px;color:var(--code-comment);cursor:pointer;background:none;border:1px solid rgba(255,255,255,0.12);padding:3px 10px;border-radius:4px;transition:color .2s,border-color .2s}
+  .copy-btn:hover{color:var(--code-text);border-color:rgba(255,255,255,0.3)}
+  .code-scroll{overflow-x:auto;padding:1rem 1.25rem}
+  pre{margin:0;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.65;color:var(--code-text)}
+  .c{color:var(--code-comment)}
+  .k{color:var(--code-keyword);font-weight:600}
+  .f{color:var(--code-fn)}
+  .s{color:var(--code-string)}
+  .n{color:var(--code-num)}
+
+  .output-preview{background:var(--bg);border:1px solid var(--rule);border-radius:6px;overflow-x:auto;margin-top:.8rem;transition:background .35s,border-color .35s}
+  .output-preview table{width:100%;border-collapse:collapse;font-size:11.5px}
+  .output-preview th{background:var(--accent);color:var(--hero-text);padding:6px 10px;text-align:left;font-weight:700;white-space:nowrap}
+  .output-preview td{padding:5px 10px;border-bottom:.5px solid var(--rule);color:var(--muted);white-space:nowrap;transition:color .35s,border-color .35s}
+  .output-preview tr:nth-child(even) td{background:var(--surface);transition:background .35s}
+  .output-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:1rem;margin-bottom:5px;transition:color .35s}
+  .status-esc{color:#C0392B;font-weight:700}
+  .status-ok{color:#1D6A39;font-weight:700}
+  .status-warn{color:#7D3C00;font-weight:700}
+  .status-rev{color:#6C3483;font-weight:700}
+
+  /* SCHEMA */
+  .schema-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:.5rem}
+  .schema-table{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:.9rem;transition:background .35s,border-color .35s}
+  .schema-name{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px;font-family:'Courier New',monospace;transition:color .35s}
+  .schema-col{font-size:11px;color:var(--muted);padding:2px 0;border-bottom:.5px solid var(--rule);font-family:'Courier New',monospace;transition:color .35s,border-color .35s}
+  .schema-col:last-child{border-bottom:none}
+  .schema-col span{color:var(--code-keyword);font-size:10px}
+
+  /* TAGS */
+  .tag-section{margin-bottom:1.2rem}
+  .tag-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:7px;transition:color .35s}
+  .tag-cloud{display:flex;flex-wrap:wrap;gap:5px}
+  .tag{font-size:11px;padding:3px 9px;border-radius:3px;background:var(--skill-tag);color:var(--skill-text);font-weight:500;transition:background .35s,color .35s}
+
+  /* CTA */
+  .cta-strip{background:var(--hero-bg);border-radius:10px;padding:2.5rem;text-align:center;transition:background .35s}
+  .cta-strip h2{color:var(--hero-text);font-size:1.3rem;margin-bottom:.5rem;font-weight:800}
+  .cta-strip p{color:var(--hero-muted);font-size:13px;margin-bottom:1.5rem}
+  .cta-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .cta-btn{padding:11px 24px;border-radius:5px;font-size:13px;font-weight:700;letter-spacing:.05em;text-decoration:none;transition:opacity .2s}
+  .cta-primary{background:var(--accent);color:var(--hero-text)}
+  .cta-secondary{border:1.5px solid rgba(253,243,231,.3);color:rgba(253,243,231,.75)}
+  .cta-btn:hover{opacity:.82}
+
+  footer{text-align:center;padding:2rem;font-size:11px;color:var(--muted);letter-spacing:.08em;transition:color .35s}
+  footer a{color:var(--accent);text-decoration:none}
+  .fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+  .fade-in.visible{opacity:1;transform:translateY(0)}
+  @media(max-width:650px){.schema-grid{grid-template-columns:1fr}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-back">← Back to Portfolio</a>
+  <div class="nav-right">
+    <span class="nav-brand">accordanalyst.com</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <span id="toggleEmoji">☀️</span>
+      <span class="toggle-label" id="toggleLabel">Light</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    </button>
+    <a href="https://drive.google.com/file/d/1YBGSjefqawJHS8zWLPK8O1fgNNcXsS3Q/view?usp=sharing" class="dl-btn" id="dlBtn">View SQL Code</a>
+  </div>
+</nav>
+
+<section class="proj-hero">
+  <p class="proj-eyebrow">Portfolio Project · SQL · Revenue Operations</p>
+  <h1 class="proj-title">Revenue Reconciliation<br>Query Set</h1>
+  <p class="proj-subtitle">Five production-ready SQL queries that surface revenue leakage, aging receivables, duplicate charges, short payments, and contract billing variance — the financial pain points every company above Series B is actively trying to solve.</p>
+  <div class="proj-pills">
+    <span class="proj-pill pill-sql">SQL</span>
+    <span class="proj-pill pill-biz">Revenue Operations</span>
+    <span class="proj-pill pill-biz">Billing Ops</span>
+    <span class="proj-pill pill-sql">CTEs · Window Functions · CASE</span>
+    <span class="proj-pill pill-biz">Industry-Agnostic</span>
+  </div>
+  <div class="proj-kpis">
+    <div class="kpi-item"><div class="kpi-num">5</div><div class="kpi-lbl">Queries</div></div>
+    <div class="kpi-item"><div class="kpi-num">5</div><div class="kpi-lbl">Tables</div></div>
+    <div class="kpi-item"><div class="kpi-num">4</div><div class="kpi-lbl">Leakage Vectors</div></div>
+    <div class="kpi-item"><div class="kpi-num">$100K+</div><div class="kpi-lbl">Target Role Range</div></div>
+  </div>
+</section>
+
+<main>
+
+  <div class="disclaimer fade-in">
+    <strong>Simulated schema:</strong> All table structures, column names, and sample output values in this project are entirely fictitious and built for portfolio demonstration. The queries are written against a generic SaaS billing schema — no real company data, client records, or proprietary system designs have been used or referenced.
+  </div>
+
+  <!-- SCHEMA -->
+  <section>
+    <p class="sect-eyebrow fade-in">Data Model</p>
+    <h2 class="sect-title fade-in">Schema Overview</h2>
+    <div class="sect-rule fade-in"></div>
+    <p class="fade-in" style="font-size:13.5px;color:var(--muted);margin-bottom:1.2rem;line-height:1.7">Five tables representing a standard SaaS billing environment. Every query in this project runs against this schema — no joins beyond what's necessary, no assumptions about tooling. Compatible with PostgreSQL, BigQuery, Snowflake, and Redshift with minor syntax adjustments.</p>
+    <div class="schema-grid fade-in">
+      <div class="schema-table">
+        <div class="schema-name">accounts</div>
+        <div class="schema-col">account_id <span>PK</span></div>
+        <div class="schema-col">account_name</div>
+        <div class="schema-col">tier</div>
+        <div class="schema-col">region</div>
+        <div class="schema-col">csm_owner</div>
+      </div>
+      <div class="schema-table">
+        <div class="schema-name">invoices</div>
+        <div class="schema-col">invoice_id <span>PK</span></div>
+        <div class="schema-col">account_id <span>FK</span></div>
+        <div class="schema-col">invoice_date</div>
+        <div class="schema-col">due_date</div>
+        <div class="schema-col">amount_due</div>
+        <div class="schema-col">status</div>
+        <div class="schema-col">billing_period_start</div>
+        <div class="schema-col">billing_period_end</div>
+        <div class="schema-col">product_line</div>
+      </div>
+      <div class="schema-table">
+        <div class="schema-name">payments</div>
+        <div class="schema-col">payment_id <span>PK</span></div>
+        <div class="schema-col">invoice_id <span>FK</span></div>
+        <div class="schema-col">account_id <span>FK</span></div>
+        <div class="schema-col">payment_date</div>
+        <div class="schema-col">amount_paid</div>
+        <div class="schema-col">payment_method</div>
+      </div>
+      <div class="schema-table">
+        <div class="schema-name">contracts</div>
+        <div class="schema-col">contract_id <span>PK</span></div>
+        <div class="schema-col">account_id <span>FK</span></div>
+        <div class="schema-col">contracted_arr</div>
+        <div class="schema-col">billing_frequency</div>
+        <div class="schema-col">contract_start</div>
+        <div class="schema-col">contract_end</div>
+        <div class="schema-col">auto_renew</div>
+      </div>
+      <div class="schema-table">
+        <div class="schema-name">credit_memos</div>
+        <div class="schema-col">memo_id <span>PK</span></div>
+        <div class="schema-col">account_id <span>FK</span></div>
+        <div class="schema-col">invoice_id <span>FK</span></div>
+        <div class="schema-col">memo_date</div>
+        <div class="schema-col">memo_amount</div>
+        <div class="schema-col">reason_code</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUERIES -->
+  <section>
+    <p class="sect-eyebrow fade-in">The Queries</p>
+    <h2 class="sect-title fade-in">Five Revenue Reconciliation Queries</h2>
+    <div class="sect-rule fade-in"></div>
+
+    <!-- Q1 -->
+    <div class="query-card open fade-in">
+      <div class="query-header" onclick="toggle(this)">
+        <div class="query-num">1</div>
+        <div class="query-meta">
+          <div class="query-title">Aging Receivables Report</div>
+          <div class="query-biz">Business question: Which accounts owe us money, how long have they owed it, and how much?</div>
+          <div class="query-impact">Surfaces cash the company has earned but not collected — the most direct form of revenue leakage</div>
+        </div>
+        <span class="query-chevron">▾</span>
+      </div>
+      <div class="query-body">
+        <div class="code-wrap">
+          <div class="code-toolbar">
+            <span class="code-lang">SQL — PostgreSQL</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <div class="code-scroll"><pre><span class="k">SELECT</span>
+    a.account_name,
+    a.tier,
+    a.csm_owner,
+    <span class="f">COUNT</span>(i.invoice_id)                        <span class="k">AS</span> open_invoice_count,
+    <span class="f">SUM</span>(i.amount_due)                           <span class="k">AS</span> total_outstanding,
+    <span class="c">-- Age buckets</span>
+    <span class="f">SUM</span>(<span class="k">CASE WHEN</span> <span class="f">CURRENT_DATE</span> - i.due_date <span class="k">BETWEEN</span> <span class="n">1</span>  <span class="k">AND</span> <span class="n">30</span>  <span class="k">THEN</span> i.amount_due <span class="k">ELSE</span> <span class="n">0</span> <span class="k">END</span>) <span class="k">AS</span> bucket_1_30,
+    <span class="f">SUM</span>(<span class="k">CASE WHEN</span> <span class="f">CURRENT_DATE</span> - i.due_date <span class="k">BETWEEN</span> <span class="n">31</span> <span class="k">AND</span> <span class="n">60</span>  <span class="k">THEN</span> i.amount_due <span class="k">ELSE</span> <span class="n">0</span> <span class="k">END</span>) <span class="k">AS</span> bucket_31_60,
+    <span class="f">SUM</span>(<span class="k">CASE WHEN</span> <span class="f">CURRENT_DATE</span> - i.due_date <span class="k">BETWEEN</span> <span class="n">61</span> <span class="k">AND</span> <span class="n">90</span>  <span class="k">THEN</span> i.amount_due <span class="k">ELSE</span> <span class="n">0</span> <span class="k">END</span>) <span class="k">AS</span> bucket_61_90,
+    <span class="f">SUM</span>(<span class="k">CASE WHEN</span> <span class="f">CURRENT_DATE</span> - i.due_date <span class="k">>&gt;</span> <span class="n">90</span>               <span class="k">THEN</span> i.amount_due <span class="k">ELSE</span> <span class="n">0</span> <span class="k">END</span>) <span class="k">AS</span> bucket_90_plus,
+    <span class="c">-- Escalation flag</span>
+    <span class="k">CASE</span>
+        <span class="k">WHEN</span> <span class="f">SUM</span>(<span class="k">CASE WHEN</span> <span class="f">CURRENT_DATE</span> - i.due_date <span class="k">>&gt;</span> <span class="n">90</span> <span class="k">THEN</span> i.amount_due <span class="k">ELSE</span> <span class="n">0</span> <span class="k">END</span>) <span class="k">></span> <span class="n">10000</span> <span class="k">THEN</span> <span class="s">'ESCALATE'</span>
+        <span class="k">WHEN</span> <span class="f">SUM</span>(<span class="k">CASE WHEN</span> <span class="f">CURRENT_DATE</span> - i.due_date <span class="k">>&gt;</span> <span class="n">60</span>  <span class="k">THEN</span> i.amount_due <span class="k">ELSE</span> <span class="n">0</span> <span class="k">END</span>) <span class="k">></span> <span class="n">5000</span>  <span class="k">THEN</span> <span class="s">'PRIORITY FOLLOW-UP'</span>
+        <span class="k">ELSE</span> <span class="s">'STANDARD'</span>
+    <span class="k">END</span>                                         <span class="k">AS</span> collection_priority
+<span class="k">FROM</span> invoices i
+<span class="k">JOIN</span> accounts a <span class="k">ON</span> i.account_id = a.account_id
+<span class="k">WHERE</span> i.status <span class="k">NOT IN</span> (<span class="s">'paid'</span>, <span class="s">'void'</span>, <span class="s">'written_off'</span>)
+<span class="k">GROUP BY</span> a.account_name, a.tier, a.csm_owner
+<span class="k">HAVING</span> <span class="f">SUM</span>(i.amount_due) <span class="k">></span> <span class="n">0</span>
+<span class="k">ORDER BY</span> total_outstanding <span class="k">DESC</span>;</pre></div>
+        </div>
+        <p class="output-label">Sample output</p>
+        <div class="output-preview">
+          <table>
+            <tr><th>account_name</th><th>tier</th><th>total_outstanding</th><th>bucket_90_plus</th><th>collection_priority</th></tr>
+            <tr><td>Meridian Financial</td><td>Enterprise</td><td>$84,200</td><td>$41,000</td><td><span class="status-esc">ESCALATE</span></td></tr>
+            <tr><td>Atlas SaaS Group</td><td>Mid-Market</td><td>$22,500</td><td>$0</td><td><span class="status-warn">PRIORITY FOLLOW-UP</span></td></tr>
+            <tr><td>Cornerstone Retail</td><td>SMB</td><td>$4,800</td><td>$0</td><td><span class="status-ok">STANDARD</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="query-card fade-in">
+      <div class="query-header" onclick="toggle(this)">
+        <div class="query-num">2</div>
+        <div class="query-meta">
+          <div class="query-title">Payment Shortfall Detection</div>
+          <div class="query-biz">Business question: Where has an account paid less than invoiced — and by exactly how much?</div>
+          <div class="query-impact">Automates the reconciliation that otherwise only surfaces during a dispute or manual audit</div>
+        </div>
+        <span class="query-chevron">▾</span>
+      </div>
+      <div class="query-body">
+        <div class="code-wrap">
+          <div class="code-toolbar"><span class="code-lang">SQL — CTEs</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-scroll"><pre><span class="k">WITH</span> payment_totals <span class="k">AS</span> (
+    <span class="k">SELECT</span>
+        invoice_id,
+        <span class="f">SUM</span>(amount_paid)  <span class="k">AS</span> total_paid,
+        <span class="f">MAX</span>(payment_date) <span class="k">AS</span> last_payment_date
+    <span class="k">FROM</span> payments
+    <span class="k">GROUP BY</span> invoice_id
+),
+credit_totals <span class="k">AS</span> (
+    <span class="k">SELECT</span>
+        invoice_id,
+        <span class="f">SUM</span>(memo_amount) <span class="k">AS</span> total_credits
+    <span class="k">FROM</span> credit_memos
+    <span class="k">GROUP BY</span> invoice_id
+)
+<span class="k">SELECT</span>
+    a.account_name,
+    i.invoice_id,
+    i.amount_due,
+    <span class="f">COALESCE</span>(pt.total_paid, <span class="n">0</span>)                <span class="k">AS</span> total_paid,
+    <span class="f">COALESCE</span>(ct.total_credits, <span class="n">0</span>)             <span class="k">AS</span> credits_applied,
+    i.amount_due
+        - <span class="f">COALESCE</span>(pt.total_paid, <span class="n">0</span>)
+        - <span class="f">COALESCE</span>(ct.total_credits, <span class="n">0</span>)       <span class="k">AS</span> net_balance_due,
+    <span class="f">ROUND</span>(<span class="f">COALESCE</span>(pt.total_paid,<span class="n">0</span>) / <span class="f">NULLIF</span>(i.amount_due,<span class="n">0</span>) * <span class="n">100</span>, <span class="n">2</span>) <span class="k">AS</span> pct_paid,
+    <span class="f">CURRENT_DATE</span> - i.due_date                 <span class="k">AS</span> days_past_due
+<span class="k">FROM</span> invoices i
+<span class="k">JOIN</span> accounts a     <span class="k">ON</span> i.account_id = a.account_id
+<span class="k">LEFT JOIN</span> payment_totals pt <span class="k">ON</span> i.invoice_id = pt.invoice_id
+<span class="k">LEFT JOIN</span> credit_totals  ct <span class="k">ON</span> i.invoice_id = ct.invoice_id
+<span class="k">WHERE</span>
+    (i.amount_due
+        - <span class="f">COALESCE</span>(pt.total_paid, <span class="n">0</span>)
+        - <span class="f">COALESCE</span>(ct.total_credits, <span class="n">0</span>)) <span class="k">></span> <span class="n">0.01</span>
+<span class="k">ORDER BY</span> net_balance_due <span class="k">DESC</span>;</pre></div>
+        </div>
+        <p class="output-label">Sample output</p>
+        <div class="output-preview">
+          <table>
+            <tr><th>account_name</th><th>invoice_id</th><th>amount_due</th><th>total_paid</th><th>net_balance_due</th><th>pct_paid</th><th>days_past_due</th></tr>
+            <tr><td>NovaTech Corp</td><td>INV-8821</td><td>$12,000</td><td>$9,500</td><td>$2,500</td><td>79.17%</td><td>47</td></tr>
+            <tr><td>Riverstone Ltd</td><td>INV-9104</td><td>$5,400</td><td>$5,000</td><td>$400</td><td>92.59%</td><td>12</td></tr>
+            <tr><td>Apex Holdings</td><td>INV-7733</td><td>$3,200</td><td>$0</td><td>$3,200</td><td>0.00%</td><td>91</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="query-card fade-in">
+      <div class="query-header" onclick="toggle(this)">
+        <div class="query-num">3</div>
+        <div class="query-meta">
+          <div class="query-title">Duplicate Charge Detection</div>
+          <div class="query-biz">Business question: Are any accounts being billed more than once for the same period and product?</div>
+          <div class="query-impact">Catches duplicate invoices before they reach customers — preventing disputes, churn, and compliance exposure</div>
+        </div>
+        <span class="query-chevron">▾</span>
+      </div>
+      <div class="query-body">
+        <div class="code-wrap">
+          <div class="code-toolbar"><span class="code-lang">SQL — Window Functions</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-scroll"><pre><span class="k">WITH</span> invoice_fingerprint <span class="k">AS</span> (
+    <span class="k">SELECT</span>
+        invoice_id, account_id,
+        product_line, billing_period_start,
+        billing_period_end, amount_due,
+        <span class="c">-- Count invoices per account + product + period</span>
+        <span class="f">COUNT</span>(*) <span class="k">OVER</span> (
+            <span class="k">PARTITION BY</span>
+                account_id, product_line,
+                billing_period_start, billing_period_end
+        )                          <span class="k">AS</span> period_invoice_count
+    <span class="k">FROM</span> invoices
+    <span class="k">WHERE</span> status <span class="k">NOT IN</span> (<span class="s">'void'</span>, <span class="s">'written_off'</span>)
+)
+<span class="k">SELECT</span>
+    a.account_name,
+    f.product_line,
+    f.billing_period_start,
+    f.billing_period_end,
+    f.period_invoice_count         <span class="k">AS</span> duplicate_count,
+    <span class="f">SUM</span>(f.amount_due)              <span class="k">AS</span> total_billed,
+    <span class="f">MIN</span>(f.amount_due)              <span class="k">AS</span> expected_charge,
+    <span class="f">SUM</span>(f.amount_due) - <span class="f">MIN</span>(f.amount_due) <span class="k">AS</span> overcharge_amount,
+    <span class="f">STRING_AGG</span>(f.invoice_id, <span class="s">', '</span>) <span class="k">AS</span> invoice_ids
+<span class="k">FROM</span> invoice_fingerprint f
+<span class="k">JOIN</span> accounts a <span class="k">ON</span> f.account_id = a.account_id
+<span class="k">WHERE</span> f.period_invoice_count <span class="k">></span> <span class="n">1</span>
+<span class="k">GROUP BY</span>
+    a.account_name, f.product_line,
+    f.billing_period_start, f.billing_period_end,
+    f.period_invoice_count
+<span class="k">ORDER BY</span> overcharge_amount <span class="k">DESC</span>;</pre></div>
+        </div>
+        <p class="output-label">Sample output</p>
+        <div class="output-preview">
+          <table>
+            <tr><th>account_name</th><th>product_line</th><th>period</th><th>duplicate_count</th><th>overcharge_amount</th><th>invoice_ids</th></tr>
+            <tr><td>Meridian Financial</td><td>Platform Pro</td><td>2026-Q1</td><td>2</td><td class="status-esc">$8,400</td><td>INV-7701, INV-7742</td></tr>
+            <tr><td>BlueWave Analytics</td><td>Data Add-on</td><td>2026-02</td><td>2</td><td class="status-warn">$1,200</td><td>INV-8830, INV-8831</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="query-card fade-in">
+      <div class="query-header" onclick="toggle(this)">
+        <div class="query-num">4</div>
+        <div class="query-meta">
+          <div class="query-title">Contracted vs Billed Revenue Reconciliation</div>
+          <div class="query-biz">Business question: Is every account being billed at their contracted ARR — not under, not over?</div>
+          <div class="query-impact">Surfaces revenue leakage from under-billing and compliance risk from over-billing simultaneously</div>
+        </div>
+        <span class="query-chevron">▾</span>
+      </div>
+      <div class="query-body">
+        <div class="code-wrap">
+          <div class="code-toolbar"><span class="code-lang">SQL — CTEs + DATE functions</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-scroll"><pre><span class="k">WITH</span> annualised_billing <span class="k">AS</span> (
+    <span class="k">SELECT</span>
+        account_id,
+        <span class="f">SUM</span>(amount_due) <span class="k">AS</span> actual_arr_billed
+    <span class="k">FROM</span> invoices
+    <span class="k">WHERE</span>
+        invoice_date <span class="k">>=</span> <span class="f">DATE_TRUNC</span>(<span class="s">'year'</span>, <span class="f">CURRENT_DATE</span>)
+        <span class="k">AND</span> status <span class="k">NOT IN</span> (<span class="s">'void'</span>, <span class="s">'written_off'</span>)
+    <span class="k">GROUP BY</span> account_id
+)
+<span class="k">SELECT</span>
+    a.account_name,
+    a.tier,
+    c.contracted_arr,
+    ab.actual_arr_billed,
+    ab.actual_arr_billed - c.contracted_arr    <span class="k">AS</span> arr_variance,
+    <span class="f">ROUND</span>(
+        (ab.actual_arr_billed - c.contracted_arr)
+        / <span class="f">NULLIF</span>(c.contracted_arr, <span class="n">0</span>) * <span class="n">100</span>, <span class="n">2</span>
+    )                                          <span class="k">AS</span> variance_pct,
+    <span class="k">CASE</span>
+        <span class="k">WHEN</span> <span class="f">ABS</span>(ab.actual_arr_billed - c.contracted_arr)
+             / <span class="f">NULLIF</span>(c.contracted_arr,<span class="n">0</span>) <span class="k">></span> <span class="n">0.05</span> <span class="k">THEN</span> <span class="s">'REVIEW REQUIRED'</span>
+        <span class="k">WHEN</span> ab.actual_arr_billed <span class="k">></span> c.contracted_arr <span class="k">THEN</span> <span class="s">'OVER-BILLED'</span>
+        <span class="k">WHEN</span> ab.actual_arr_billed <span class="k"><</span> c.contracted_arr <span class="k">THEN</span> <span class="s">'UNDER-BILLED'</span>
+        <span class="k">ELSE</span> <span class="s">'IN LINE'</span>
+    <span class="k">END</span>                                        <span class="k">AS</span> billing_status,
+    <span class="c">-- Surface renewal risk at same time</span>
+    <span class="k">CASE</span>
+        <span class="k">WHEN</span> c.contract_end <span class="k"><=</span> <span class="f">CURRENT_DATE</span> + <span class="k">INTERVAL</span> <span class="s">'90 days'</span>
+             <span class="k">AND</span> c.auto_renew <span class="k">=</span> <span class="k">FALSE</span> <span class="k">THEN</span> <span class="s">'RENEWAL RISK'</span>
+        <span class="k">ELSE</span> <span class="k">NULL</span>
+    <span class="k">END</span>                                        <span class="k">AS</span> renewal_flag
+<span class="k">FROM</span> contracts c
+<span class="k">JOIN</span> accounts a           <span class="k">ON</span> c.account_id = a.account_id
+<span class="k">LEFT JOIN</span> annualised_billing ab <span class="k">ON</span> c.account_id = ab.account_id
+<span class="k">WHERE</span> c.contract_end <span class="k">>=</span> <span class="f">CURRENT_DATE</span>
+<span class="k">ORDER BY</span> <span class="f">ABS</span>(arr_variance) <span class="k">DESC</span>;</pre></div>
+        </div>
+        <p class="output-label">Sample output</p>
+        <div class="output-preview">
+          <table>
+            <tr><th>account_name</th><th>contracted_arr</th><th>actual_arr_billed</th><th>arr_variance</th><th>billing_status</th><th>renewal_flag</th></tr>
+            <tr><td>Cornerstone Retail</td><td>$120,000</td><td>$132,000</td><td>+$12,000</td><td><span class="status-esc">REVIEW REQUIRED</span></td><td>—</td></tr>
+            <tr><td>Atlas SaaS Group</td><td>$84,000</td><td>$78,000</td><td>-$6,000</td><td><span class="status-warn">UNDER-BILLED</span></td><td>RENEWAL RISK</td></tr>
+            <tr><td>NovaTech Corp</td><td>$60,000</td><td>$60,200</td><td>+$200</td><td><span class="status-ok">IN LINE</span></td><td>—</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="query-card fade-in">
+      <div class="query-header" onclick="toggle(this)">
+        <div class="query-num">5</div>
+        <div class="query-meta">
+          <div class="query-title">Revenue Leakage Summary Dashboard</div>
+          <div class="query-biz">Business question: Give me one number — total revenue at risk across all leakage categories.</div>
+          <div class="query-impact">The output you present to a VP of Finance or CRO — all four leakage vectors in a single prioritised view</div>
+        </div>
+        <span class="query-chevron">▾</span>
+      </div>
+      <div class="query-body">
+        <div class="code-wrap">
+          <div class="code-toolbar"><span class="code-lang">SQL — UNION ALL + Window Functions</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-scroll"><pre><span class="k">WITH</span> aging <span class="k">AS</span> (
+    <span class="k">SELECT</span> <span class="s">'Aging Receivables'</span> <span class="k">AS</span> leakage_type,
+        <span class="f">COUNT</span>(<span class="k">DISTINCT</span> invoice_id) <span class="k">AS</span> record_count,
+        <span class="f">SUM</span>(amount_due) <span class="k">AS</span> amount_at_risk
+    <span class="k">FROM</span> invoices
+    <span class="k">WHERE</span> status <span class="k">NOT IN</span> (<span class="s">'paid'</span>,<span class="s">'void'</span>,<span class="s">'written_off'</span>)
+      <span class="k">AND</span> <span class="f">CURRENT_DATE</span> <span class="k">></span> due_date
+),
+short_pay <span class="k">AS</span> (
+    <span class="k">SELECT</span> <span class="s">'Short Payments'</span> <span class="k">AS</span> leakage_type,
+        <span class="f">COUNT</span>(<span class="k">DISTINCT</span> i.invoice_id) <span class="k">AS</span> record_count,
+        <span class="f">SUM</span>(i.amount_due - <span class="f">COALESCE</span>(p.total_paid,<span class="n">0</span>)) <span class="k">AS</span> amount_at_risk
+    <span class="k">FROM</span> invoices i
+    <span class="k">LEFT JOIN</span> (<span class="k">SELECT</span> invoice_id, <span class="f">SUM</span>(amount_paid) <span class="k">AS</span> total_paid
+               <span class="k">FROM</span> payments <span class="k">GROUP BY</span> invoice_id) p
+        <span class="k">ON</span> i.invoice_id = p.invoice_id
+    <span class="k">WHERE</span> i.status <span class="k">NOT IN</span> (<span class="s">'void'</span>,<span class="s">'written_off'</span>)
+      <span class="k">AND</span> <span class="f">COALESCE</span>(p.total_paid,<span class="n">0</span>) <span class="k">BETWEEN</span> <span class="n">0.01</span> <span class="k">AND</span> i.amount_due - <span class="n">0.01</span>
+),
+duplicates <span class="k">AS</span> (
+    <span class="k">SELECT</span> <span class="s">'Duplicate Charges'</span> <span class="k">AS</span> leakage_type,
+        <span class="f">COUNT</span>(*) <span class="k">AS</span> record_count,
+        <span class="f">SUM</span>(overcharge_amount) <span class="k">AS</span> amount_at_risk
+    <span class="k">FROM</span> (
+        <span class="k">SELECT</span> <span class="f">SUM</span>(amount_due) - <span class="f">MIN</span>(amount_due) <span class="k">AS</span> overcharge_amount
+        <span class="k">FROM</span> invoices
+        <span class="k">WHERE</span> status <span class="k">NOT IN</span> (<span class="s">'void'</span>,<span class="s">'written_off'</span>)
+        <span class="k">GROUP BY</span> account_id, product_line,
+                 billing_period_start, billing_period_end
+        <span class="k">HAVING</span> <span class="f">COUNT</span>(*) <span class="k">></span> <span class="n">1</span>
+    ) dup
+)
+<span class="k">SELECT</span>
+    leakage_type,
+    record_count,
+    <span class="f">ROUND</span>(amount_at_risk, <span class="n">2</span>)             <span class="k">AS</span> amount_at_risk,
+    <span class="f">ROUND</span>(
+        amount_at_risk / <span class="f">SUM</span>(amount_at_risk) <span class="k">OVER</span> () * <span class="n">100</span>, <span class="n">1</span>
+    )                                    <span class="k">AS</span> pct_of_total_risk
+<span class="k">FROM</span> (
+    <span class="k">SELECT</span> * <span class="k">FROM</span> aging
+    <span class="k">UNION ALL</span>
+    <span class="k">SELECT</span> * <span class="k">FROM</span> short_pay
+    <span class="k">UNION ALL</span>
+    <span class="k">SELECT</span> * <span class="k">FROM</span> duplicates
+) combined
+<span class="k">ORDER BY</span> amount_at_risk <span class="k">DESC</span>;</pre></div>
+        </div>
+        <p class="output-label">Sample output</p>
+        <div class="output-preview">
+          <table>
+            <tr><th>leakage_type</th><th>record_count</th><th>amount_at_risk</th><th>pct_of_total_risk</th></tr>
+            <tr><td><span class="status-esc">Aging Receivables</span></td><td>38</td><td>$214,800</td><td>61.2%</td></tr>
+            <tr><td><span class="status-warn">Short Payments</span></td><td>12</td><td>$88,400</td><td>25.2%</td></tr>
+            <tr><td><span class="status-rev">Duplicate Charges</span></td><td>4</td><td>$47,600</td><td>13.6%</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SKILLS -->
+  <section>
+    <p class="sect-eyebrow fade-in">Technical Skills</p>
+    <h2 class="sect-title fade-in">SQL Concepts &amp; Business Domains</h2>
+    <div class="sect-rule fade-in"></div>
+    <div class="tag-section fade-in">
+      <p class="tag-label">SQL Concepts Used</p>
+      <div class="tag-cloud">
+        <span class="tag">Common Table Expressions (CTEs)</span>
+        <span class="tag">Window Functions (COUNT OVER PARTITION)</span>
+        <span class="tag">CASE / CASE WHEN</span>
+        <span class="tag">LEFT JOIN</span>
+        <span class="tag">COALESCE / NULLIF</span>
+        <span class="tag">UNION ALL</span>
+        <span class="tag">HAVING</span>
+        <span class="tag">STRING_AGG</span>
+        <span class="tag">DATE_TRUNC</span>
+        <span class="tag">INTERVAL arithmetic</span>
+        <span class="tag">Aggregate functions (SUM, COUNT, MIN, MAX, ROUND)</span>
+        <span class="tag">Subqueries</span>
+        <span class="tag">NOT IN / BETWEEN</span>
+        <span class="tag">Multi-table joins</span>
+      </div>
+    </div>
+    <div class="tag-section fade-in">
+      <p class="tag-label">Business &amp; Finance Domains</p>
+      <div class="tag-cloud">
+        <span class="tag">Revenue Leakage Detection</span>
+        <span class="tag">Accounts Receivable Aging</span>
+        <span class="tag">Short-Pay Reconciliation</span>
+        <span class="tag">Duplicate Invoice Detection</span>
+        <span class="tag">ARR vs Billed Revenue Variance</span>
+        <span class="tag">Contract Compliance</span>
+        <span class="tag">Renewal Risk Flagging</span>
+        <span class="tag">Collections Prioritisation</span>
+        <span class="tag">Executive-Ready Reporting</span>
+        <span class="tag">Credit Memo Handling</span>
+        <span class="tag">SaaS Billing Logic</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section>
+    <div class="cta-strip fade-in">
+      <h2>View the full query file</h2>
+      <p>All five queries in a single clean .sql file — commented, structured, and ready to run against any PostgreSQL-compatible database.</p>
+      <div class="cta-links">
+        <a href="https://drive.google.com/file/d/1YBGSjefqawJHS8zWLPK8O1fgNNcXsS3Q/view?usp=sharing" class="cta-btn cta-primary" id="dlBtn2">View SQL Code</a>
+        <a href="../index.html" class="cta-btn cta-secondary">← Back to Portfolio</a>
+        <a href="mailto:alexis@accordanalyst.com" class="cta-btn cta-secondary">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 Alexis "Zaira" Kelly · <a href="../index.html">accordanalyst.com</a> · Portfolio Project</p>
+</footer>
+
+<script>
+  const html = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const emoji = document.getElementById('toggleEmoji');
+  const lbl = document.getElementById('toggleLabel');
+  const saved = localStorage.getItem('theme');
+  if (saved) { html.setAttribute('data-theme', saved); upd(saved); }
+  btn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    upd(next);
+  });
+  function upd(t) { emoji.textContent = t==='dark'?'🌙':'☀️'; lbl.textContent = t==='dark'?'Dark':'Light'; }
+
+  function toggle(hdr) { hdr.closest('.query-card').classList.toggle('open'); }
+
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  document.querySelectorAll('#dlBtn,#dlBtn2').forEach(b => {
+    b.addEventListener('click', e => {
+      e.preventDefault();
+      alert('Replace this with your hosted .sql file URL — e.g. your GitHub raw file link.');
+    });
+  });
+</script>
+</body>
+</html>

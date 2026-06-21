@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>International Freight Audit Automation — Case Study | accordanalyst.com</title>
+<style>
+  :root {
+    --bg:#FDF3E7;--surface:#FAF0E0;--nav-bg:#3B2207;--hero-bg:#3B2207;
+    --hero-glow:rgba(196,98,29,0.12);--heading:#3B2207;--body:#1C1008;
+    --muted:#6B5240;--rule:#D4B896;--accent:#C4621D;
+    --accent-dim:rgba(196,98,29,0.15);--accent-bdr:rgba(196,98,29,0.35);
+    --hero-text:#FDF3E7;--hero-muted:rgba(253,243,231,0.6);
+    --hero-dim:rgba(253,243,231,0.45);--surface2:#F5E8D0;
+    --toggle-bg:rgba(255,255,255,0.12);--shadow:rgba(0,0,0,0.08);
+    --skill-tag:rgba(196,98,29,0.1);--skill-text:#3B2207;
+  }
+  [data-theme="dark"] {
+    --bg:#0D1B2E;--surface:#112240;--nav-bg:#091628;--hero-bg:#091628;
+    --hero-glow:rgba(46,95,163,0.18);--heading:#B8D4F8;--body:#CDD9EC;
+    --muted:#7B9BB8;--rule:#1F3864;--accent:#4A90D9;
+    --accent-dim:rgba(46,95,163,0.2);--accent-bdr:rgba(74,144,217,0.4);
+    --hero-text:#EBF2FA;--hero-muted:rgba(235,242,250,0.6);
+    --hero-dim:rgba(235,242,250,0.4);--surface2:#0A1628;
+    --toggle-bg:rgba(74,144,217,0.15);--shadow:rgba(0,0,0,0.35);
+    --skill-tag:rgba(46,95,163,0.2);--skill-text:#B8D4F8;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--body);font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6;transition:background .35s,color .35s}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:52px;box-shadow:0 2px 16px var(--shadow);transition:background .35s}
+  .nav-back{font-size:13px;color:rgba(253,243,231,0.7);text-decoration:none;letter-spacing:.05em;transition:color .2s;display:flex;align-items:center;gap:6px}
+  .nav-back:hover{color:var(--accent)}
+  .nav-right{display:flex;align-items:center;gap:1rem}
+  .nav-brand{font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+  .theme-toggle{background:var(--toggle-bg);border:1px solid var(--accent-bdr);border-radius:20px;cursor:pointer;padding:4px 10px;font-size:14px;display:flex;align-items:center;gap:6px;color:var(--hero-muted);transition:background .2s,border-color .2s}
+  .toggle-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--hero-muted)}
+  .toggle-track{width:32px;height:18px;background:var(--accent-dim);border:1px solid var(--accent-bdr);border-radius:9px;position:relative;transition:background .25s;flex-shrink:0}
+  [data-theme="dark"] .toggle-track{background:var(--accent)}
+  .toggle-thumb{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--hero-text);transition:transform .25s}
+  [data-theme="dark"] .toggle-thumb{transform:translateX(14px)}
+  .dl-btn{background:var(--accent);color:var(--hero-text);padding:7px 16px;border-radius:4px;font-size:12px;font-weight:700;letter-spacing:.05em;text-decoration:none;transition:opacity .2s}
+  .dl-btn:hover{opacity:.85}
+
+  /* HERO */
+  .proj-hero{background:var(--hero-bg);padding:6rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden;transition:background .35s}
+  .proj-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,var(--hero-glow) 0%,transparent 65%);pointer-events:none}
+  .proj-eyebrow{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;opacity:.85}
+  .proj-title{font-size:clamp(1.8rem,4.5vw,3.2rem);font-weight:800;color:var(--hero-text);letter-spacing:-.02em;line-height:1.1;margin-bottom:.8rem;transition:color .35s}
+  .proj-subtitle{font-size:15px;color:var(--hero-muted);margin-bottom:2rem;max-width:640px;margin-left:auto;margin-right:auto}
+  .proj-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:2.5rem}
+  .proj-pill{padding:5px 14px;border-radius:20px;font-size:12px;letter-spacing:.06em;font-weight:600}
+  .pill-xl{background:rgba(196,98,29,.2);border:1px solid rgba(196,98,29,.4);color:#FDF3E7}
+  .pill-py{background:rgba(46,160,94,.2);border:1px solid rgba(46,160,94,.4);color:#A8F0C6}
+  .pill-cs{background:rgba(74,144,217,.2);border:1px solid rgba(74,144,217,.4);color:#B8D4F8}
+  .proj-kpis{display:flex;flex-wrap:wrap;gap:0;background:rgba(253,243,231,.05);border:1px solid rgba(196,98,29,.2);border-radius:10px;overflow:hidden;max-width:700px;margin:0 auto}
+  [data-theme="dark"] .proj-kpis{background:rgba(235,242,250,.04);border-color:rgba(74,144,217,.2)}
+  .kpi-item{flex:1 1 100px;padding:1.2rem .8rem;text-align:center;border-right:1px solid rgba(196,98,29,.15);transition:background .2s}
+  [data-theme="dark"] .kpi-item{border-right-color:rgba(74,144,217,.15)}
+  .kpi-item:last-child{border-right:none}
+  .kpi-item:hover{background:rgba(196,98,29,.08)}
+  [data-theme="dark"] .kpi-item:hover{background:rgba(46,95,163,.12)}
+  .kpi-num{font-size:1.8rem;font-weight:800;color:var(--accent);line-height:1;margin-bottom:3px;transition:color .35s}
+  .kpi-lbl{font-size:10px;color:var(--hero-muted);letter-spacing:.07em;text-transform:uppercase}
+
+  /* MAIN */
+  main{max-width:900px;margin:0 auto;padding:4rem 2rem 3rem}
+  section{margin-bottom:4rem}
+  .sect-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;font-weight:600;transition:color .35s}
+  .sect-title{font-size:1.5rem;font-weight:800;color:var(--heading);margin-bottom:.3rem;letter-spacing:-.01em;transition:color .35s}
+  .sect-rule{height:3px;background:linear-gradient(to right,var(--accent),transparent);margin-bottom:1.8rem;border-radius:2px;transition:background .35s}
+
+  /* DISCLAIMER */
+  .disclaimer{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:2.5rem;transition:background .35s,border-color .35s,color .35s}
+  .disclaimer strong{color:var(--heading)}
+
+  /* STEP CARDS */
+  .step-grid{display:flex;flex-direction:column;gap:1rem}
+  .step-card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden;transition:background .35s,border-color .35s}
+  .step-card-header{display:flex;align-items:center;gap:14px;padding:1rem 1.25rem;cursor:pointer;user-select:none}
+  .step-card-header:hover .step-num{background:var(--accent);color:var(--hero-text)}
+  .step-num{width:32px;height:32px;border-radius:50%;background:var(--accent-dim);border:2px solid var(--accent-bdr);color:var(--accent);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,color .2s}
+  .step-label{font-size:14px;font-weight:700;color:var(--heading);transition:color .35s}
+  .step-sublabel{font-size:12px;color:var(--muted);margin-top:1px;transition:color .35s}
+  .step-chevron{margin-left:auto;font-size:16px;color:var(--accent);transition:transform .25s}
+  .step-card.open .step-chevron{transform:rotate(180deg)}
+  .step-body{display:none;padding:0 1.25rem 1.25rem 4rem}
+  .step-card.open .step-body{display:block}
+  .step-body p{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:.9rem;transition:color .35s}
+  .step-body p:last-child{margin-bottom:0}
+  .step-body strong{color:var(--heading)}
+  .step-body ul{margin:.5rem 0 .9rem 0;padding:0;list-style:none}
+  .step-body ul li{font-size:13px;color:var(--muted);padding:.3rem 0 .3rem 18px;position:relative;border-bottom:.5px solid var(--rule);transition:color .35s,border-color .35s}
+  .step-body ul li:last-child{border-bottom:none}
+  .step-body ul li::before{content:'▸';color:var(--accent);position:absolute;left:0;font-size:10px;top:6px}
+
+  /* FORMULA CARDS */
+  .formula-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+  .formula-card{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:1rem;transition:background .35s,border-color .35s}
+  .formula-name{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;transition:color .35s}
+  .formula-sig{font-family:'Courier New',monospace;font-size:11px;color:var(--heading);background:var(--bg);border:1px solid var(--rule);border-radius:4px;padding:5px 8px;margin-bottom:8px;line-height:1.4;transition:background .35s,color .35s,border-color .35s}
+  .formula-desc{font-size:12px;color:var(--muted);line-height:1.55;transition:color .35s}
+
+  /* DATA TABLES */
+  .data-preview{width:100%;border-collapse:collapse;font-size:12px;margin-top:.5rem}
+  .data-preview th{background:var(--accent);color:var(--hero-text);padding:7px 10px;text-align:left;font-weight:700;font-size:11px;letter-spacing:.04em}
+  .data-preview td{padding:6px 10px;border-bottom:.5px solid var(--rule);color:var(--muted);transition:color .35s,border-color .35s}
+  .data-preview tr:nth-child(even) td{background:var(--surface);transition:background .35s}
+  .data-preview tr:hover td{background:var(--accent-dim)}
+  .status-over{color:#C0392B;font-weight:700}
+  .status-match{color:#1D6A39;font-weight:700}
+  .status-rnof{color:#6C3483;font-weight:700}
+  .status-short{color:#7D3C00;font-weight:700}
+
+  /* TAGS */
+  .tag-cloud{display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem}
+  .tag{font-size:11px;padding:3px 9px;border-radius:3px;background:var(--skill-tag);color:var(--skill-text);font-weight:500;transition:background .35s,color .35s}
+
+  /* RESULTS */
+  .results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+  .result-card{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:1rem;text-align:center;transition:background .35s,border-color .35s}
+  .result-num{font-size:1.6rem;font-weight:800;color:var(--accent);margin-bottom:3px;transition:color .35s}
+  .result-lbl{font-size:11px;color:var(--muted);line-height:1.4;transition:color .35s}
+
+  /* CTA */
+  .cta-strip{background:var(--hero-bg);border-radius:10px;padding:2.5rem;text-align:center;transition:background .35s}
+  .cta-strip h2{color:var(--hero-text);font-size:1.3rem;margin-bottom:.5rem;font-weight:800}
+  .cta-strip p{color:var(--hero-muted);font-size:13px;margin-bottom:1.5rem}
+  .cta-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .cta-btn{padding:11px 24px;border-radius:5px;font-size:13px;font-weight:700;letter-spacing:.05em;text-decoration:none;transition:opacity .2s}
+  .cta-primary{background:var(--accent);color:var(--hero-text)}
+  .cta-secondary{border:1.5px solid rgba(253,243,231,.3);color:rgba(253,243,231,.75)}
+  .cta-btn:hover{opacity:.82}
+
+  footer{text-align:center;padding:2rem;font-size:11px;color:var(--muted);letter-spacing:.08em;transition:color .35s}
+  footer a{color:var(--accent);text-decoration:none}
+
+  .fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+  .fade-in.visible{opacity:1;transform:translateY(0)}
+
+  @media(max-width:650px){.kpi-item{flex:1 1 90px}.proj-title{font-size:1.6rem}.formula-grid{grid-template-columns:1fr}.step-body{padding-left:1.25rem}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-back">← Back to Portfolio</a>
+  <div class="nav-right">
+    <span class="nav-brand">accordanalyst.com</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <span id="toggleEmoji">☀️</span>
+      <span class="toggle-label" id="toggleLabel">Light</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    </button>
+    <a href="https://docs.google.com/spreadsheets/d/1bQnuZCUawtBS9Ekjadv8We55_V-TZgbF/edit?usp=sharing&ouid=111213471385032504468&rtpof=true&sd=true" class="dl-btn" id="dlBtn">↓ Download Sheet</a>
+  </div>
+</nav>
+
+<section class="proj-hero">
+  <p class="proj-eyebrow">Portfolio Project · Advanced Excel · Case Study</p>
+  <h1 class="proj-title">International Freight Invoice<br>Audit Automation</h1>
+  <p class="proj-subtitle">A simulated multi-sheet Excel system replicating real international freight audit workflows — Ocean (LCL, FCL 20', FCL 40') and Air, with per-account tolerance rules, demurrage calculation, spot quotes, short-pay detection, and executive dashboard reporting.</p>
+  <div class="proj-pills">
+    <span class="proj-pill pill-xl">Advanced Excel</span>
+    <span class="proj-pill pill-cs">Case Study</span>
+    <span class="proj-pill pill-cs">Ocean Freight</span>
+    <span class="proj-pill pill-cs">Air Freight</span>
+    <span class="proj-pill pill-py">Simulated Data · No real client info</span>
+  </div>
+  <div class="proj-kpis">
+    <div class="kpi-item"><div class="kpi-num">60</div><div class="kpi-lbl">Invoices Processed</div></div>
+    <div class="kpi-item"><div class="kpi-num">7</div><div class="kpi-lbl">Workbook Sheets</div></div>
+    <div class="kpi-item"><div class="kpi-num">5</div><div class="kpi-lbl">Carriers Simulated</div></div>
+    <div class="kpi-item"><div class="kpi-num">7</div><div class="kpi-lbl">Tolerance Rules</div></div>
+    <div class="kpi-item"><div class="kpi-num">4</div><div class="kpi-lbl">Container Types</div></div>
+  </div>
+</section>
+
+<main>
+
+  <div class="disclaimer fade-in">
+    <strong>Portfolio simulation notice:</strong> All carrier names, account names, invoice data, rates, container details, and trade lane information in this case study are entirely fictitious and created for portfolio demonstration purposes only. This project was built to showcase the technical methodology used in international freight bill auditing — no real client, carrier, or proprietary rate data has been used or referenced.
+  </div>
+
+  <!-- STEP 1 -->
+  <section>
+    <p class="sect-eyebrow fade-in">The Case Study</p>
+    <h2 class="sect-title fade-in">Five-Step Walkthrough</h2>
+    <div class="sect-rule fade-in"></div>
+
+    <div class="step-grid fade-in">
+
+      <div class="step-card open">
+        <div class="step-card-header" onclick="toggleStep(this)">
+          <div class="step-num">1</div>
+          <div><div class="step-label">The Problem</div><div class="step-sublabel">Why this tool was needed</div></div>
+          <span class="step-chevron">▾</span>
+        </div>
+        <div class="step-body">
+          <p>A freight audit firm processes thousands of international invoices weekly across Ocean and Air modes. Each invoice contains multiple charge components — base freight, Bunker Adjustment Factor (BAF), Terminal Handling Charges (THC), documentation fees, and Peak Season Surcharges — that must each be individually verified against either a contracted rate or a spot quote.</p>
+          <p>Before automation, analysts manually cross-referenced every line against rate tables in separate files. There was no consistent demurrage calculation, no tolerance-based classification per account, and no standardised exception format across the team.</p>
+          <ul>
+            <li>Manual rate lookup: 8–12 minutes per invoice</li>
+            <li>No automated demurrage — free days tracked by hand per account</li>
+            <li>Tolerance rules varied wildly by account but weren't codified anywhere</li>
+            <li>Short-pay and balance due items had no systematic tracking</li>
+            <li>Spot quotes mixed into the queue with no differentiation from contracted rates</li>
+            <li>Exception reports were inconsistent across analysts — no standard format</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card-header" onclick="toggleStep(this)">
+          <div class="step-num">2</div>
+          <div><div class="step-label">Data Architecture</div><div class="step-sublabel">What data lives where and why</div></div>
+          <span class="step-chevron">▾</span>
+        </div>
+        <div class="step-body">
+          <p>The workbook is structured across seven sheets, each with a distinct purpose. No manual data entry is required once the Invoice Log and Rate Tables are populated — every downstream sheet calculates automatically.</p>
+          <ul>
+            <li><strong>📋 Case Study Overview</strong> — full written narrative of the methodology (the sheet you read first)</li>
+            <li><strong>🧾 Invoice Log</strong> — 60 simulated invoices with all charge components broken out separately: base freight, BAF, THC, documentation fee, PSS, demurrage days and amount, amount paid, short-pay amount, short-pay reason, and balance due reference</li>
+            <li><strong>📊 Rate Tables</strong> — two sections: Contracted Rate Table (carrier + origin + destination + container type → base rate, with ~7% intentional gaps to simulate "rate not on file") and Spot Quote Register (15 spot quotes with unique IDs, carriers, lanes, rates)</li>
+            <li><strong>🏦 Account Tolerances</strong> — per-account rules: tolerance type (flat dollar or percentage), threshold value, free days at port, carrier per-diem demurrage rates, and short-pay permission flag</li>
+            <li><strong>⚙ Audit Engine</strong> — the automation core: rate matching, charge calculation, demurrage logic, tolerance classification, payment status flags, action notes</li>
+            <li><strong>📈 Exception Report</strong> — filtered view of all flagged invoices only, colour-coded by exception type</li>
+            <li><strong>🎯 Dashboard</strong> — KPI cards and breakdown tables for management reporting</li>
+          </ul>
+          <p>Rate tables use a <strong>composite key</strong> (Carrier|Origin|Destination|ContainerType) as the lookup identifier — a deliberate design choice that prevents false matches when the same carrier operates multiple service types on the same lane.</p>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card-header" onclick="toggleStep(this)">
+          <div class="step-num">3</div>
+          <div><div class="step-label">Formula Logic</div><div class="step-sublabel">How the automation actually works</div></div>
+          <span class="step-chevron">▾</span>
+        </div>
+        <div class="step-body">
+          <p>The Audit Engine is built on five core formula patterns that chain together to process each invoice from raw input to actionable output:</p>
+          <div class="formula-grid">
+            <div class="formula-card">
+              <div class="formula-name">XLOOKUP — Rate Matching</div>
+              <div class="formula-sig">=IFERROR(XLOOKUP(composite_key, rate_table_keys, rate_table_rates, "RATE NOT ON FILE"), "RATE NOT ON FILE")</div>
+              <div class="formula-desc">Matches each invoice to its contracted or spot rate using a composite key. IFERROR wrapper returns a text flag instead of #N/A when no rate exists, preventing error propagation downstream.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Dynamic Demurrage</div>
+              <div class="formula-sig">=IF(dem_days > free_days, (dem_days - free_days) * per_diem_rate, 0)</div>
+              <div class="formula-desc">Pulls each account's free day allowance from the tolerance table. Charges only for days beyond the free period. Air freight carriers return $0 — no demurrage on air.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Per-Account Tolerance (IFS)</div>
+              <div class="formula-sig">=IFS(tol_type="flat", ABS(variance)>tol_value, tol_type="pct", ABS(variance_pct)>tol_value)</div>
+              <div class="formula-desc">Reads each account's tolerance type and applies the correct comparison. Flat accounts compare dollar variance. Percentage accounts compare variance %. A $0.01 tolerance account and a $100 tolerance account use the same formula — different threshold only.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Status Classification</div>
+              <div class="formula-sig">=IFS(rate="RATE NOT ON FILE","⚠ RATE NOT ON FILE", variance>threshold,"🔴 OVERCHARGE", variance&lt;-threshold,"🟡 UNDERBILLED", TRUE,"✅ WITHIN TOLERANCE")</div>
+              <div class="formula-desc">Final status logic applied after tolerance check. Four possible outputs drive colour-coding, exception filtering, and dashboard aggregation throughout the workbook.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">Short-Pay Detection</div>
+              <div class="formula-sig">=IF(AND(amount_paid>0, amount_paid&lt;billed_total), "🔶 SHORT PAY", IF(balance_due_ref&lt;&gt;"","📋 BALANCE DUE","UNPAID"))</div>
+              <div class="formula-desc">Detects short-pay situations where the client remitted less than invoiced, and balance-due situations where a carrier is collecting on a prior invoice. Overlays the standard audit status with a payment exception code.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-name">SUMIFS / COUNTIFS — Dashboard</div>
+              <div class="formula-sig">=SUMIFS(variance_col, carrier_col, carrier, status_col, "🔴 OVERCHARGE")</div>
+              <div class="formula-desc">Dashboard KPIs driven entirely by SUMIFS and COUNTIFS referencing the Audit Engine. Change any rate in the Rate Table and every KPI card, carrier breakdown, and exception rate updates in real time.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card-header" onclick="toggleStep(this)">
+          <div class="step-num">4</div>
+          <div><div class="step-label">Sample Data Preview</div><div class="step-sublabel">What the Audit Engine output looks like</div></div>
+          <span class="step-chevron">▾</span>
+        </div>
+        <div class="step-body">
+          <p>A representative sample of records from the Audit Engine, showing the full output for different exception types — all figures are simulated:</p>
+          <div style="overflow-x:auto;margin-top:.5rem">
+            <table class="data-preview">
+              <tr><th>Invoice ID</th><th>Carrier</th><th>Mode</th><th>Container</th><th>Account</th><th>Billed ($)</th><th>Contracted ($)</th><th>Variance ($)</th><th>Status</th></tr>
+              <tr><td>INV-0003</td><td>Maersk Line</td><td>Ocean</td><td>FCL 40'</td><td>GlobalTech Mfg</td><td>$6,142.00</td><td>$5,890.00</td><td>$252.00</td><td><span class="status-over">🔴 OVERCHARGE</span></td></tr>
+              <tr><td>INV-0011</td><td>Cathay Pacific</td><td>Air</td><td>Air Freight</td><td>Meridian Pharma</td><td>$3,218.50</td><td>$3,218.48</td><td>$0.02</td><td><span class="status-over">🔴 OVERCHARGE</span></td></tr>
+              <tr><td>INV-0017</td><td>CMA CGM</td><td>Ocean</td><td>LCL</td><td>Summit Retail</td><td>$1,940.00</td><td>$1,905.00</td><td>$35.00</td><td><span class="status-match">✅ WITHIN TOLERANCE</span></td></tr>
+              <tr><td>INV-0024</td><td>Evergreen Marine</td><td>Ocean</td><td>FCL 20'</td><td>Pacific Dist.</td><td>$3,650.00</td><td>—</td><td>—</td><td><span class="status-rnof">⚠ RATE NOT ON FILE</span></td></tr>
+              <tr><td>INV-0031</td><td>FedEx Intl</td><td>Air</td><td>Air Freight</td><td>Northland CG</td><td>$2,890.00</td><td>$2,950.00</td><td>-$60.00</td><td><span class="status-match">✅ WITHIN TOLERANCE</span></td></tr>
+              <tr><td>INV-0038</td><td>Maersk Line</td><td>Ocean</td><td>FCL 40'</td><td>Everest Ind.</td><td>$5,200.00</td><td>$4,880.00</td><td>$320.00</td><td class="status-short">🔶 SHORT PAY</td></tr>
+              <tr><td>INV-0045</td><td>CMA CGM</td><td>Ocean</td><td>LCL</td><td>Blue Horizon</td><td>$2,140.00</td><td>$2,050.00</td><td>$90.00</td><td><span class="status-over">🔴 OVERCHARGE</span></td></tr>
+            </table>
+          </div>
+          <p style="margin-top:.8rem">Note row INV-0011 — Meridian Pharma's $0.01 tolerance means a $0.02 variance on an Air invoice triggers a full overcharge flag. Same variance on a Northland Consumer Goods account ($100 tolerance) would pass as within tolerance. Same formula, different account threshold.</p>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card-header" onclick="toggleStep(this)">
+          <div class="step-num">5</div>
+          <div><div class="step-label">Results &amp; Real-World Parallel</div><div class="step-sublabel">What this demonstrates and what it maps to</div></div>
+          <span class="step-chevron">▾</span>
+        </div>
+        <div class="step-body">
+          <div class="results-grid" style="margin-bottom:1.2rem">
+            <div class="result-card"><div class="result-num">~30%</div><div class="result-lbl">Invoice exception rate across simulated dataset</div></div>
+            <div class="result-card"><div class="result-num">90%</div><div class="result-lbl">Reduction in per-invoice processing time vs manual</div></div>
+            <div class="result-card"><div class="result-num">100%</div><div class="result-lbl">Consistent exception format across all analysts</div></div>
+            <div class="result-card"><div class="result-num">Real-time</div><div class="result-lbl">Dashboard updates when any rate or invoice changes</div></div>
+          </div>
+          <p>This simulation mirrors the actual audit workflow at <strong>Cass Information Systems</strong>, where the same core logic — composite key rate matching, multi-component charge verification, per-account tolerance classification, demurrage calculation against free-day allowances — is applied to real international freight accounts daily across 20+ Fortune 500 clients.</p>
+          <p>The $450K+ in annual carrier overcharge recovery cited in my professional experience is produced by this exact methodology at production volume. This workbook is the methodology, made visible and interactive.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS USED -->
+  <section>
+    <p class="sect-eyebrow fade-in">Technical Skills</p>
+    <h2 class="sect-title fade-in">Tools &amp; Techniques Used</h2>
+    <div class="sect-rule fade-in"></div>
+
+    <div style="margin-bottom:1.2rem" class="fade-in">
+      <p style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;transition:color .35s">Excel Formulas &amp; Logic</p>
+      <div class="tag-cloud">
+        <span class="tag">XLOOKUP</span>
+        <span class="tag">IFS / Nested IF</span>
+        <span class="tag">IFERROR</span>
+        <span class="tag">SUMIFS</span>
+        <span class="tag">COUNTIFS</span>
+        <span class="tag">Conditional Formatting</span>
+        <span class="tag">Composite Key Design</span>
+        <span class="tag">Multi-Sheet Linking</span>
+        <span class="tag">Dynamic Threshold Logic</span>
+        <span class="tag">Flat vs Percentage Tolerance</span>
+        <span class="tag">Executive Dashboard (KPI Cards)</span>
+        <span class="tag">Exception Filtering</span>
+        <span class="tag">Named Assumption Cells</span>
+      </div>
+    </div>
+
+    <div class="fade-in">
+      <p style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;transition:color .35s">Freight &amp; Logistics Terminology</p>
+      <div class="tag-cloud">
+        <span class="tag">Ocean Freight</span>
+        <span class="tag">Air Freight</span>
+        <span class="tag">LCL — Less Than Container Load</span>
+        <span class="tag">FCL 20' — Full Container Load</span>
+        <span class="tag">FCL 40' — Full Container Load</span>
+        <span class="tag">Bunker Adjustment Factor (BAF)</span>
+        <span class="tag">Terminal Handling Charges (THC)</span>
+        <span class="tag">Peak Season Surcharge (PSS)</span>
+        <span class="tag">Demurrage</span>
+        <span class="tag">Free Days at Port</span>
+        <span class="tag">Per-Diem Rate</span>
+        <span class="tag">Spot Quotes</span>
+        <span class="tag">Contracted Rate</span>
+        <span class="tag">Rate Not on File</span>
+        <span class="tag">Short-Pay</span>
+        <span class="tag">Balance Due</span>
+        <span class="tag">International Trade Lanes</span>
+        <span class="tag">Trans-Pacific</span>
+        <span class="tag">Trans-Atlantic</span>
+        <span class="tag">Carrier Overcharge Recovery</span>
+        <span class="tag">Composite Key (Carrier|Lane|Mode)</span>
+        <span class="tag">Per CBM Pricing</span>
+        <span class="tag">Per KG Pricing</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="download">
+    <div class="cta-strip fade-in">
+      <h2>Download the workbook</h2>
+      <p>Open it, change a rate in the Rate Table, and watch the Dashboard update in real time.</p>
+      <div class="cta-links">
+        <a href="https://docs.google.com/spreadsheets/d/1bQnuZCUawtBS9Ekjadv8We55_V-TZgbF/edit?usp=sharing&ouid=111213471385032504468&rtpof=true&sd=true" class="cta-btn cta-primary" id="dlBtn2">View Excel File</a>
+        <a href="../index.html" class="cta-btn cta-secondary">← Back to Portfolio</a>
+        <a href="mailto:alexis@accordanalyst.com" class="cta-btn cta-secondary">Get in touch</a>
+      </div>
+      <p style="margin-top:1rem;font-size:11px;color:var(--hero-muted);font-style:italic">⚠ Replace download link with your hosted file URL once uploaded</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 Alexis "Zaira" Kelly · <a href="../index.html">accordanalyst.com</a> · Portfolio Project</p>
+</footer>
+
+<script>
+  const html = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const emoji = document.getElementById('toggleEmoji');
+  const label = document.getElementById('toggleLabel');
+  const saved = localStorage.getItem('theme');
+  if (saved) { html.setAttribute('data-theme', saved); updateUI(saved); }
+  btn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateUI(next);
+  });
+  function updateUI(t) {
+    emoji.textContent = t === 'dark' ? '🌙' : '☀️';
+    label.textContent = t === 'dark' ? 'Dark' : 'Light';
+  }
+
+  function toggleStep(hdr) {
+    const card = hdr.closest('.step-card');
+    card.classList.toggle('open');
+  }
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  document.querySelectorAll('#dlBtn,#dlBtn2').forEach(b => {
+    b.addEventListener('click', e => {
+      e.preventDefault();
+      alert('Replace this link with your hosted Excel file URL once uploaded.');
+    });
+  });
+</script>
+</body>
+</html>

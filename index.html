@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alexis Kelly — Senior Audit & Operations Analyst | accordanalyst.com</title>
+<style>
+  /* ══════════════════════════════════════════
+     LIGHT MODE  (fall palette)
+  ══════════════════════════════════════════ */
+  :root {
+    --bg:         #FDF3E7;
+    --surface:    #FAF0E0;
+    --nav-bg:     #3B2207;
+    --hero-bg:    #3B2207;
+    --hero-glow:  rgba(196,98,29,0.12);
+    --heading:    #3B2207;
+    --body:       #1C1008;
+    --muted:      #6B5240;
+    --rule:       #D4B896;
+    --accent:     #C4621D;
+    --accent-dim: rgba(196,98,29,0.15);
+    --accent-bdr: rgba(196,98,29,0.35);
+    --accent2:    #7A5C2E;
+    --hero-text:  #FDF3E7;
+    --hero-muted: rgba(253,243,231,0.6);
+    --hero-dim:   rgba(253,243,231,0.45);
+    --pill-bg:    rgba(196,98,29,0.15);
+    --pill-bdr:   rgba(196,98,29,0.35);
+    --pill-text:  rgba(253,243,231,0.85);
+    --bar-bg:     rgba(253,243,231,0.05);
+    --bar-bdr:    rgba(196,98,29,0.25);
+    --bar-div:    rgba(196,98,29,0.2);
+    --bar-hover:  rgba(196,98,29,0.1);
+    --num-color:  #C4621D;
+    --eyebrow:    #C4621D;
+    --section-rule-from: #C4621D;
+    --card-left:  #C4621D;
+    --card-bdr:   rgba(196,98,29,0.25);
+    --skill-tag:  rgba(196,98,29,0.1);
+    --skill-text: #3B2207;
+    --edu-left:   #7A5C2E;
+    --contact-bg: #3B2207;
+    --contact-txt:#FDF3E7;
+    --contact-sub:rgba(253,243,231,0.6);
+    --clink-bg:   rgba(196,98,29,0.2);
+    --clink-bdr:  rgba(196,98,29,0.4);
+    --clink-txt:  #FDF3E7;
+    --toggle-bg:  rgba(255,255,255,0.12);
+    --toggle-icon:'☀️';
+    --shadow:     rgba(0,0,0,0.08);
+  }
+
+  /* ══════════════════════════════════════════
+     DARK MODE  (blue palette)
+  ══════════════════════════════════════════ */
+  [data-theme="dark"] {
+    --bg:         #0D1B2E;
+    --surface:    #112240;
+    --nav-bg:     #091628;
+    --hero-bg:    #091628;
+    --hero-glow:  rgba(46,95,163,0.18);
+    --heading:    #B8D4F8;
+    --body:       #CDD9EC;
+    --muted:      #7B9BB8;
+    --rule:       #1F3864;
+    --accent:     #4A90D9;
+    --accent-dim: rgba(46,95,163,0.2);
+    --accent-bdr: rgba(74,144,217,0.4);
+    --accent2:    #2E5FA3;
+    --hero-text:  #EBF2FA;
+    --hero-muted: rgba(235,242,250,0.6);
+    --hero-dim:   rgba(235,242,250,0.4);
+    --pill-bg:    rgba(46,95,163,0.2);
+    --pill-bdr:   rgba(74,144,217,0.35);
+    --pill-text:  rgba(235,242,250,0.85);
+    --bar-bg:     rgba(235,242,250,0.04);
+    --bar-bdr:    rgba(74,144,217,0.2);
+    --bar-div:    rgba(74,144,217,0.18);
+    --bar-hover:  rgba(46,95,163,0.15);
+    --num-color:  #6EB0F5;
+    --eyebrow:    #4A90D9;
+    --section-rule-from: #2E5FA3;
+    --card-left:  #2E5FA3;
+    --card-bdr:   rgba(46,95,163,0.3);
+    --skill-tag:  rgba(46,95,163,0.2);
+    --skill-text: #B8D4F8;
+    --edu-left:   #1F3864;
+    --contact-bg: #091628;
+    --contact-txt:#EBF2FA;
+    --contact-sub:rgba(235,242,250,0.55);
+    --clink-bg:   rgba(46,95,163,0.25);
+    --clink-bdr:  rgba(74,144,217,0.4);
+    --clink-txt:  #EBF2FA;
+    --toggle-bg:  rgba(74,144,217,0.15);
+    --toggle-icon:'🌙';
+    --shadow:     rgba(0,0,0,0.35);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--body);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 15px; line-height: 1.6;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--nav-bg);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 52px;
+    box-shadow: 0 2px 16px var(--shadow);
+    transition: background 0.35s ease;
+  }
+  .nav-brand {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.12em;
+    color: var(--accent); text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 1.2rem; align-items: center; }
+  .nav-links a {
+    color: var(--hero-muted); font-size: 13px; text-decoration: none;
+    letter-spacing: 0.05em; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-download {
+    background: var(--accent) !important;
+    color: var(--hero-text) !important;
+    padding: 6px 14px; border-radius: 4px;
+    font-weight: 600 !important; font-size: 12px !important;
+    letter-spacing: 0.04em !important;
+    transition: opacity 0.2s !important;
+  }
+  .nav-download:hover { opacity: 0.85 !important; }
+
+  /* ── DARK MODE TOGGLE ── */
+  .theme-toggle {
+    background: var(--toggle-bg);
+    border: 1px solid var(--accent-bdr);
+    border-radius: 20px; cursor: pointer;
+    padding: 4px 10px; font-size: 14px;
+    display: flex; align-items: center; gap: 6px;
+    color: var(--hero-muted);
+    transition: background 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+  .toggle-label {
+    font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 600;
+    color: var(--hero-muted);
+  }
+  .toggle-track {
+    width: 32px; height: 18px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-bdr);
+    border-radius: 9px; position: relative;
+    transition: background 0.25s;
+    flex-shrink: 0;
+  }
+  [data-theme="dark"] .toggle-track { background: var(--accent); }
+  .toggle-thumb {
+    position: absolute; top: 2px; left: 2px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--hero-text);
+    transition: transform 0.25s;
+  }
+  [data-theme="dark"] .toggle-thumb { transform: translateX(14px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--hero-bg);
+    padding: 6rem 2rem 4rem;
+    position: relative; overflow: hidden;
+    transition: background 0.35s ease;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, var(--hero-glow) 0%, transparent 65%);
+    pointer-events: none;
+    transition: background 0.35s ease;
+  }
+  .boot-sequence {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); opacity: 0.75; margin-bottom: 1.1rem;
+    min-height: 1.4em;
+  }
+  #bootText::after {
+    content: '|'; animation: blink 0.9s step-end infinite;
+    color: var(--accent); margin-left: 1px;
+  }
+  .boot-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .boot-dot.lit { opacity: 1; animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .hero-accord {
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1.5rem; opacity: 0.85;
+  }
+  .hero-name {
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    font-weight: 800; letter-spacing: -0.02em;
+    color: var(--hero-text); line-height: 1.05;
+    text-align: center; margin-bottom: 0.5rem;
+    transition: color 0.35s ease;
+  }
+  .hero-name span { color: var(--accent); }
+  .hero-preferred {
+    font-size: 13px; color: var(--hero-dim);
+    letter-spacing: 0.1em; margin-bottom: 1.8rem; text-align: center;
+  }
+  .typewriter-wrap {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: var(--hero-muted);
+    text-align: center; min-height: 2.2em;
+    margin-bottom: 2.5rem; letter-spacing: 0.01em;
+  }
+  #typewriter::after {
+    content: '|'; animation: blink 0.9s step-end infinite;
+    color: var(--accent);
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .hero-pills {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center; margin-bottom: 3rem;
+  }
+  .pill {
+    background: var(--pill-bg);
+    border: 1px solid var(--pill-bdr);
+    color: var(--pill-text);
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 12px; letter-spacing: 0.06em;
+    transition: background 0.35s, border-color 0.35s;
+  }
+
+  /* ── IMPACT BAR ── */
+  .impact-bar {
+    display: flex; flex-wrap: wrap;
+    background: var(--bar-bg);
+    border: 1px solid var(--bar-bdr);
+    border-radius: 8px; overflow: hidden;
+    max-width: 780px; width: 100%;
+    transition: background 0.35s, border-color 0.35s;
+  }
+  .impact-stat {
+    flex: 1 1 120px; padding: 1.4rem 1rem; text-align: center;
+    border-right: 1px solid var(--bar-div);
+    transition: background 0.2s;
+  }
+  .impact-stat:last-child { border-right: none; }
+  .impact-stat:hover { background: var(--bar-hover); }
+  .impact-num {
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 800; color: var(--num-color);
+    line-height: 1; margin-bottom: 4px;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.6s ease, transform 0.6s ease, color 0.35s ease;
+  }
+  .impact-num.visible { opacity: 1; transform: translateY(0); }
+  .impact-label {
+    font-size: 11px; color: var(--hero-muted);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  .hero-cta {
+    margin-top: 2.5rem; display: flex; gap: 1rem;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .btn-primary {
+    background: var(--accent); color: var(--hero-text);
+    padding: 12px 28px; border-radius: 5px;
+    font-weight: 700; font-size: 13px; letter-spacing: 0.06em;
+    text-decoration: none; text-transform: uppercase;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-secondary {
+    border: 1px solid var(--hero-muted); color: var(--hero-muted);
+    padding: 12px 28px; border-radius: 5px;
+    font-size: 13px; letter-spacing: 0.06em;
+    text-decoration: none; text-transform: uppercase;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    color: var(--hero-muted); font-size: 11px; letter-spacing: 0.1em;
+  }
+  .scroll-arrow {
+    width: 18px; height: 18px;
+    border-right: 2px solid var(--accent-bdr);
+    border-bottom: 2px solid var(--accent-bdr);
+    transform: rotate(45deg); animation: bounce 2s ease infinite;
+  }
+  @keyframes bounce {
+    0%,100%{transform:rotate(45deg) translateY(0)}
+    50%{transform:rotate(45deg) translateY(5px)}
+  }
+
+  /* ── MAIN ── */
+  main { max-width: 960px; margin: 0 auto; padding: 5rem 2rem 4rem; }
+  section { margin-bottom: 5rem; }
+
+  .section-eyebrow {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--eyebrow); margin-bottom: 6px; font-weight: 600;
+    transition: color 0.35s;
+  }
+  .section-title {
+    font-size: 1.6rem; font-weight: 800; color: var(--heading);
+    margin-bottom: 0.3rem; letter-spacing: -0.01em;
+    transition: color 0.35s;
+  }
+  .section-rule {
+    height: 3px;
+    background: linear-gradient(to right, var(--section-rule-from), transparent);
+    margin-bottom: 2rem; border-radius: 2px;
+    transition: background 0.35s;
+  }
+
+  /* ── SUMMARY ── */
+  .summary-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+  }
+  .summary-text { font-size: 15px; line-height: 1.75; color: var(--muted); transition: color 0.35s; }
+  .summary-text strong { color: var(--heading); }
+  .competency-list { display: flex; flex-direction: column; gap: 10px; }
+  .competency-item {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    transition: background 0.35s, border-color 0.35s;
+  }
+  .competency-label {
+    font-size: 11px; font-weight: 700; color: var(--accent);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;
+    transition: color 0.35s;
+  }
+  .competency-val { font-size: 12.5px; color: var(--muted); line-height: 1.4; transition: color 0.35s; }
+
+  /* ── EXPERIENCE ── */
+  .exp-item {
+    display: grid; grid-template-columns: 180px 1fr; gap: 2rem;
+    margin-bottom: 2.5rem; padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--rule);
+    transition: border-color 0.35s;
+  }
+  .exp-item:last-child { border-bottom: none; margin-bottom: 0; }
+  .exp-dates {
+    font-size: 11px; color: var(--accent); font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px;
+    transition: color 0.35s;
+  }
+  .exp-company {
+    font-size: 13px; font-weight: 700; color: var(--heading); margin-bottom: 2px;
+    transition: color 0.35s;
+  }
+  .exp-detail { font-size: 11px; color: var(--muted); line-height: 1.4; font-style: italic; transition: color 0.35s; }
+  .exp-title {
+    font-size: 1.05rem; font-weight: 700; color: var(--heading);
+    margin-bottom: 4px; letter-spacing: -0.01em; transition: color 0.35s;
+  }
+  .exp-blurb {
+    font-size: 13px; color: var(--muted); font-style: italic;
+    margin-bottom: 12px; line-height: 1.5; transition: color 0.35s;
+  }
+  .achievement-card {
+    background: var(--surface);
+    border: 1px solid var(--card-bdr);
+    border-left: 4px solid var(--card-left);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px; margin-bottom: 8px;
+    font-size: 13px; color: var(--body); line-height: 1.5;
+    transition: background 0.35s, border-color 0.35s, color 0.35s;
+  }
+  .achievement-card::before { content: '★ '; color: var(--accent); font-size: 11px; }
+  .exp-bullets { margin: 10px 0 0 2px; padding: 0; list-style: none; }
+  .exp-bullets li {
+    font-size: 13px; color: var(--muted); line-height: 1.55;
+    margin-bottom: 6px; padding-left: 16px; position: relative;
+    transition: color 0.35s;
+  }
+  .exp-bullets li::before {
+    content: '▸'; color: var(--accent);
+    position: absolute; left: 0; font-size: 10px; top: 3px;
+  }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;
+  }
+  .skill-group {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 8px; padding: 1.1rem;
+    transition: background 0.35s, border-color 0.35s;
+  }
+  .skill-group-label {
+    font-size: 10px; font-weight: 700; color: var(--accent);
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px;
+    transition: color 0.35s;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .skill-tag {
+    background: var(--skill-tag); color: var(--skill-text);
+    font-size: 11px; padding: 3px 9px; border-radius: 3px;
+    font-weight: 500; transition: background 0.35s, color 0.35s;
+  }
+
+  /* ── EDUCATION ── */
+  .edu-list { display: flex; flex-direction: column; gap: 12px; }
+  .edu-item {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 12px 16px; background: var(--surface); border-radius: 6px;
+    border-left: 3px solid var(--edu-left);
+    transition: background 0.35s, border-color 0.35s;
+  }
+  .edu-title { font-size: 14px; font-weight: 700; color: var(--heading); transition: color 0.35s; }
+  .edu-org { font-size: 12px; color: var(--muted); margin-top: 2px; transition: color 0.35s; }
+  .edu-year {
+    font-size: 11px; color: var(--accent); font-weight: 700;
+    letter-spacing: 0.06em; white-space: nowrap; margin-left: 1rem;
+    transition: color 0.35s;
+  }
+
+  /* ── VOLUNTEER ── */
+  .vol-item {
+    background: var(--surface); border-radius: 8px;
+    border: 1px solid var(--rule); padding: 1.2rem 1.4rem; margin-bottom: 1rem;
+    transition: background 0.35s, border-color 0.35s;
+  }
+  .vol-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .vol-title { font-size: 14px; font-weight: 700; color: var(--heading); transition: color 0.35s; }
+  .vol-org { font-size: 12px; color: var(--accent); font-weight: 600; transition: color 0.35s; }
+  .vol-dates { font-size: 11px; color: var(--muted); white-space: nowrap; margin-left: 1rem; transition: color 0.35s; }
+
+  /* ── CONTACT ── */
+  .contact-strip {
+    background: var(--contact-bg); border-radius: 10px;
+    padding: 2.5rem; text-align: center;
+    transition: background 0.35s;
+  }
+  .contact-strip h2 { color: var(--contact-txt); font-size: 1.4rem; margin-bottom: 0.5rem; font-weight: 800; }
+  .contact-strip p { color: var(--contact-sub); font-size: 13px; margin-bottom: 1.5rem; }
+  .contact-links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .contact-link {
+    background: var(--clink-bg); border: 1px solid var(--clink-bdr);
+    color: var(--clink-txt); padding: 10px 20px; border-radius: 5px;
+    text-decoration: none; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.05em; transition: background 0.2s, border-color 0.35s;
+  }
+  .contact-link:hover { background: var(--accent); border-color: var(--accent); }
+  .contact-link.primary { background: var(--accent); border-color: var(--accent); }
+  .contact-link.primary:hover { opacity: 0.85; }
+
+  footer {
+    text-align: center; padding: 2rem;
+    font-size: 11px; color: var(--muted); letter-spacing: 0.08em;
+    transition: color 0.35s;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── FADE IN ── */
+  .fade-in {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── FUN FACT / ACCORD ── */
+  .accord-grid {
+    display: grid; grid-template-columns: 240px 1fr; gap: 2.5rem; align-items: start;
+  }
+  .accord-image-wrap { position: relative; }
+  .accord-placeholder {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 2rem 1rem 1rem;
+    text-align: center;
+    transition: background 0.35s, border-color 0.35s;
+  }
+  .accord-silhouette {
+    display: flex; justify-content: center;
+    margin-bottom: 1rem; opacity: 0.9;
+  }
+  .accord-img-label {
+    font-size: 13px; font-weight: 700; color: var(--heading);
+    margin-bottom: 3px; transition: color 0.35s;
+  }
+  .accord-img-sub {
+    font-size: 11px; color: var(--muted); font-style: italic;
+    line-height: 1.4; transition: color 0.35s;
+  }
+  .accord-stat-row {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
+    margin-bottom: 1.2rem;
+  }
+  .accord-stat {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 8px; padding: 10px 8px; text-align: center;
+    transition: background 0.35s, border-color 0.35s;
+  }
+  .accord-stat-num {
+    font-size: 1.4rem; font-weight: 800; color: var(--accent);
+    line-height: 1; margin-bottom: 3px; transition: color 0.35s;
+  }
+  .accord-stat-lbl {
+    font-size: 10px; color: var(--muted); letter-spacing: 0.06em;
+    text-transform: uppercase; line-height: 1.3; transition: color 0.35s;
+  }
+  .accord-body {
+    font-size: 13.5px; color: var(--muted); line-height: 1.7;
+    margin-bottom: 1rem; transition: color 0.35s;
+  }
+  .accord-body strong { color: var(--heading); }
+  .accord-body em { color: var(--accent); font-style: normal; font-weight: 600; }
+  .accord-parallels {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0; padding: 1rem 1.1rem;
+    transition: background 0.35s, border-color 0.35s;
+  }
+  .accord-parallel-title {
+    font-size: 10px; font-weight: 700; color: var(--accent);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;
+    transition: color 0.35s;
+  }
+  .accord-parallel-item {
+    display: flex; gap: 10px; font-size: 12.5px; color: var(--muted);
+    line-height: 1.55; margin-bottom: 7px; transition: color 0.35s;
+  }
+  .accord-parallel-item:last-child { margin-bottom: 0; }
+  .accord-parallel-icon { color: var(--accent); flex-shrink: 0; font-size: 11px; margin-top: 2px; }
+
+  /* ── PROJECTS — small preview cards on main page ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .project-tile {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    display: flex; flex-direction: column;
+    transition: border-color 0.35s, transform 0.2s, box-shadow 0.2s;
+  }
+  .project-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow);
+  }
+  .project-tile.disabled { cursor: default; pointer-events: none; opacity: 0.55; }
+
+  .tile-header {
+    background: var(--heading);
+    padding: 0.85rem 1rem 0.7rem;
+    transition: background 0.35s;
+  }
+  .tile-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+  .tile-pill {
+    font-size: 8.5px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 20px;
+  }
+  .pill-excel  { background: rgba(196,98,29,0.25); color: #FDF3E7; }
+  .pill-python { background: rgba(46,160,94,0.25);  color: #A8F0C6; }
+  .pill-sql    { background: rgba(74,144,217,0.25); color: #B8D4F8; }
+  .tile-title {
+    font-size: 0.85rem; font-weight: 800; color: #FDF3E7;
+    line-height: 1.25; transition: color 0.35s;
+  }
+  [data-theme="dark"] .tile-title { color: var(--hero-text); }
+
+  .tile-body { padding: 0.7rem 1rem 0.85rem; flex: 1; display: flex; flex-direction: column; }
+  .tile-summary {
+    font-size: 11px; color: var(--muted); line-height: 1.55;
+    margin-bottom: 0.6rem; flex: 1; transition: color 0.35s;
+  }
+  .tile-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.6rem; }
+  .tile-tag {
+    font-size: 9.5px; padding: 2px 7px; border-radius: 3px;
+    background: var(--skill-tag); color: var(--skill-text);
+    font-weight: 500; transition: background 0.35s, color 0.35s;
+  }
+  .tile-cta {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--accent);
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .summary-grid { grid-template-columns: 1fr; }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    .nav-links a:not(.nav-download):not(.theme-toggle-wrap) { display: none; }
+    .hero-name { font-size: 2.4rem; }
+    .accord-grid { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand"></span>
+  <div class="nav-links">
+    <a href="projects.html">Projects</a>
+    <a href="#summary">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#education">Education</a>
+    <a href="#contact">Contact</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <span id="toggleEmoji">☀️</span>
+      <span class="toggle-label" id="toggleLabel">Light</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    </button>
+    <a href="https://drive.google.com/file/d/1OPln3diwnOhMerZEzwgdleRztIpOBoBr/view?usp=sharing" target="_blank" class="nav-download" id="downloadBtn">↓ Resume PDF</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <p class="boot-sequence"><span id="bootText"></span><span class="boot-dot" id="bootDot"></span></p>
+  <p class="hero-accord">accordanalyst.com</p>
+  <h1 class="hero-name">Alexis <span>"Zaira"</span> Kelly</h1>
+  <p class="hero-preferred">Senior Audit & Operations Analyst</p>
+  <div class="typewriter-wrap"><span id="typewriter"></span></div>
+  <div class="hero-pills">
+    <span class="pill">Fintech SaaS</span>
+    <span class="pill">Revenue Operations</span>
+    <span class="pill">Billing Ops</span>
+    <span class="pill">SQL</span>
+    <span class="pill">Process Automation</span>
+    <span class="pill">Distributed Teams</span>
+    <span class="pill">Open to Remote</span>
+  </div>
+  <div class="impact-bar">
+    <div class="impact-stat">
+      <div class="impact-num" data-delay="0">$450K+</div>
+      <div class="impact-label">Annual Overcharge Recovery</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num" data-delay="100">20+</div>
+      <div class="impact-label">Global Accounts Managed</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num" data-delay="200">30%</div>
+      <div class="impact-label">Faster Audit Cycles</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num" data-delay="300">25%</div>
+      <div class="impact-label">Team Accuracy Improvement</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num" data-delay="400">$5M</div>
+      <div class="impact-label">Federal Funding Directed</div>
+    </div>
+  </div>
+  <div class="hero-cta">
+    <a href="#contact" class="btn-primary">Get in touch</a>
+    <a href="#experience" class="btn-secondary">View experience ↓</a>
+  </div>
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <p class="section-eyebrow fade-in">Portfolio</p>
+    <h2 class="section-title fade-in">Featured Projects</h2>
+    <div class="section-rule fade-in"></div>
+
+    <div class="projects-grid fade-in">
+
+      <!-- CARD 1 — Excel -->
+      <a href="projects/intl-freight-audit.html" class="project-tile">
+        <div class="tile-header">
+          <div class="tile-pills"><span class="tile-pill pill-excel">Advanced Excel</span></div>
+          <div class="tile-title">International Freight Invoice Audit Automation</div>
+        </div>
+        <div class="tile-body">
+          <p class="tile-summary">Multi-sheet Excel automation replicating real freight bill audit logic — rate verification, demurrage, and tolerance classification.</p>
+          <div class="tile-tags">
+            <span class="tile-tag">XLOOKUP</span>
+            <span class="tile-tag">Demurrage Calc</span>
+            <span class="tile-tag">Tolerance Rules</span>
+            <span class="tile-tag">Exec Dashboard</span>
+          </div>
+          <div class="tile-cta">View Case Study →</div>
+        </div>
+      </a>
+
+      <!-- CARD 2 — SQL -->
+      <a href="projects/revenue-reconciliation.html" class="project-tile">
+        <div class="tile-header" style="background: var(--heading);">
+          <div class="tile-pills"><span class="tile-pill pill-sql">SQL</span></div>
+          <div class="tile-title">Revenue Reconciliation Query Set</div>
+        </div>
+        <div class="tile-body">
+          <p class="tile-summary">Five production-ready SQL queries surfacing revenue leakage, duplicate charges, short payments, and contract billing gaps.</p>
+          <div class="tile-tags">
+            <span class="tile-tag">CTEs</span>
+            <span class="tile-tag">Window Functions</span>
+            <span class="tile-tag">Aging Receivables</span>
+            <span class="tile-tag">Revenue Leakage</span>
+          </div>
+          <div class="tile-cta">View Case Study →</div>
+        </div>
+      </a>
+
+      <!-- CARD 3 — Python -->
+      <a href="projects/revenue-anomaly-detector.html" class="project-tile">
+        <div class="tile-header" style="background: var(--heading);">
+          <div class="tile-pills"><span class="tile-pill pill-python">Python</span></div>
+          <div class="tile-title">Revenue Anomaly Detector</div>
+        </div>
+        <div class="tile-body">
+          <p class="tile-summary">Statistical anomaly detection script that flags accounts deviating from their own revenue history — catching drops, spikes, and slow erosion early.</p>
+          <div class="tile-tags">
+            <span class="tile-tag">Pandas</span>
+            <span class="tile-tag">Z-Score Detection</span>
+            <span class="tile-tag">Rolling Baseline</span>
+            <span class="tile-tag">Severity Scoring</span>
+          </div>
+          <div class="tile-cta">View Case Study →</div>
+        </div>
+      </a>
+
+      <!-- CARD 4 — Excel Dashboard -->
+      <a href="projects/freight-audit-dashboard.html" class="project-tile">
+        <div class="tile-header" style="background: var(--heading);">
+          <div class="tile-pills">
+            <span class="tile-pill pill-excel">Advanced Excel</span>
+            <span class="tile-pill pill-python" style="background:rgba(240,192,112,.2);border:1px solid rgba(240,192,112,.4);color:#F0C070;">Interactive Dashboard</span>
+          </div>
+          <div class="tile-title">Pre-Audit vs Post-Audit Recovery Dashboard</div>
+        </div>
+        <div class="tile-body">
+          <p class="tile-summary">222,900 simulated invoices. Prevention vs recovery cost efficiency modeled in Excel, visualized live with D3.js.</p>
+          <div class="tile-tags">
+            <span class="tile-tag">Excel + D3.js</span>
+            <span class="tile-tag">Catch Rate Analysis</span>
+            <span class="tile-tag">Cost Multiple</span>
+            <span class="tile-tag">True Leakage</span>
+          </div>
+          <div class="tile-cta">View Case Study →</div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section id="summary">
+    <p class="section-eyebrow fade-in">Profile</p>
+    <h2 class="section-title fade-in">Professional Summary</h2>
+    <div class="section-rule fade-in"></div>
+    <div class="summary-grid fade-in">
+      <div class="summary-text">
+        <p>10+ years turning operational chaos into scalable systems — across <strong>fintech SaaS, compliance, and people leadership</strong>. Currently recovering $450K+ annually in carrier overcharges across 20+ global accounts at a Fortune 500 freight audit platform, while driving SQL-backed automation and mentoring distributed analyst teams.</p>
+        <br>
+        <p>Known for finding the structural problem others miss and building the process that outlasts them. Seeking <strong>Senior Analyst, Lead Analyst, or Ops Manager roles</strong> in Revenue Ops, Billing Ops, or Audit Operations. Remote-friendly environments preferred.</p>
+      </div>
+      <div class="competency-list">
+        <div class="competency-item">
+          <div class="competency-label">Billing & Revenue Ops</div>
+          <div class="competency-val">Invoice Auditing · Overcharge Recovery · Revenue Reconciliation · Contract Rate Verification · Audit Compliance</div>
+        </div>
+        <div class="competency-item">
+          <div class="competency-label">Data & Tools</div>
+          <div class="competency-val">SQL · Python · Advanced Excel · Power BI · Looker · Tableau · Snowflake · Salesforce · EDI · RMS</div>
+        </div>
+        <div class="competency-item">
+          <div class="competency-label">Operations & Process</div>
+          <div class="competency-val">SOP Development · KPI Tracking · Workflow Optimization · Root Cause Analysis · Process Improvement</div>
+        </div>
+        <div class="competency-item">
+          <div class="competency-label">Leadership</div>
+          <div class="competency-val">Team Development · Training & Mentoring · Cross-Functional Coordination · Program Management</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <p class="section-eyebrow fade-in">Career</p>
+    <h2 class="section-title fade-in">Professional Experience</h2>
+    <div class="section-rule fade-in"></div>
+
+    <div class="exp-item fade-in">
+      <div class="exp-meta">
+        <div class="exp-dates">Jan 2024 – Present</div>
+        <div class="exp-company">Cass Information Systems</div>
+        <div class="exp-detail">Fintech SaaS · Remote</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-title">Senior Global Audit Analyst</div>
+        <div class="exp-blurb">Senior analyst driving billing compliance, revenue recovery, process automation, and team development across 20+ Fortune 500 international accounts on a global fintech SaaS platform.</div>
+        <div class="achievement-card">Recovered $450K+ in carrier overcharges annually across 20+ accounts through systematic contract rate verification, tariff validation, and exception resolution.</div>
+        <div class="achievement-card">Reduced audit cycle times by 30% via purpose-built Excel automation handling complex, region-specific carrier rate logic across international account workflows.</div>
+        <div class="achievement-card">Improved team-wide accuracy by 25% after training 6 analysts — built onboarding frameworks and SOPs that let the team scale and operate independently.</div>
+        <ul class="exp-bullets">
+          <li>Audited freight invoices against contract rates, tariff tables, and authority documentation; executed SQL-based aging prioritization to reduce backlog congestion and accelerate high-value exception resolution</li>
+          <li>Implemented complex accounts using validation files, RMS, EDI, and automation tooling within a SaaS delivery model; developed and maintained audit procedures and exception reporting frameworks</li>
+          <li>Coordinated asynchronously across European (UTC +2) and Asian (UTC +5:30) distributed teams, independently managing implementation and ongoing audit with minimal oversight</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item fade-in">
+      <div class="exp-meta">
+        <div class="exp-dates">May 2023 – Sept 2025</div>
+        <div class="exp-company">United Way of Greater St. Louis</div>
+        <div class="exp-detail">Nonprofit · Remote</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-title">Community Partnerships Manager</div>
+        <div class="exp-blurb">Program operations manager overseeing cross-agency execution, federal funding compliance, and community impact reporting across the St. Louis Metro nonprofit network.</div>
+        <div class="achievement-card">Directed distribution and compliance documentation for $5M in government funding — ensuring accurate allocation and 100% adherence to local and federal program requirements.</div>
+        <ul class="exp-bullets">
+          <li>Coordinated 10+ nonprofit partner agencies as centralized liaison, aligning stakeholders on timelines, resource allocation, and service delivery under deadline-driven conditions</li>
+          <li>Oversaw case operations for 200+ families across financial assistance, education, and domestic support pathways; synthesized program data into executive-facing impact reports and donor presentations</li>
+          <li>Strengthened cross-agency partnership models, contributing to a 50% increase in coordinated community response initiatives</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item fade-in">
+      <div class="exp-meta">
+        <div class="exp-dates">Jul 2022 – Jan 2023</div>
+        <div class="exp-company">Cass Information Systems</div>
+        <div class="exp-detail">Fintech SaaS · Remote</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-title">Marketing Research Analyst</div>
+        <div class="exp-blurb">Data operations analyst supporting billing intelligence, CRM integrity, and revenue data quality within the fintech SaaS platform.</div>
+        <div class="achievement-card">Uncovered $250K+ in cost-saving opportunities through billing data analysis, validation, and process correction — surfacing systematic errors in billing workflows.</div>
+        <ul class="exp-bullets">
+          <li>Analyzed transactional billing data using advanced Excel to surface systematic billing errors, support revenue recognition accuracy, and identify cost-saving opportunities across client accounts</li>
+          <li>Led data migration for 500+ client accounts and built data cleansing pipelines to standardize 10,000+ CRM records, reducing processing time by 18% and strengthening segmentation accuracy for revenue teams</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item fade-in">
+      <div class="exp-meta">
+        <div class="exp-dates">Jun 2019 – Apr 2020</div>
+        <div class="exp-company">Henkel</div>
+        <div class="exp-detail">Manufacturing</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-title">Risk Analyst</div>
+        <div class="exp-blurb">Risk and compliance analyst standardizing operational procedures and SHEQ reporting across a global manufacturing environment.</div>
+        <div class="achievement-card">Rebuilt 100+ SOPs into structured, scalable formats — enabling 35% faster retraining cycles and measurably improving adherence to operational controls.</div>
+        <ul class="exp-bullets">
+          <li>Standardized risk and compliance procedures across manufacturing operations, consolidating fragmented workflows into structured SHEQ reporting and embedding hazard mitigation protocols across departments</li>
+        </ul>
+      </div>
+    </div>
+
+
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <p class="section-eyebrow fade-in">Credentials</p>
+    <h2 class="section-title fade-in">Education & Certifications</h2>
+    <div class="section-rule fade-in"></div>
+    <div class="edu-list fade-in">
+      <div class="edu-item">
+        <div><div class="edu-title">Data Analytics Professional Certificate</div><div class="edu-org">IBM / Coursera</div></div>
+        <div class="edu-year">2023 – 2024</div>
+      </div>
+      <div class="edu-item">
+        <div><div class="edu-title">Business Analytics</div><div class="edu-org">OneTen</div></div>
+        <div class="edu-year">2022 – 2023</div>
+      </div>
+      <div class="edu-item">
+        <div><div class="edu-title">Bachelor of Arts, Creative Writing</div><div class="edu-org">Southern New Hampshire University</div></div>
+        <div class="edu-year">2024 – 2028</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOLUNTEER -->
+  <section id="volunteer">
+    <p class="section-eyebrow fade-in">Beyond Work</p>
+    <h2 class="section-title fade-in">Volunteer & Additional</h2>
+    <div class="section-rule fade-in"></div>
+    <div class="vol-item fade-in">
+      <div class="vol-header">
+        <div>
+          <div class="vol-title">Community Operations & Moderation Lead</div>
+          <div class="vol-org">Final Fantasy VIII Fandom Discord · Remote · 8,000+ members</div>
+        </div>
+        <div class="vol-dates">Feb 2020 – Present</div>
+      </div>
+      <ul class="exp-bullets">
+        <li>Reduced conflict escalation by 35% through refined async resolution processes and documented conduct standards</li>
+        <li>Integrated moderation bots and analytics tools to automate routine tasks and track community sentiment; derived actionable insights from activity data to inform engagement strategy and policy</li>
+        <li>Increased user-generated content by 40% through structured content programming</li>
+      </ul>
+    </div>
+    <div class="vol-item fade-in">
+      <div class="vol-header"><div><div class="vol-title" style="font-size:13px;color:var(--muted)">Interests</div></div></div>
+      <p style="font-size:13px;color:var(--muted);margin-top:4px">Rhythm game enthusiast (Placed 3rd in Bracket) · Language Learning – Japanese · Interactive Storytelling & Game Design</p>
+    </div>
+  </section>
+
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-strip fade-in">
+      <h2>Let's connect</h2>
+      <p>Open to Senior Analyst, Lead Analyst, and Ops Manager roles in Revenue Ops, Billing Ops, or Audit Operations · Remote-friendly</p>
+      <div class="contact-links">
+        <a href="mailto:alexis@accordanalyst.com" class="contact-link primary">alexis@accordanalyst.com</a>
+        <a href="https://linkedin.com/in/accordanalyst" class="contact-link" target="_blank">LinkedIn</a>
+        <a href="https://drive.google.com/file/d/1OPln3diwnOhMerZEzwgdleRztIpOBoBr/view?usp=sharing" target="_blank" class="contact-link" id="downloadBtn2">↓ Download Resume</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 Alexis "Zaira" Kelly · <a href="#">accordanalyst.com</a> · Saint Louis, MO · Open to Remote</p>
+</footer>
+
+<script>
+  // ── THEME TOGGLE ──
+  const html = document.documentElement;
+  const btn  = document.getElementById('themeToggle');
+  const emoji = document.getElementById('toggleEmoji');
+  const label = document.getElementById('toggleLabel');
+
+  // Restore saved preference
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    html.setAttribute('data-theme', saved);
+    updateToggleUI(saved);
+  }
+
+  btn.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateToggleUI(next);
+  });
+
+  function updateToggleUI(theme) {
+    if (theme === 'dark') {
+      emoji.textContent = '🌙';
+      label.textContent = 'Dark';
+    } else {
+      emoji.textContent = '☀️';
+      label.textContent = 'Light';
+    }
+  }
+
+  // ── BOOT SEQUENCE (types once on load, like a system init message) ──
+  const bootMsg = 'ACCORD.SYS :: RECORD INITIALIZED';
+  const bootEl = document.getElementById('bootText');
+  const bootDot = document.getElementById('bootDot');
+  let bi = 0;
+  function typeBoot() {
+    if (bi <= bootMsg.length) {
+      bootEl.textContent = bootMsg.slice(0, bi);
+      bi++;
+      setTimeout(typeBoot, 32);
+    } else {
+      bootEl.style.borderRight = 'none';
+      setTimeout(() => bootDot.classList.add('lit'), 150);
+    }
+  }
+  setTimeout(typeBoot, 300);
+
+  // ── TYPEWRITER ──
+  const lines = [
+    'Revenue & Billing Operations · Fintech SaaS',
+    'SQL · Excel Automation · Process Improvement',
+    '$450K+ in Annual Overcharge Recovery',
+    'Distributed Teams · Async-First · Open to Remote',
+  ];
+  let li = 0, ci = 0, deleting = false;
+  const el = document.getElementById('typewriter');
+  function type() {
+    const current = lines[li];
+    if (!deleting) {
+      el.textContent = current.slice(0, ++ci);
+      if (ci === current.length) { deleting = true; setTimeout(type, 2200); return; }
+    } else {
+      el.textContent = current.slice(0, --ci);
+      if (ci === 0) { deleting = false; li = (li + 1) % lines.length; setTimeout(type, 400); return; }
+    }
+    setTimeout(type, deleting ? 28 : 52);
+  }
+  setTimeout(type, 800);
+
+  // ── SCROLL FADE IN ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // ── IMPACT NUMBERS ──
+  const numObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.impact-num').forEach(n => {
+          setTimeout(() => n.classList.add('visible'), parseInt(n.dataset.delay) || 0);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  const bar = document.querySelector('.impact-bar');
+  if (bar) numObserver.observe(bar);
+
+  // ── DOWNLOAD links now use real hrefs — no JS needed ──
+</script>
+</body>
+</html>
