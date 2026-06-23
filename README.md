@@ -1,7 +1,7 @@
 # Portfolio — accordanalyst.com
 
 
-TL;DR: Found out that accordanalyst.systems exist as a domain name and my ass needs to get it. This realm will not rest until I can put **accordanalyst.sys** as me domain name. I will concur all the worlds with my unhinged but seemingly professional naming conventions. Just you watch.
+TL;DR: Found out that accordanalyst.systems exist as a domain name and my ass needs to get it. This realm will not rest until I can put **accordanalyst.sys** as me domain name. I will conquer all the worlds with my unhinged but seemingly professional naming conventions. Just you watch.
 
 Don't ask too many questions about why "accordanalyst.com" ain't working. Nothing has humbled me most than me forgetting half of my teenage coding years. To be a millennial that grew up on nothing but Xanga, LiveJournal, Myspace and early Tumblr coding has brought me the most craziest realization of "Damn I have to start from ALMOST scratch?"
 
