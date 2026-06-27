@@ -14,26 +14,30 @@ This repo contains the case studies and supporting files behind my portfolio sit
 ---
 
 ## Why Netlify
-
-This site is hosted on Netlify for the convenience of it: connect the repo, push to `main`, and the live site updates automatically — no manual upload step, no server to manage, no build pipeline to babysit. For a static, mostly-HTML portfolio like this one, that kind of zero-friction deploy is exactly what's needed: I can focus on the projects themselves rather than infrastructure. Netlify's free tier also covers everything a personal portfolio site needs (custom domain support, HTTPS by default, instant rollbacks if a deploy ever breaks something), so there's no real reason to reach for anything heavier.
-
----
-
+ 
+This site is hosted on Netlify for the convenience of it: connect the repo, push to main, and the live site updates automatically — no manual upload step, no server to manage, no build pipeline to babysit. For a static, mostly-HTML portfolio like this one, that kind of zero-friction deploy is exactly what's needed: I can focus on the projects themselves rather than infrastructure. Netlify's free tier also covers everything a personal portfolio site needs (custom domain support, HTTPS by default, instant rollbacks if a deploy ever breaks something), so there's no real reason to reach for anything heavier.
+ 
 ## What's in this repo
-
+ 
+### Services page
+ 
+| File | What it is |
+|---|---|
+| `services.html` | The freelance services page — four fixed-scope offerings (Revenue Leak Audit, Billing Anomaly Monitoring, Data Audit-as-a-Service, SQL/Excel Automation Build) plus a limited-availability premium tier (**[Accord] Analyst-On-Demand**), each priced as a starting price with add-ons that scale by complexity rather than a vague range. Visually it's intentionally its own thing — a dark terminal/HUD aesthetic, separate from the fall/blue theme used everywhere else on the site, the same way the freight audit dashboard case study runs its own dark-mode demo widget inside the main theme. Reachable from the nav on every page.
+ 
 ### Case studies (HTML)
-
+ 
 | File | What it is |
 |---|---|
 | `freight-audit-dashboard.html` | An interactive recovery dashboard built around 200,000+ simulated invoices across a freight audit portfolio with heavy international exposure. Tracks pre-audit vs. post-audit recovery rates month over month, with seasonal context (Chinese New Year disruption, European summer slowdown, peak-season volume spikes) baked into the simulated data so the numbers move the way they actually would in a real freight audit operation. |
 | `intl-freight-audit.html` | The write-up for a simulated multi-sheet Excel system modeling international freight audit workflows — Ocean (LCL, FCL 20', FCL 40') and Air, with per-account tolerance rules, demurrage calculation, spot quote handling, and short-pay detection, rolled up into an executive dashboard view. |
 | `revenue-anomaly-detector.html` | The write-up for a Python-based statistical anomaly detector that flags accounts whose monthly revenue deviates from their own historical pattern — catching sudden spikes, sudden drops, and slow erosion trends that wouldn't trip a simple month-over-month check. |
 | `revenue-reconciliation.html` | The write-up for a five-query SQL set covering the most common revenue leakage points in a SaaS billing environment: aging receivables, short payments, duplicate charges, and contract-vs-billed variance, rolled into one executive leakage summary. |
-
+ 
 Each HTML file is a self-contained case study page — dark/light theme toggle, KPI strip, and (where relevant) a live interactive dashboard rendered with D3.
-
+ 
 ### Supporting source files
-
+ 
 | File | What it is |
 |---|---|
 | `anomaly_detector.py` | The actual Python script behind the Revenue Anomaly Detector case study — rolling baseline + z-score detection, an erosion check for slow declines, severity scoring, and a styled matplotlib chart export. |
@@ -41,9 +45,8 @@ Each HTML file is a self-contained case study page — dark/light theme toggle, 
 | `Freight_Audit_Recovery_Dashboard_v5.xlsx` | The underlying simulated dataset and workbook behind the freight audit recovery dashboard. |
 | `Freight_Audit_Automation_CaseStudy.xlsx` | The supporting workbook for the freight audit automation case study. |
 | `Intl_Freight_Audit_CaseStudy.xlsx` | The supporting multi-sheet workbook for the international freight audit case study (Ocean/Air tolerance rules, demurrage, spot quotes). |
-
----
-
+ 
 ## A note on the data
-
-Every dataset in this repo — invoice volumes, revenue figures, account names, billing records — is simulated. None of it reflects any real company, client, or employer. The goal of each project is to demonstrate how a given analysis or system would be built and reasoned through, using data engineered to behave the way real-world data does (seasonality, edge cases, the occasional messy outlier) without using anyone's actual numbers.
+ 
+Every dataset in this repo — invoice volumes, revenue figures, account names, billing records — is simulated. None of it reflects any real company, client, or employer. The goal of each project is to demonstrate how a given analysis or system would be built and reasoned through, using data engineered to behave the way real-world data does (seasonality, edge cases, the occasional messy outlier) without using anyone's actual numbers. Pricing shown on the services page reflects my own freelance rates, not simulated data.
+ 
