@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<title>Services | Alexis Kelly — accordanalyst.com</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── SITE-SHELL VARS (shared nav, matches index.html / projects.html) ── */
+  :root{
+    --nav-bg:#3B2207; --accent:#C4621D; --accent-bdr:rgba(196,98,29,0.35);
+    --accent-dim:rgba(196,98,29,0.15); --hero-text:#FDF3E7; --hero-muted:rgba(253,243,231,0.6);
+    --toggle-bg:rgba(255,255,255,0.12); --shadow:rgba(0,0,0,0.08);
+  }
+  [data-theme="dark"]{
+    --nav-bg:#091628; --accent:#4A90D9; --accent-bdr:rgba(74,144,217,0.4);
+    --accent-dim:rgba(46,95,163,0.2); --hero-text:#EBF2FA; --hero-muted:rgba(235,242,250,0.6);
+    --toggle-bg:rgba(74,144,217,0.15); --shadow:rgba(0,0,0,0.35);
+  }
+  /* ── SHARED NAV (identical structure/behavior to rest of site) ── */
+  nav.sitenav{
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    background:var(--nav-bg); display:flex; align-items:center; justify-content:space-between;
+    padding:0 2rem; height:52px; box-shadow:0 2px 16px var(--shadow);
+    transition:background .35s ease; font-family:'Segoe UI', system-ui, sans-serif;
+  }
+  nav.sitenav .nav-back{font-size:13px; color:var(--hero-muted); text-decoration:none; letter-spacing:.05em; transition:color .2s; display:flex; align-items:center; gap:6px;}
+  nav.sitenav .nav-back:hover{color:var(--accent);}
+  nav.sitenav .nav-right{display:flex; align-items:center; gap:1rem;}
+  nav.sitenav .nav-brand{font-size:12px; font-weight:600; letter-spacing:.12em; color:var(--accent); text-transform:uppercase;}
+  nav.sitenav .theme-toggle{
+    background:var(--toggle-bg); border:1px solid var(--accent-bdr); border-radius:20px; cursor:pointer;
+    padding:4px 10px; font-size:14px; display:flex; align-items:center; gap:6px; color:var(--hero-muted);
+    transition:background .2s, border-color .2s; white-space:nowrap; font-family:inherit;
+  }
+  nav.sitenav .theme-toggle:hover{border-color:var(--accent);}
+  nav.sitenav .toggle-label{font-size:11px; letter-spacing:.06em; text-transform:uppercase; font-weight:600; color:var(--hero-muted);}
+  nav.sitenav .toggle-track{width:32px; height:18px; background:var(--accent-dim); border:1px solid var(--accent-bdr); border-radius:9px; position:relative; transition:background .25s; flex-shrink:0;}
+  [data-theme="dark"] nav.sitenav .toggle-track{background:var(--accent);}
+  nav.sitenav .toggle-thumb{position:absolute; top:2px; left:2px; width:12px; height:12px; border-radius:50%; background:var(--hero-text); transition:transform .25s;}
+  [data-theme="dark"] nav.sitenav .toggle-thumb{transform:translateX(14px);}
+  nav.sitenav .inquire-btn{
+    background:var(--accent); color:var(--hero-text); padding:6px 14px; border-radius:4px;
+    font-size:12px; font-weight:700; letter-spacing:.04em; text-decoration:none; transition:opacity .2s;
+  }
+  nav.sitenav .inquire-btn:hover{opacity:.85;}
+  @media (max-width:700px){
+    nav.sitenav .toggle-label{display:none;}
+    nav.sitenav .nav-brand{display:none;}
+  }
+
+  /* ══════════════════════════════════════════════════════
+     EVERYTHING BELOW IS THE TERMINAL [Y2K] PAGE IDENTITY —
+     fixed dark palette by design, independent of the toggle,
+     same as the bespoke demo widgets on other case studies.
+  ══════════════════════════════════════════════════════ */
+  :root{
+    --bg:#070A12; --panel:#0D131F; --panel2:#111A2A; --line:#22304a;
+    --cyan:#3FE8E0; --magenta:#FF3D9A; --violet:#8B6CFF; --gold:#FFD166;
+    --text:#D6E2EE; --dim:#7E8FA8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Rajdhani', sans-serif;
+    background-image:
+      linear-gradient(180deg, rgba(139,108,255,0.05), transparent 220px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+  }
+  a{color:inherit;}
+  .wrap{max-width:1040px; margin:0 auto; padding:88px 20px 70px;}
+
+
+
+  header.hero{
+    background:var(--panel); border:1px solid var(--line); border-radius:6px 6px 0 0; padding:34px 30px 26px;
+  }
+  .prompt{font-family:'Share Tech Mono', monospace; font-size:12px; color:var(--magenta); margin-bottom:10px;}
+  .prompt::before{content:"$ ";color:var(--violet);}
+  h1{
+    font-family:'Orbitron', sans-serif; font-weight:900; font-size:30px; margin:0 0 8px; letter-spacing:.02em;
+    background:linear-gradient(90deg, var(--violet), var(--cyan) 60%, var(--magenta));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p{font-size:14px; color:var(--dim); max-width:640px; margin:0;}
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:18px; padding:24px 0 0;}
+  @media (max-width:780px){ .grid{grid-template-columns:1fr;} }
+
+  .term{
+    background:var(--panel); border:1px solid var(--line); border-radius:6px; overflow:hidden;
+    box-shadow:0 0 0 1px rgba(63,232,224,0.08);
+    display:flex; flex-direction:column;
+  }
+  .term.premium{
+    grid-column:1 / -1; border:1px solid var(--gold);
+    background:linear-gradient(135deg, rgba(255,209,102,0.08), var(--panel) 55%);
+    box-shadow:0 0 28px -6px rgba(255,209,102,0.4);
+  }
+  .term.premium .term-bar{background:rgba(255,209,102,0.1); border-bottom:1px solid var(--gold);}
+  .term.premium .svc-title, .term.premium .svc-price{color:var(--gold);}
+  .term.premium .term-body{display:grid; grid-template-columns:1.3fr 1fr; gap:20px;}
+  @media (max-width:780px){ .term.premium .term-body{grid-template-columns:1fr;} }
+  .badge-row{display:flex; gap:8px; margin:8px 0 4px; flex-wrap:wrap;}
+  .badge{font-family:'Share Tech Mono', monospace; font-size:9.5px; letter-spacing:.07em; padding:3px 8px; border-radius:2px; text-transform:uppercase;}
+  .badge.tier{background:rgba(255,209,102,0.15); border:1px solid var(--gold); color:var(--gold);}
+  .badge.slots{background:rgba(255,61,154,0.12); border:1px solid var(--magenta); color:var(--magenta); animation:pulse-slot 2.2s ease-in-out infinite;}
+  @keyframes pulse-slot{0%,100%{opacity:1;} 50%{opacity:.55;}}
+  .term-bar{
+    display:flex; justify-content:space-between; align-items:center; padding:8px 12px;
+    background:var(--panel2); border-bottom:1px solid var(--line);
+    font-family:'Share Tech Mono', monospace; font-size:10.5px; color:var(--dim); letter-spacing:.04em;
+  }
+  .term-bar .id{color:var(--violet);}
+  .term-body{padding:16px 18px 18px;}
+  .svc-title{font-family:'Orbitron', sans-serif; font-weight:700; font-size:16px; color:var(--text); margin:0 0 4px;}
+  .svc-price-label{font-family:'Share Tech Mono', monospace; font-size:9px; color:var(--dim); text-transform:uppercase; letter-spacing:.08em;}
+  .svc-price{font-family:'Share Tech Mono', monospace; font-size:13px; color:var(--cyan); margin-bottom:8px; font-weight:700;}
+  .svc-sched{font-size:11px; color:var(--dim);}
+  .svc-blurb{font-size:13px; line-height:1.55; color:var(--text); margin:10px 0 14px; padding-left:10px; border-left:2px solid var(--violet);}
+
+  .label{font-family:'Share Tech Mono', monospace; font-size:9.5px; color:var(--dim); text-transform:uppercase; letter-spacing:.1em; margin-bottom:7px;}
+  .flags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;}
+  .flag{
+    font-family:'Share Tech Mono', monospace; font-size:10px; padding:4px 8px; border-radius:2px;
+    background:rgba(139,108,255,0.1); border:1px solid rgba(139,108,255,0.4); color:var(--violet);
+  }
+  .flag.cond{background:transparent; border:1px dashed var(--line); color:var(--dim);}
+  .flag::before{content:"--";}
+
+  .industries{display:flex; flex-wrap:wrap; gap:5px 14px; font-size:11.5px; color:var(--dim); margin-bottom:14px;}
+  .industries span::before{content:"› "; color:var(--magenta);}
+
+  /* ADD-ONS */
+  .addons{margin-bottom:12px;}
+  .addon-row{
+    display:flex; justify-content:space-between; align-items:baseline; gap:8px;
+    padding:6px 9px; background:rgba(63,232,224,0.04); border:1px solid var(--line); border-left:2px solid var(--cyan);
+    margin-bottom:6px; font-size:11.5px;
+  }
+  .addon-trigger{display:block; font-size:10px; color:var(--dim); margin-top:1px;}
+  .addon-price{font-family:'Share Tech Mono', monospace; color:var(--cyan); white-space:nowrap; font-weight:700;}
+  .inquire-line{font-family:'Share Tech Mono', monospace; font-size:10.5px; color:var(--dim); margin-bottom:14px;}
+  .inquire-line a{color:var(--magenta); text-decoration:none; border-bottom:1px dashed rgba(255,61,154,0.45);}
+
+  .codebox{background:#070B11; border:1px solid var(--line); border-radius:4px; overflow:hidden;}
+  .codebox-head{display:flex; justify-content:space-between; padding:5px 10px; background:#0A0F18; border-bottom:1px solid var(--line); font-family:'Share Tech Mono', monospace; font-size:10px; color:var(--dim);}
+  .codebox-head span.lang{color:var(--cyan);}
+  .codebox pre{margin:0; padding:11px 13px; font-family:'Share Tech Mono', monospace; font-size:11px; line-height:1.55; color:#9FF; overflow-x:auto;}
+  .codebox pre .kw{color:var(--violet);}
+  .codebox pre .str{color:#F0C070;}
+  .codebox pre .com{color:var(--dim);}
+
+  .contact-bar{
+    margin-top:20px; background:var(--panel); border:1px solid var(--line); border-radius:6px;
+    padding:18px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    font-family:'Share Tech Mono', monospace; font-size:12px;
+  }
+  .contact-bar a{color:var(--cyan); text-decoration:none; border-bottom:1px solid rgba(63,232,224,0.35);}
+
+  footer{text-align:center; font-family:'Share Tech Mono', monospace; font-size:10.5px; color:var(--dim); padding:20px 0 6px; letter-spacing:.06em;}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){ *{transition-duration:0.01ms !important; animation-duration:0.01ms !important;} }
+</style>
+</head>
+<body>
+<nav class="sitenav">
+  <a href="index.html" class="nav-back">← Back to Portfolio</a>
+  <div class="nav-right">
+    <span class="nav-brand">accordanalyst.com</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <span id="toggleEmoji">☀️</span>
+      <span class="toggle-label" id="toggleLabel">Light</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    </button>
+    <a href="mailto:contact@accordanalyst.com" class="inquire-btn">✉ Inquire</a>
+  </div>
+</nav>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="prompt">ls --services</div>
+    <h1>Four Modules. One Operator.</h1>
+    <p>Billing forensics, packaged as fixed-scope engagements that fit around a full-time role. Starting prices shown — add-ons scale with what the project actually needs.</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- PREMIUM SERVICE -->
+    <div class="term premium">
+      <div class="term-bar"><span><span class="id" style="color:var(--gold);">[00]</span> accord_analyst_on_demand</span><span>.priority</span></div>
+      <div class="term-body">
+        <div>
+          <div class="svc-title">[Accord] Analyst-On-Demand</div>
+          <div class="badge-row"><span class="badge tier">★ Premium Tier</span><span class="badge slots">Limited — 2 active slots</span></div>
+          <div class="svc-price-label">Starting price</div>
+          <div class="svc-price">$2,000 / month</div>
+          <div class="svc-sched">ongoing weekly availability · most active engagement</div>
+          <p class="svc-blurb" style="border-left-color:var(--gold);">A part-time analyst on call, not a monthly report. Up to 5 hrs/week async support and priority turnaround — capped at 2 clients so response time never slips.</p>
+          <div class="label">Stack</div>
+          <div class="flags">
+            <span class="flag">python</span><span class="flag">sql</span><span class="flag">excel/sheets</span><span class="flag">slack (async)</span>
+            <span class="flag cond">tableau/power-bi</span><span class="flag cond">zapier</span><span class="flag cond">live meetings</span>
+          </div>
+          <div class="label">Buyers</div>
+          <div class="industries"><span>Startups needing embedded analytics</span><span>Small logistics companies</span><span>E-commerce scaling ops</span></div>
+        </div>
+        <div>
+          <div class="label">Add-ons</div>
+          <div class="addons">
+            <div class="addon-row"><div>Extra weekly hours (+5 hrs/wk)<span class="addon-trigger">bandwidth exceeds base 5 hrs/week</span></div><div class="addon-price">+$800/mo</div></div>
+            <div class="addon-row"><div>Live recurring sync call<span class="addon-trigger">standing meeting vs. async-only</span></div><div class="addon-price">+$400/mo</div></div>
+          </div>
+          <div class="inquire-line">+2 more — <a href="mailto:contact@accordanalyst.com">inquire for full pricing</a></div>
+          <div class="codebox" style="border-color:var(--gold);">
+            <div class="codebox-head"><span>weekly_pulse.py</span><span class="lang" style="color:var(--gold);">PY</span></div>
+            <pre>metrics = [<span class="str">"revenue"</span>, <span class="str">"ad_spend"</span>, <span class="str">"churn"</span>]
+pulse = {m: flag(df, m) <span class="kw">for</span> m <span class="kw">in</span> metrics}
+send_digest(pulse, channel=<span class="str">"#pulse"</span>)</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICE 1 -->
+    <div class="term">
+      <div class="term-bar"><span><span class="id">[01]</span> revenue_leak_audit</span><span>.exe</span></div>
+      <div class="term-body">
+        <div class="svc-title">Revenue Leak Audit</div>
+        <div class="svc-price-label">Starting price</div>
+        <div class="svc-price">$1,500 / project</div>
+        <div class="svc-sched">1–2 week turnaround · one client at a time</div>
+        <p class="svc-blurb">Hand over a billing export, get back a ranked list of overcharges, duplicates, and missed credits — dollar amounts attached, summarized for whoever signs the check.</p>
+        <div class="label">Stack</div>
+        <div class="flags">
+          <span class="flag">python</span><span class="flag">pandas</span><span class="flag">excel</span>
+          <span class="flag cond">sql (if warehouse)</span><span class="flag cond">power-bi (if dashboard)</span>
+        </div>
+        <div class="label">Buyers</div>
+        <div class="industries"><span>Freight &amp; 3PL</span><span>SaaS billing</span><span>E-commerce finance</span></div>
+        <div class="label">Add-ons</div>
+        <div class="addons">
+          <div class="addon-row"><div>SQL/warehouse connection<span class="addon-trigger">read-only DB access vs. flat file</span></div><div class="addon-price">+$300</div></div>
+          <div class="addon-row"><div>Multi-entity consolidation<span class="addon-trigger">2+ entities reconciled together</span></div><div class="addon-price">+$400</div></div>
+        </div>
+        <div class="inquire-line">+3 more — <a href="mailto:contact@accordanalyst.com">inquire for full pricing</a></div>
+        <div class="codebox">
+          <div class="codebox-head"><span>baseline_check.py</span><span class="lang">PY</span></div>
+          <pre>baseline = revenue.rolling(<span class="str">6</span>).mean().shift(<span class="str">1</span>)
+z = (revenue - baseline) / spread.clip(lower=baseline*<span class="str">0.03</span>)
+flagged = invoices[z.abs() &gt;= <span class="str">2.5</span>]</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICE 2 -->
+    <div class="term">
+      <div class="term-bar"><span><span class="id">[02]</span> anomaly_monitor</span><span>.cron</span></div>
+      <div class="term-body">
+        <div class="svc-title">Billing Anomaly Monitoring</div>
+        <div class="svc-price-label">Starting price</div>
+        <div class="svc-price">$800 / month</div>
+        <div class="svc-sched">data in by 1st · report by 5th</div>
+        <p class="svc-blurb">The same detection logic, run on a fixed monthly schedule. One short report flags anything new before it compounds into next quarter's surprise.</p>
+        <div class="label">Stack</div>
+        <div class="flags">
+          <span class="flag">python (scheduled)</span><span class="flag">excel/sheets</span>
+          <span class="flag cond">sql (if live pull)</span><span class="flag cond">slack/email automation</span>
+        </div>
+        <div class="label">Buyers</div>
+        <div class="industries"><span>Logistics &amp; 3PL</span><span>Subscription/SaaS finance</span><span>Marketplaces</span></div>
+        <div class="label">Add-ons</div>
+        <div class="addons">
+          <div class="addon-row"><div>Slack delivery<span class="addon-trigger">client provides a webhook URL</span></div><div class="addon-price">+$150/mo</div></div>
+          <div class="addon-row"><div>Live SQL connection<span class="addon-trigger">persistent DB access vs. manual drop</span></div><div class="addon-price">+$200/mo</div></div>
+        </div>
+        <div class="inquire-line">+2 more — <a href="mailto:contact@accordanalyst.com">inquire for full pricing</a></div>
+        <div class="codebox">
+          <div class="codebox-head"><span>monthly_exceptions.sql</span><span class="lang">SQL</span></div>
+          <pre><span class="kw">SELECT</span> account_name,
+  amount_due - <span class="kw">COALESCE</span>(paid,<span class="str">0</span>) <span class="kw">AS</span> net_balance
+<span class="kw">FROM</span> invoices <span class="kw">LEFT JOIN</span> payments <span class="kw">USING</span>(invoice_id)
+<span class="kw">WHERE</span> net_balance &gt; <span class="str">0.01</span> <span class="kw">ORDER BY</span> net_balance <span class="kw">DESC</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICE 3 -->
+    <div class="term">
+      <div class="term-bar"><span><span class="id">[03]</span> data_audit_general</span><span>.exe</span></div>
+      <div class="term-body">
+        <div class="svc-title">Data Audit-as-a-Service</div>
+        <div class="svc-price-label">Starting price</div>
+        <div class="svc-price">$1,200 / project</div>
+        <div class="svc-sched">1–3 weeks · scoped to data size</div>
+        <p class="svc-blurb">Ad spend, MRR, churn, subscriptions — the same baseline-deviation method, applied to any monthly metric that's supposed to behave predictably and didn't.</p>
+        <div class="label">Stack</div>
+        <div class="flags">
+          <span class="flag">python</span><span class="flag">pandas</span><span class="flag">statistics</span>
+          <span class="flag cond">sql</span><span class="flag cond">tableau/power-bi</span><span class="flag cond">api pulls (stripe, ads)</span>
+        </div>
+        <div class="label">Buyers</div>
+        <div class="industries"><span>Marketing agencies</span><span>SaaS RevOps</span><span>DTC/subscription brands</span></div>
+        <div class="label">Add-ons</div>
+        <div class="addons">
+          <div class="addon-row"><div>Live API integration<span class="addon-trigger">Stripe, ad platforms via OAuth</span></div><div class="addon-price">+$400</div></div>
+          <div class="addon-row"><div>Multi-source merge<span class="addon-trigger">2+ platforms reconciled into one view</span></div><div class="addon-price">+$500</div></div>
+        </div>
+        <div class="inquire-line">+2 more — <a href="mailto:contact@accordanalyst.com">inquire for full pricing</a></div>
+        <div class="codebox">
+          <div class="codebox-head"><span>anomaly_generic.py</span><span class="lang">PY</span></div>
+          <pre><span class="kw">def</span> flag(df, metric, w=<span class="str">6</span>, z=<span class="str">2.5</span>):
+  base = df[metric].rolling(w).mean().shift(<span class="str">1</span>)
+  std  = df[metric].rolling(w).std().shift(<span class="str">1</span>)
+  <span class="kw">return</span> df[((df[metric]-base)/std).abs() &gt;= z]</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICE 4 -->
+    <div class="term">
+      <div class="term-bar"><span><span class="id">[04]</span> automation_build</span><span>.sh</span></div>
+      <div class="term-body">
+        <div class="svc-title">SQL / Excel Automation Build</div>
+        <div class="svc-price-label">Starting price</div>
+        <div class="svc-price">$500 / build</div>
+        <div class="svc-sched">single delivery · no retainer</div>
+        <p class="svc-blurb">A query set or multi-tab Excel build that replaces the manual reconciliation someone is currently doing by hand — built once, reused every cycle.</p>
+        <div class="label">Stack</div>
+        <div class="flags">
+          <span class="flag">sql (ctes, window fns)</span><span class="flag">excel (xlookup, power query)</span>
+          <span class="flag cond">vba macros</span><span class="flag cond">apps script</span><span class="flag cond">notion</span>
+        </div>
+        <div class="label">Buyers</div>
+        <div class="industries"><span>Accounting/finance</span><span>Ops &amp; supply chain</span><span>Small business owners</span></div>
+        <div class="label">Add-ons</div>
+        <div class="addons">
+          <div class="addon-row"><div>Macro / Apps Script layer<span class="addon-trigger">auto-refresh or button-triggered actions</span></div><div class="addon-price">+$350</div></div>
+          <div class="addon-row"><div>Multi-tab interconnected workbook<span class="addon-trigger">3+ tabs cross-referencing each other</span></div><div class="addon-price">+$400</div></div>
+        </div>
+        <div class="inquire-line">+2 more — <a href="mailto:contact@accordanalyst.com">inquire for full pricing</a></div>
+        <div class="codebox">
+          <div class="codebox-head"><span>aging_buckets.sql</span><span class="lang">SQL</span></div>
+          <pre><span class="kw">WITH</span> aging <span class="kw">AS</span> (<span class="kw">SELECT</span> invoice_id,
+  current_date - due_date <span class="kw">AS</span> days_late <span class="kw">FROM</span> invoices)
+<span class="kw">SELECT</span> <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> days_late&gt;<span class="str">90</span> <span class="kw">THEN</span> <span class="str">1</span> <span class="kw">ELSE</span> <span class="str">0</span> <span class="kw">END</span>) <span class="kw">AS</span> d90 <span class="kw">FROM</span> aging;</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="contact-bar">
+    <span>// scoping calls run 30 min, no obligation</span>
+    <a href="mailto:contact@accordanalyst.com">contact@accordanalyst.com</a>
+  </div>
+
+  <footer>// starting prices shown — add-ons quoted after a short intake call //</footer>
+</div>
+
+<script>
+  // ── THEME TOGGLE (nav chrome only — page body stays fixed-dark by design) ──
+  const html = document.documentElement;
+  const btn  = document.getElementById('themeToggle');
+  const emoji = document.getElementById('toggleEmoji');
+  const label = document.getElementById('toggleLabel');
+
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    html.setAttribute('data-theme', saved);
+    updateToggleUI(saved);
+  }
+
+  btn.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateToggleUI(next);
+  });
+
+  function updateToggleUI(theme) {
+    if (theme === 'dark') {
+      emoji.textContent = '🌙';
+      label.textContent = 'Dark';
+    } else {
+      emoji.textContent = '☀️';
+      label.textContent = 'Light';
+    }
+  }
+</script>
+</body>
+</html>
