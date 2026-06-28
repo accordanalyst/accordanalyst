@@ -13,9 +13,9 @@ This repo contains the case studies and supporting files behind my portfolio sit
 
 ---
 
-## Why Netlify
- 
-This site is hosted on Netlify for the convenience of it: connect the repo, push to main, and the live site updates automatically — no manual upload step, no server to manage, no build pipeline to babysit. For a static, mostly-HTML portfolio like this one, that kind of zero-friction deploy is exactly what's needed: I can focus on the projects themselves rather than infrastructure. Netlify's free tier also covers everything a personal portfolio site needs (custom domain support, HTTPS by default, instant rollbacks if a deploy ever breaks something), so there's no real reason to reach for anything heavier.
+## Why GitHub Pages
+
+This site used to be hosted on Netlify — moved it directly to GitHub Pages instead, and honestly, glad I did. The repo is the deploy: push to main, and the live site updates with no separate build step, no third-party dashboard to log into, no extra account in the mix. For a static, mostly-HTML portfolio, that's one less moving part to think about. Custom domain and free HTTPS are both built in, and since the code, the deploy, and the version history all live in the exact same place, there's nothing to keep in sync across services anymore.
  
 ## What's in this repo
  
